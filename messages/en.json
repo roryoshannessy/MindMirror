@@ -1,0 +1,191 @@
+{
+  "common": {},
+  "nav": {
+    "how_it_works": "How it works",
+    "pricing": "Pricing",
+    "sign_in": "Sign in",
+    "sign_out": "Sign out",
+    "quiz": "See your pattern"
+  },
+  "footer": {
+    "pricing": "Pricing",
+    "how_it_works": "How it works",
+    "quiz": "See your pattern",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "support_contact": "support@getmindmirror.com"
+  },
+  "hero": {
+    "headline": "You've thought about this before. And the time before that.",
+    "subheadline": "MindMirror is the first app that shows you what you keep thinking but never change. Voice journal. AI analysis. Pattern recognition.",
+    "cta_primary": "Discover your thought patterns →",
+    "cta_secondary": "See how it works",
+    "social_proof": "Join 4,200+ people who finally see clearly"
+  },
+  "features": {
+    "f1": {
+      "title": "Voice-first journaling",
+      "body": "Record a thought in 30 seconds. No writing required. Just speak."
+    },
+    "f2": {
+      "title": "AI transcription",
+      "body": "Every word, captured and stored. Your thoughts become searchable."
+    },
+    "f3": {
+      "title": "Pattern detection",
+      "body": "See which topics, problems and goals keep coming back — across weeks and months."
+    },
+    "f4": {
+      "title": "Honest insights",
+      "body": "Not 'you're doing great.' More like: 'You've said this 11 times and nothing's changed.'"
+    },
+    "f5": {
+      "title": "Progress tracking",
+      "body": "Watch your language shift from stuck to moving. Or catch yourself going backwards."
+    },
+    "f6": {
+      "title": "Your data, forever",
+      "body": "Export everything anytime. Your thoughts belong to you."
+    }
+  },
+  "social_proof": {
+    "stat1": "4,200+ active journallers",
+    "stat2": "94% say they discovered something they didn't know about themselves",
+    "stat3": "Average 3.4 patterns identified in first month",
+    "quote1": "\"I didn't realise I had been talking about quitting for 9 months.\" — James R.",
+    "quote2": "\"It's like therapy, but it actually shows you the data.\" — Priya M.",
+    "quote3": "\"Finally an app that tells me the truth about my own thinking.\" — Tom K."
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "All plans include voice journaling, transcription, and pattern detection. Choose a plan to continue to secure checkout.",
+    "cta": "Choose plan",
+    "badge_popular": "Popular",
+    "trial_days": "{days}-day trial included",
+    "empty_state": "No plans synced yet. In Stripe, tag products with metadata foundation = true, add price lookup_key and metadata internal_id, then run npm run stripe:sync.",
+    "billing_period": {
+      "single": {
+        "day": "per day",
+        "week": "per week",
+        "month": "per month",
+        "year": "per year"
+      },
+      "multi": "Every {count} {unit}",
+      "unit": {
+        "day": "days",
+        "week": "weeks",
+        "month": "months",
+        "year": "years"
+      }
+    },
+    "annual_monthly_equiv": "$6.67/mo",
+    "annual_savings": "Save 48%",
+    "features": {
+      "voice": "Unlimited voice + video journal entries",
+      "transcription": "AI transcription of every entry",
+      "patterns": "Pattern detection across all entries",
+      "insights": "Weekly insight report",
+      "timeline": "Thought timeline view",
+      "alerts": "Pattern alerts (when a topic repeats 5+ times)",
+      "export": "Export your data anytime",
+      "support": "Email support",
+      "priority": "Priority insight processing",
+      "advanced": "Advanced pattern breakdown (topics, emotions, goals)"
+    }
+  },
+  "faq": {
+    "q1": "Is this just another journaling app?",
+    "a1": "No. Most journaling apps store your thoughts. MindMirror analyzes them over time and surfaces patterns. It's the difference between a diary and a dashboard.",
+    "q2": "How does the pattern detection work?",
+    "a2": "After each entry is transcribed, our AI identifies topics, goals, emotions and recurring phrases. Over time, it connects the dots and shows you what keeps coming up.",
+    "q3": "Do I have to write or type anything?",
+    "a3": "No. MindMirror is voice-first. Just press record and speak. The app handles the rest.",
+    "q4": "Can I cancel anytime?",
+    "a4": "Yes. No contracts, no questions asked. Cancel from your account settings at any time.",
+    "q5": "Is my data private?",
+    "a5": "Your entries are private and encrypted. We never sell or share your data. You can export and delete everything at any time."
+  },
+  "quiz": {},
+  "checkout": {
+    "email_meta_title": "Checkout — email",
+    "review_meta_title": "Checkout — review",
+    "return_meta_title": "Checkout — confirmation",
+    "missing_plan": "Pick a plan on the pricing page first.",
+    "email_label": "Email",
+    "email_placeholder": "you@example.com",
+    "email_legal": "We’ll use this email for your receipt and account. By continuing you agree to our terms and privacy policy.",
+    "continue": "Continue",
+    "submitting": "Saving…",
+    "error_generic": "Something went wrong. Try again.",
+    "review_title": "Review your plan",
+    "review_signed_in_as": "Checkout for {email}",
+    "review_plan_label": "Plan",
+    "review_billing_cadence": "Billed every {count} {unit}(s)",
+    "trial_included": "{days}-day trial included",
+    "terms_checkbox": "I agree to the terms and authorize recurring charges after any trial.",
+    "pay_with_card": "Pay with card",
+    "redirecting": "Redirecting…",
+    "return_pending": "Confirming your payment…",
+    "return_success_title": "You’re in",
+    "return_success_body": "Check your inbox for a sign-in link to access your account.",
+    "return_claimed_title": "Welcome back",
+    "return_claimed_body": "Your account is ready. You can close this tab.",
+    "return_unknown_status": "Status: {status}"
+  },
+  "auth": {
+    "login_title": "Sign in",
+    "login_subtitle": "Use Google or get a one-time link by email. No password to remember.",
+    "signup_title": "Create your account",
+    "signup_subtitle": "Start with Google or email — we'll send you a secure sign-in link.",
+    "continue_google": "Continue with Google",
+    "or_email": "Or use email",
+    "email_label": "Email",
+    "email_placeholder": "you@example.com",
+    "send_magic_link": "Email me a sign-in link",
+    "sending": "Sending…",
+    "magic_link_sent": "Check your inbox for the sign-in link.",
+    "signed_in": "You're signed in.",
+    "error_generic": "Something went wrong. Try again.",
+    "callback_title": "Signing you in",
+    "callback_working": "Completing sign-in…",
+    "callback_invalid": "This sign-in link is invalid or expired.",
+    "turnstile_required": "Complete the security check above, then try again."
+  },
+  "account": {
+    "welcome_title": "Your account",
+    "welcome_body": "You’re signed in. Billing and settings will live here in upcoming milestones.",
+    "welcome_purchase_title": "You’re all set",
+    "welcome_purchase_body": "Your subscription is active. Jump into MindMirror whenever you’re ready.",
+    "billing_title": "Billing",
+    "billing_already_subscribed": "This email already has an active subscription. Manage billing from your account when portal billing ships, or use the Stripe customer portal link from your last receipt."
+  },
+  "how_it_works": {
+    "title": "How it works",
+    "subtitle": "Three steps. No writing. Just speak.",
+    "step1_title": "Record a voice note",
+    "step1_body": "Open MindMirror and record a thought in 30 seconds. Say anything — what's on your mind, what happened, what you're worried about.",
+    "step2_title": "AI detects your patterns",
+    "step2_body": "Every entry is transcribed and analyzed. The AI identifies topics, emotions, and goals — then looks for what keeps coming up across all your entries.",
+    "step3_title": "See what you keep thinking",
+    "step3_body": "MindMirror shows you the patterns you didn't notice: the goals you mention but don't act on, the problems you keep revisiting, the things that are actually holding you back."
+  },
+  "legal": {
+    "terms_title": "Terms of Service",
+    "terms_last_updated": "Last updated: April 2026",
+    "privacy_title": "Privacy Policy",
+    "privacy_last_updated": "Last updated: April 2026"
+  },
+  "errors": {},
+  "meta": {
+    "title": "MindMirror",
+    "description": "A voice-first journaling app that detects your thought patterns over time and shows you what's holding you back.",
+    "home_title": "See what you keep thinking but never change",
+    "home_description": "A voice-first journaling app that detects your thought patterns over time and shows you what's holding you back.",
+    "pricing_title": "Pricing",
+    "pricing_description": "Simple plans for voice-first journaling with AI pattern insights. Start with a 7-day free trial.",
+    "terms_title": "Terms of Service",
+    "terms_description": "MindMirror terms of service.",
+    "privacy_title": "Privacy Policy",
+    "privacy_description": "How MindMirror handles your data and protects your privacy."
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "syncedAt": "2026-04-27T02:23:19.934Z",
+  "foundationVersion": 1,
+  "products": [
+    {
+      "id": "prod_UOAbp98wSN9ybs",
+      "name": "MindMirror Annual",
+      "description": null,
+      "metadata": {
+        "catalog_default_plan_id": "mindmirror-annual",
+        "foundation": "true",
+        "highlighted": "true",
+        "trial_days": "7"
+      },
+      "prices": [
+        {
+          "id": "price_1TPOGFGVG84CjC8nJ8ZbEPMZ",
+          "lookup_key": "mindmirror_annual",
+          "currency": "usd",
+          "unit_amount": 7999,
+          "type": "recurring",
+          "recurring": {
+            "interval": "year",
+            "interval_count": 1,
+            "trial_period_days": 7
+          },
+          "metadata": {
+            "foundation ": "true "
+          }
+        }
+      ]
+    },
+    {
+      "id": "prod_UOAan3rG6TLK45",
+      "name": "MindMirror Monthly",
+      "description": null,
+      "metadata": {
+        "foundation": "true"
+      },
+      "prices": [
+        {
+          "id": "price_1TPOFDGVG84CjC8nQZCaRdqG",
+          "lookup_key": "mindmirror_monthly",
+          "currency": "usd",
+          "unit_amount": 1299,
+          "type": "recurring",
+          "recurring": {
+            "interval": "month",
+            "interval_count": 1,
+            "trial_period_days": null
+          },
+          "metadata": {
+            "foundation ": "true ",
+            "internal_id": "mindmirror-monthly"
+          }
+        }
+      ]
+    }
+  ]
+}
