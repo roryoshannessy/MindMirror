@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getAdminDb } from "@/lib/firebase-admin";
+import { sendPurchase, type CapiUserData } from "@/lib/meta-capi";
 import type { PurchaseAttributionSnapshot } from "@/lib/purchase-attribution";
 import { userBillingPatchFromSubscription } from "@/lib/stripe-billing-projection";
 import { getStripe } from "@/lib/stripe-server";
@@ -21,6 +22,21 @@ function subscriptionIdFromInvoice(invoice: Stripe.Invoice): string | null {
   if (typeof sub === "string") return sub;
   if (sub && typeof sub === "object" && "id" in sub) return sub.id;
   return null;
+}
+
+function testEventCode(): string | null {
+  return process.env.META_CAPI_TEST_EVENT_CODE?.trim() || null;
+}
+
+function siteUrl(): string {
+  return process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
+}
+
+function isMetaCapiConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() &&
+      process.env.META_CAPI_ACCESS_TOKEN?.trim(),
+  );
 }
 
 async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Firestore): Promise<void> {
@@ -163,19 +179,6 @@ async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Fire
       attributionContext: checkoutAttribution,
     };
 
-    await db.doc(`capi_purchases_pending/${invoiceId}`).set({
-      invoiceId,
-      subscriptionId: subRef ?? null,
-      uid: uid ?? "",
-      amountPaidCents: paid,
-      currencyCode: currency,
-      contentName: snap.contentName,
-      attributionSnapshot: snap,
-      purchaseEventId,
-      queuedFromEvent: event.id,
-      queuedAt: FieldValue.serverTimestamp(),
-    });
-
     if (userRef) {
       await userRef.set(
         {
@@ -184,6 +187,97 @@ async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Fire
         },
         { merge: true },
       );
+    }
+
+    let leadData: Record<string, unknown> = {};
+    const email =
+      typeof profile?.email === "string" ? profile.email.toLowerCase().trim() : null;
+    if (email) {
+      const leadSnap = await db.doc(`leads/${email}`).get();
+      leadData = leadSnap.data() ?? {};
+    }
+
+    const checkoutMatching = snap.attributionContext?.matching;
+    const userData: CapiUserData = {
+      email: (leadData.email as string | undefined) ?? email,
+      fbp:
+        (checkoutMatching?.metaFbp as string | undefined) ??
+        (leadData.metaFbp as string | undefined) ??
+        null,
+      fbc:
+        (checkoutMatching?.metaFbc as string | undefined) ??
+        (leadData.metaFbc as string | undefined) ??
+        null,
+      externalId: uid || null,
+    };
+
+    const capiLogRef = db.doc(`capi_purchase_events/${invoiceId}`);
+    const baseCapiLog = {
+      invoiceId,
+      subscriptionId: subRef ?? null,
+      uid: uid ?? "",
+      amountPaidCents: paid,
+      currencyCode: currency,
+      contentName: snap.contentName,
+      attributionSnapshot: snap,
+      purchaseEventId,
+      stripeEventId: event.id,
+      eventSourceUrl: siteUrl(),
+      attemptedAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+
+    try {
+      if (profile?.isTestUser === true) {
+        await capiLogRef.set({
+          ...baseCapiLog,
+          status: "skipped_test_user",
+        });
+        return;
+      }
+
+      if (!isMetaCapiConfigured()) {
+        await capiLogRef.set({
+          ...baseCapiLog,
+          status: "skipped_not_configured",
+        });
+        return;
+      }
+
+      const capiResult = await sendPurchase({
+        eventId: purchaseEventId,
+        eventTime: event.created,
+        eventSourceUrl: siteUrl(),
+        userData,
+        customData: {
+          value: paid / 100,
+          currency,
+          contentName: snap.contentName,
+        },
+        testEventCode: testEventCode(),
+      });
+
+      await capiLogRef.set({
+        ...baseCapiLog,
+        status: capiResult.ok ? "sent" : "failed",
+        sentAt: capiResult.ok ? FieldValue.serverTimestamp() : null,
+        error: capiResult.ok ? null : capiResult.error,
+      });
+    } catch (e) {
+      console.error("[stripe webhook] CAPI send/log failed", e);
+      try {
+        await capiLogRef.set(
+          {
+            ...baseCapiLog,
+            status: "failed",
+            error: String(e),
+            updatedAt: FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
+      } catch (logError) {
+        console.error("[stripe webhook] CAPI failure log failed", logError);
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ function subscriptionIdFromInvoice(invoice: Stripe.Invoice): string | null {
 }
 
 /**
- * Snapshot stored on `capi_purchases_pending` and `users.lastPurchaseAttribution`.
+ * Snapshot stored on CAPI audit events and `users.lastPurchaseAttribution`.
  * Preserves full checkout-time attribution context for CAPI.
  */
 export type PurchaseAttributionSnapshot = {
