@@ -102,3 +102,4 @@ All specs and strategy docs are in `references/`:
 **See also:** 
 - `references/MARKETING_MESSAGING_STRATEGY.md` — Go-to-market plan, landing page copy, retention strategy
 - `references/DEEP_MARKET_RESEARCH.md` — Full pain points, user desires, market gaps
+
