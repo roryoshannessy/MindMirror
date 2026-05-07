@@ -5,6 +5,7 @@ import { getPlanById } from "@/config/commercial-catalog";
 import {
   checkoutSessionRef,
   hashResumeToken,
+  isCheckoutSessionId,
   newResumeToken,
 } from "@/lib/checkout-session";
 import { getSiteUrl } from "@/lib/site-url";
@@ -19,7 +20,7 @@ import { getAdminDb } from "@/lib/firebase-admin";
 export const runtime = "nodejs";
 
 const bodySchema = z.object({
-  checkoutSessionId: z.string().min(4).max(128),
+  checkoutSessionId: z.string().refine(isCheckoutSessionId, "Invalid checkout session"),
   couponCode: z.string().max(64).optional(),
 });
 

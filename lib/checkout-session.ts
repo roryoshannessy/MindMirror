@@ -5,6 +5,7 @@ import { getAdminDb } from "@/lib/firebase-admin";
 import { normalizeEmail } from "@/lib/normalize-email";
 
 export const CHECKOUT_SESSIONS_COLLECTION = "checkout_sessions";
+export const CHECKOUT_SESSION_ID_RE = /^chk_[a-f0-9]{32}$/;
 
 export type CheckoutSessionStatus =
   | "created"
@@ -56,6 +57,10 @@ export type CheckoutSessionDoc = {
 
 export function newCheckoutSessionId(): string {
   return `chk_${randomBytes(16).toString("hex")}`;
+}
+
+export function isCheckoutSessionId(value: string): boolean {
+  return CHECKOUT_SESSION_ID_RE.test(value);
 }
 
 export function newResumeToken(): string {

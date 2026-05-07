@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocale } from "next-intl";
 import { z } from "zod";
@@ -38,7 +38,17 @@ export function GateEmail({ node, defaultEmail, quizPayload, onSuccess }: Props)
   const setLeadCaptured = useQuizStore((s) => s.setLeadCaptured);
   const sessionId = useQuizStore((s) => s.sessionId);
   const [formError, setFormError] = useState<string | null>(null);
+  const [turnstileError, setTurnstileError] = useState<string | null>(null);
   const turnstileRef = useRef<CloudflareTurnstileHandle>(null);
+  const handleTurnstileError = useCallback(() => {
+    setTurnstileError("Security check could not load. Refresh and try again.");
+  }, []);
+  const handleTurnstileExpired = useCallback(() => {
+    setTurnstileError("Security check expired. Try again in a moment.");
+  }, []);
+  const handleTurnstileSuccess = useCallback(() => {
+    setTurnstileError(null);
+  }, []);
 
   const {
     register,
@@ -60,9 +70,14 @@ export function GateEmail({ node, defaultEmail, quizPayload, onSuccess }: Props)
           // eslint-disable-next-line
           onSubmit={handleSubmit(async (data) => {
             setFormError(null);
+            setTurnstileError(null);
             setEmailStore(data.email);
 
             const turnstileToken = turnstileRef.current?.getToken();
+            if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() && !turnstileToken) {
+              setTurnstileError("Security check is still loading. Try again in a moment.");
+              return;
+            }
 
             const res = await submitLeadCapture({
               email: data.email,
@@ -111,9 +126,17 @@ export function GateEmail({ node, defaultEmail, quizPayload, onSuccess }: Props)
               <p className="text-sm text-destructive">{errors.email.message}</p>
             ) : null}
             {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+            {turnstileError ? (
+              <p className="text-sm text-destructive">{turnstileError}</p>
+            ) : null}
           </div>
 
-          <CloudflareTurnstile ref={turnstileRef} />
+          <CloudflareTurnstile
+            ref={turnstileRef}
+            onError={handleTurnstileError}
+            onExpired={handleTurnstileExpired}
+            onSuccess={handleTurnstileSuccess}
+          />
 
           <Button type="submit" disabled={isSubmitting} size="lg" className="w-full sm:w-auto">
             {isSubmitting ? "Saving…" : "Unlock my pattern"}

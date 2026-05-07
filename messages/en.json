@@ -126,6 +126,7 @@
     "pay_with_card": "Pay with card",
     "redirecting": "Redirecting…",
     "return_pending": "Confirming your payment…",
+    "return_timeout": "Your payment is taking longer than expected. Refresh this page in a moment, or contact support if it keeps happening.",
     "return_success_title": "You’re in",
     "return_success_body": "Check your inbox for a sign-in link to access your account.",
     "return_claimed_title": "Welcome back",

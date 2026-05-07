@@ -164,13 +164,27 @@ async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Fire
     const paid = invoice.amount_paid ?? 0;
     const currency = (invoice.currency ?? "usd").toUpperCase();
 
+    const customerId =
+      typeof invoice.customer === "string"
+        ? invoice.customer
+        : invoice.customer?.id ?? null;
+
+    if (checkoutSessionId) {
+      await db.doc(`checkout_sessions/${checkoutSessionId}`).set(
+        {
+          externalInvoiceId: invoiceId,
+          ...(subRef ? { externalSubscriptionId: subRef } : {}),
+          ...(customerId ? { externalCustomerId: customerId } : {}),
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
+
     const snap: PurchaseAttributionSnapshot = {
       planId,
       subscriptionId: subRef,
-      customerId:
-        typeof invoice.customer === "string"
-          ? invoice.customer
-          : invoice.customer?.id ?? null,
+      customerId,
       invoiceId,
       valueCents: paid,
       currency,

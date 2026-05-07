@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { isCheckoutSessionId } from "@/lib/checkout-session";
 import { CheckoutReturnClient } from "./checkout-return-client";
 
 type Props = {
@@ -18,7 +19,7 @@ export default async function CheckoutReturnPage({ searchParams }: Props) {
   const sp = await searchParams;
   const session = sp.session?.trim();
   const token = sp.token?.trim();
-  if (!session?.startsWith("chk_")) notFound();
+  if (!session || !isCheckoutSessionId(session)) notFound();
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16">

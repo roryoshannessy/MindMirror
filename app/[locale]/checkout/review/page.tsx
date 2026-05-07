@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getPlanById } from "@/config/commercial-catalog";
-import { checkoutSessionRef } from "@/lib/checkout-session";
+import { checkoutSessionRef, isCheckoutSessionId } from "@/lib/checkout-session";
 import { CheckoutReviewClient } from "./checkout-review-client";
 
 type Props = {
@@ -19,12 +19,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CheckoutReviewPage({ searchParams }: Props) {
   const sp = await searchParams;
   const sessionId = sp.session?.trim();
-  if (!sessionId?.startsWith("chk_")) notFound();
+  if (!sessionId || !isCheckoutSessionId(sessionId)) notFound();
 
   const snap = await checkoutSessionRef(sessionId).get();
   if (!snap.exists) notFound();
   const data = snap.data()!;
-  const plan = getPlanById(data.planId as string);
+  const planId = typeof data.planId === "string" ? data.planId : null;
+  const email = typeof data.email === "string" ? data.email : null;
+  if (!planId || !email) notFound();
+
+  const plan = getPlanById(planId);
   if (!plan) notFound();
 
   return (
@@ -32,7 +36,7 @@ export default async function CheckoutReviewPage({ searchParams }: Props) {
       <CheckoutReviewClient
         sessionId={sessionId}
         plan={plan}
-        email={data.email as string}
+        email={email}
       />
     </div>
   );

@@ -12,7 +12,14 @@ declare global {
     turnstile?: {
       render: (
         el: HTMLElement,
-        opts: { sitekey: string; theme?: "light" | "dark" | "auto"; callback?: (token: string) => void },
+        opts: {
+          sitekey: string;
+          theme?: "light" | "dark" | "auto";
+          callback?: (token: string) => void;
+          "error-callback"?: (errorCode: string) => boolean | void;
+          "expired-callback"?: () => void;
+          "timeout-callback"?: () => void;
+        },
       ) => string;
       remove: (id: string) => void;
       getResponse: (id: string) => string | undefined;
@@ -26,10 +33,15 @@ export type CloudflareTurnstileHandle = {
   reset: () => void;
 };
 
-type Props = { className?: string };
+type Props = {
+  className?: string;
+  onError?: () => void;
+  onExpired?: () => void;
+  onSuccess?: () => void;
+};
 
 export const CloudflareTurnstile = forwardRef<CloudflareTurnstileHandle, Props>(
-  function CloudflareTurnstile({ className }, ref) {
+  function CloudflareTurnstile({ className, onError, onExpired, onSuccess }, ref) {
     const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetId = useRef<string | null>(null);
@@ -56,6 +68,19 @@ export const CloudflareTurnstile = forwardRef<CloudflareTurnstileHandle, Props>(
         widgetId.current = window.turnstile.render(el, {
           sitekey: siteKey,
           theme: "dark",
+          callback: () => {
+            onSuccess?.();
+          },
+          "error-callback": () => {
+            onError?.();
+            return true;
+          },
+          "expired-callback": () => {
+            onExpired?.();
+          },
+          "timeout-callback": () => {
+            onExpired?.();
+          },
         });
       };
 
@@ -99,7 +124,7 @@ export const CloudflareTurnstile = forwardRef<CloudflareTurnstileHandle, Props>(
           widgetId.current = null;
         }
       };
-    }, [siteKey]);
+    }, [onError, onExpired, onSuccess, siteKey]);
 
     if (!siteKey) return null;
     return <div ref={containerRef} className={className} />;

@@ -57,6 +57,8 @@ export function CheckoutReturnClient({ checkoutSessionId, resumeToken }: { check
           Date.now() - started.current < MAX_MS
         ) {
           timer = setTimeout(tick, POLL_MS);
+        } else if (r.status === "payment_pending") {
+          setError(t("return_timeout"));
         }
       } catch (e) {
         if (!cancelled) {
