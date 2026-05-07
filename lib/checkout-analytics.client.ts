@@ -32,5 +32,7 @@ export function capturePurchaseCompleted(props: {
       contentName: props.planId,
       eventId,
     });
+  }).catch(() => {
+    /* Pixel optional; CAPI/webhook remains the source of truth. */
   });
 }

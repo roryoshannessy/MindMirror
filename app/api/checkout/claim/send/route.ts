@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { brand } from "@/config/brand";
 import type { CommercialAttributionContext } from "@/lib/attribution-server";
-import { checkoutSessionRef, hashResumeToken } from "@/lib/checkout-session";
+import {
+  checkoutSessionRef,
+  hashResumeToken,
+  isCheckoutSessionId,
+} from "@/lib/checkout-session";
 import { sendTransactionalEmail } from "@/lib/email-sender";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
 import { encodeMagicLinkState } from "@/lib/magic-link-state.server";
@@ -12,7 +16,7 @@ import { getSiteUrl } from "@/lib/site-url";
 export const runtime = "nodejs";
 
 const bodySchema = z.object({
-  checkoutSessionId: z.string().min(4).max(128),
+  checkoutSessionId: z.string().refine(isCheckoutSessionId, "Invalid checkout session"),
   resumeToken: z.string().optional(),
 });
 

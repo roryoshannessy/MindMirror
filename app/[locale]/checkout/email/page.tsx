@@ -4,7 +4,7 @@ import { CheckoutEmailClient } from "./checkout-email-client";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ planId?: string; session?: string }>;
+  searchParams: Promise<{ planId?: string; session?: string; qz?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -17,10 +17,15 @@ export default async function CheckoutEmailPage({ searchParams }: Props) {
   const sp = await searchParams;
   const planId = sp.planId?.trim() ?? "";
   const sessionSource = sp.session?.trim() ?? "pricing";
+  const quizSessionId = sp.qz?.trim() ?? null;
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16">
-      <CheckoutEmailClient planId={planId} sessionSource={sessionSource} />
+      <CheckoutEmailClient
+        planId={planId}
+        sessionSource={sessionSource}
+        quizSessionId={quizSessionId}
+      />
     </div>
   );
 }

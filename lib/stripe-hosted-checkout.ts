@@ -36,5 +36,8 @@ export async function createSubscriptionHostedCheckoutSession(input: {
   if (!url) {
     throw new Error("Stripe Checkout session missing redirect URL.");
   }
+  if (!session.id?.startsWith("cs_")) {
+    throw new Error("Stripe Checkout session missing session ID.");
+  }
   return { url, sessionId: session.id };
 }

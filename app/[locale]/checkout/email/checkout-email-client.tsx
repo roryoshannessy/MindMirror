@@ -12,9 +12,11 @@ import { postCheckoutConfirmEmail } from "@/hooks/use-checkout";
 export function CheckoutEmailClient({
   planId,
   sessionSource,
+  quizSessionId,
 }: {
   planId: string;
   sessionSource: string;
+  quizSessionId: string | null;
 }) {
   const t = useTranslations("checkout");
   const router = useRouter();
@@ -33,13 +35,15 @@ export function CheckoutEmailClient({
         source: "checkout",
         locale,
       });
+      const funnelSessionId =
+        sessionSource === "quiz" && quizSessionId ? quizSessionId : lead.funnelSessionId;
       const json = await postCheckoutConfirmEmail({
         email: lead.email,
         planId,
         source: sessionSource,
         locale: lead.locale,
         attribution: lead.attribution,
-        funnelSessionId: lead.funnelSessionId,
+        funnelSessionId,
         posthogDistinctId: lead.posthogDistinctId,
         posthogSessionId: lead.posthogSessionId,
         metaFbp: lead.metaFbp,

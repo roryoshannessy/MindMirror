@@ -1,6 +1,10 @@
 import type { DocumentData } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
-import { checkoutSessionRef, hashResumeToken } from "@/lib/checkout-session";
+import {
+  checkoutSessionRef,
+  hashResumeToken,
+  isCheckoutSessionId,
+} from "@/lib/checkout-session";
 export const runtime = "nodejs";
 
 export type CheckoutResumeStatus =
@@ -28,7 +32,7 @@ export async function GET(req: Request) {
     const sessionId = url.searchParams.get("session");
     const resumeToken = url.searchParams.get("token");
 
-    if (!sessionId?.startsWith("chk_")) {
+    if (!sessionId || !isCheckoutSessionId(sessionId)) {
       return NextResponse.json({ error: "Invalid session" }, { status: 400 });
     }
 
