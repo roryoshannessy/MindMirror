@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { CreditCard, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Plan } from "@/config/commercial-catalog";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/format-price";
 import { postCheckoutSession } from "@/hooks/use-checkout";
 import { cn } from "@/lib/utils";
@@ -65,12 +67,38 @@ export function CheckoutReviewClient({
       <label className="flex cursor-pointer items-start gap-2 text-sm">
         <input
           type="checkbox"
-          className="mt-1 size-4 rounded border-input"
+          className="mt-0.5 size-5 rounded border-input"
           checked={termsAccepted}
           onChange={(e) => setTermsAccepted(e.target.checked)}
         />
         <span>{t("terms_checkbox")}</span>
       </label>
+
+      <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4 text-sm text-muted-foreground">
+        <div className="flex gap-3">
+          <CreditCard className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+          <p>{t("review_secure_checkout")}</p>
+        </div>
+        <div className="flex gap-3">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+          <p>
+            {plan.trialDays && plan.trialDays > 0
+              ? t("review_trial_cancel", { days: plan.trialDays })
+              : t("review_cancel_anytime")}
+          </p>
+        </div>
+        <p className="text-xs">
+          {t("review_policy_prefix")}{" "}
+          <Link href="/legal/terms" className="text-primary underline-offset-4 hover:underline">
+            {t("terms_link")}
+          </Link>{" "}
+          {t("and")}{" "}
+          <Link href="/legal/privacy" className="text-primary underline-offset-4 hover:underline">
+            {t("privacy_link")}
+          </Link>
+          .
+        </p>
+      </div>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 

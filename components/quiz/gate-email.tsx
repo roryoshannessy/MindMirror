@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocale } from "next-intl";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import type { GateEmailNode } from "@/config/quiz";
 import { QUIZ_ID } from "@/config/quiz";
 import { submitLeadCapture } from "@/lib/lead-capture-client";
@@ -139,8 +140,20 @@ export function GateEmail({ node, defaultEmail, quizPayload, onSuccess }: Props)
           />
 
           <Button type="submit" disabled={isSubmitting} size="lg" className="w-full sm:w-auto">
-            {isSubmitting ? "Saving…" : "Unlock my pattern"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                Unlocking your pattern…
+              </>
+            ) : (
+              "Unlock my pattern"
+            )}
           </Button>
+          {isSubmitting ? (
+            <p className="text-sm text-muted-foreground" aria-live="polite">
+              Saving your answers and preparing your pattern profile.
+            </p>
+          ) : null}
         </form>
       </CardContent>
     </Card>
