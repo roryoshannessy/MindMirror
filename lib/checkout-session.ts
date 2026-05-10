@@ -12,6 +12,7 @@ export type CheckoutSessionStatus =
   | "email_confirmed"
   | "provider_handoff"
   | "completed"
+  | "refunded"
   | "failed"
   | "expired"
   | "abandoned";
@@ -21,6 +22,7 @@ export type CheckoutClaimStatus = "pending" | "email_sent" | "claimed" | "not_ne
 export type CheckoutEntitlementStatus =
   | "pending"
   | "granted"
+  | "refunded"
   | "not_granted"
   | "not_needed";
 
@@ -47,6 +49,22 @@ export type CheckoutSessionDoc = {
   entitlement: {
     status: CheckoutEntitlementStatus;
     grantedAt?: Timestamp;
+    refundedAt?: Timestamp;
+  };
+  refund?: {
+    status: "refunded" | "partially_refunded";
+    amountRefundedCents: number;
+    currency: string;
+    chargeId: string;
+    invoiceId: string | null;
+    subscriptionId: string | null;
+    customerId: string | null;
+    stripeEventId: string;
+    emailStatus?: "pending" | "sent" | "failed" | "skipped_no_email";
+    emailError?: string;
+    emailSentAt?: Timestamp;
+    subscriptionCancelStatus?: "pending" | "cancelled" | "skipped_no_subscription";
+    subscriptionCancelledAt?: Timestamp;
   };
   attributionSnapshot: CommercialAttributionContext;
   funnelSessionId: string | null;

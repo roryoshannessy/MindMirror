@@ -1,10 +1,18 @@
-import { FieldValue, type Firestore } from "firebase-admin/firestore";
+import {
+  FieldValue,
+  type DocumentData,
+  type DocumentReference,
+  type Firestore,
+} from "firebase-admin/firestore";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import { isCheckoutSessionId } from "@/lib/checkout-session";
+import { sendTransactionalEmail } from "@/lib/email-sender";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { sendPurchase, type CapiUserData } from "@/lib/meta-capi";
 import type { PurchaseAttributionSnapshot } from "@/lib/purchase-attribution";
+import { buildRefundProcessedEmail } from "@/lib/refund-email";
 import { userBillingPatchFromSubscription } from "@/lib/stripe-billing-projection";
 import { getStripe } from "@/lib/stripe-server";
 
@@ -24,6 +32,80 @@ function subscriptionIdFromInvoice(invoice: Stripe.Invoice): string | null {
   return null;
 }
 
+function expandableId(value: string | { id?: string } | null | undefined): string | null {
+  if (typeof value === "string") return value;
+  if (value && typeof value.id === "string") return value.id;
+  return null;
+}
+
+type ChargeWithInvoice = Stripe.Charge & {
+  invoice?: string | Stripe.Invoice | null;
+  receipt_email?: string | null;
+};
+
+function invoiceIdFromCharge(charge: Stripe.Charge): string | null {
+  return expandableId((charge as ChargeWithInvoice).invoice);
+}
+
+function checkoutSessionIdFromInvoice(invoice: Stripe.Invoice | null): string | null {
+  if (!invoice) return null;
+  const direct = invoice.metadata?.checkoutSessionId;
+  if (typeof direct === "string" && isCheckoutSessionId(direct)) return direct;
+  const snap = invoice.parent?.subscription_details?.metadata?.checkoutSessionId;
+  if (typeof snap === "string" && isCheckoutSessionId(snap)) return snap;
+  return null;
+}
+
+type CheckoutSessionMatch = {
+  ref: DocumentReference<DocumentData>;
+  id: string;
+  data: DocumentData;
+};
+
+async function checkoutSessionById(
+  db: Firestore,
+  checkoutSessionId: string | null,
+): Promise<CheckoutSessionMatch | null> {
+  if (!checkoutSessionId || !isCheckoutSessionId(checkoutSessionId)) return null;
+  const ref = db.doc(`checkout_sessions/${checkoutSessionId}`);
+  const snap = await ref.get();
+  if (!snap.exists) return null;
+  return { ref, id: snap.id, data: snap.data() ?? {} };
+}
+
+async function checkoutSessionByField(
+  db: Firestore,
+  field: string,
+  value: string | null,
+): Promise<CheckoutSessionMatch | null> {
+  if (!value) return null;
+  const snap = await db
+    .collection("checkout_sessions")
+    .where(field, "==", value)
+    .limit(1)
+    .get();
+  const doc = snap.docs[0];
+  if (!doc) return null;
+  return { ref: doc.ref, id: doc.id, data: doc.data() };
+}
+
+async function findCheckoutSessionForRefund(
+  db: Firestore,
+  input: {
+    checkoutSessionId: string | null;
+    invoiceId: string | null;
+    subscriptionId: string | null;
+    customerId: string | null;
+  },
+): Promise<CheckoutSessionMatch | null> {
+  return (
+    (await checkoutSessionById(db, input.checkoutSessionId)) ??
+    (await checkoutSessionByField(db, "externalInvoiceId", input.invoiceId)) ??
+    (await checkoutSessionByField(db, "externalSubscriptionId", input.subscriptionId)) ??
+    (await checkoutSessionByField(db, "externalCustomerId", input.customerId))
+  );
+}
+
 function testEventCode(): string | null {
   return process.env.META_CAPI_TEST_EVENT_CODE?.trim() || null;
 }
@@ -39,7 +121,241 @@ function isMetaCapiConfigured(): boolean {
   );
 }
 
+async function customerEmailFromStripe(
+  stripe: Stripe,
+  customerId: string | null,
+): Promise<string | null> {
+  if (!customerId) return null;
+  const customer = await stripe.customers.retrieve(customerId);
+  if ("deleted" in customer && customer.deleted) return null;
+  return typeof customer.email === "string" ? customer.email : null;
+}
+
+function isBenignSubscriptionCancelError(err: unknown): boolean {
+  if (typeof err !== "object" || err === null) return false;
+  const message = "message" in err && typeof err.message === "string" ? err.message : "";
+  return /already.*cancell?ed/i.test(message) || /no such subscription/i.test(message);
+}
+
+async function cancelSubscriptionAfterFullRefund(
+  stripe: Stripe,
+  subscriptionId: string | null,
+): Promise<"cancelled" | "skipped_no_subscription"> {
+  if (!subscriptionId) return "skipped_no_subscription";
+  try {
+    await stripe.subscriptions.cancel(subscriptionId);
+    return "cancelled";
+  } catch (e) {
+    if (isBenignSubscriptionCancelError(e)) return "cancelled";
+    throw e;
+  }
+}
+
+async function handleChargeRefunded(
+  event: Stripe.Event,
+  stripe: Stripe,
+  db: Firestore,
+): Promise<void> {
+  const charge = event.data.object as Stripe.Charge;
+  const chargeId = charge.id;
+  const amountRefundedCents = charge.amount_refunded ?? 0;
+  if (!chargeId || amountRefundedCents <= 0) return;
+
+  const invoiceId = invoiceIdFromCharge(charge);
+  let invoice: Stripe.Invoice | null = null;
+  if (invoiceId) {
+    invoice = await stripe.invoices.retrieve(invoiceId);
+  }
+
+  const subscriptionId = invoice ? subscriptionIdFromInvoice(invoice) : null;
+  const customerId = expandableId(charge.customer);
+  const checkoutSessionId = checkoutSessionIdFromInvoice(invoice);
+  const checkout = await findCheckoutSessionForRefund(db, {
+    checkoutSessionId,
+    invoiceId,
+    subscriptionId,
+    customerId,
+  });
+
+  const data = checkout?.data ?? {};
+  const uid =
+    typeof data.uid === "string"
+      ? data.uid
+      : typeof invoice?.metadata?.uid === "string"
+        ? invoice.metadata.uid
+        : typeof invoice?.parent?.subscription_details?.metadata?.uid === "string"
+          ? invoice.parent.subscription_details.metadata.uid
+          : null;
+  const planId =
+    typeof data.planId === "string"
+      ? data.planId
+      : typeof invoice?.metadata?.planId === "string"
+        ? invoice.metadata.planId
+        : typeof invoice?.parent?.subscription_details?.metadata?.planId === "string"
+          ? invoice.parent.subscription_details.metadata.planId
+          : null;
+  const originalAmountCents = charge.amount ?? 0;
+  const currency = (charge.currency ?? "usd").toUpperCase();
+  const isFullRefund =
+    originalAmountCents > 0 &&
+    charge.refunded === true &&
+    amountRefundedCents >= originalAmountCents;
+  const refundStatus = isFullRefund ? "refunded" : "partially_refunded";
+  const refundRecord = {
+    status: refundStatus,
+    amountRefundedCents,
+    originalAmountCents,
+    currency,
+    chargeId,
+    invoiceId,
+    subscriptionId,
+    customerId,
+    planId,
+    stripeEventId: event.id,
+    stripeEventCreatedAt: new Date(event.created * 1000),
+    updatedAt: FieldValue.serverTimestamp(),
+  };
+
+  if (!checkout) {
+    console.error(
+      `[stripe webhook] refund ${event.id}: no checkout session found for invoice=${invoiceId}, subscription=${subscriptionId}, customer=${customerId}`,
+    );
+    if (isFullRefund) {
+      await cancelSubscriptionAfterFullRefund(stripe, subscriptionId);
+    }
+    return;
+  }
+
+  if (checkout) {
+    const refundPatch: Record<string, unknown> = {
+      ...refundRecord,
+      emailStatus: "pending",
+    };
+    if (isFullRefund) {
+      refundPatch.subscriptionCancelStatus = "pending";
+    }
+
+    const checkoutPatch: Record<string, unknown> = {
+      refund: refundPatch,
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+
+    if (isFullRefund) {
+      checkoutPatch.status = "refunded";
+      checkoutPatch.entitlement = {
+        status: "refunded",
+        refundedAt: FieldValue.serverTimestamp(),
+      };
+    }
+
+    await checkout.ref.set(checkoutPatch, { merge: true });
+  }
+
+  if (uid) {
+    const userPatch: Record<string, unknown> = {
+      lastRefund: refundRecord,
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+
+    if (isFullRefund) {
+      Object.assign(userPatch, {
+        billingPlan: "free",
+        billingStatus: "refunded",
+        billingPaymentFailed: false,
+        billingRefundedAt: FieldValue.serverTimestamp(),
+      });
+    }
+
+    await db.doc(`users/${uid}`).set(userPatch, { merge: true });
+  }
+
+  if (isFullRefund) {
+    const subscriptionCancelStatus = await cancelSubscriptionAfterFullRefund(
+      stripe,
+      subscriptionId,
+    );
+    await checkout.ref.set(
+      {
+        refund: {
+          subscriptionCancelStatus,
+          subscriptionCancelledAt:
+            subscriptionCancelStatus === "cancelled"
+              ? FieldValue.serverTimestamp()
+              : null,
+        },
+        updatedAt: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+  }
+
+  const chargeEmail =
+    charge.billing_details?.email ??
+    (charge as ChargeWithInvoice).receipt_email ??
+    null;
+  const email =
+    (typeof data.email === "string" ? data.email : null) ??
+    chargeEmail ??
+    (await customerEmailFromStripe(stripe, customerId));
+
+  if (!email) {
+    if (checkout) {
+      await checkout.ref.set(
+        {
+          refund: { emailStatus: "skipped_no_email" },
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
+    console.warn(`[stripe webhook] refund ${event.id} had no resolvable email`);
+    return;
+  }
+
+  try {
+    await sendTransactionalEmail(
+      buildRefundProcessedEmail({
+        to: email,
+        amountRefundedCents,
+        currency,
+        isFullRefund,
+      }),
+    );
+    if (checkout) {
+      await checkout.ref.set(
+        {
+          refund: {
+            emailStatus: "sent",
+            emailSentAt: FieldValue.serverTimestamp(),
+          },
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
+  } catch (e) {
+    if (checkout) {
+      await checkout.ref.set(
+        {
+          refund: {
+            emailStatus: "failed",
+            emailError: String(e),
+          },
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
+    console.error(`[stripe webhook] refund ${event.id}: email send failed`, e);
+  }
+}
+
 async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Firestore): Promise<void> {
+  if (event.type === "charge.refunded") {
+    await handleChargeRefunded(event, stripe, db);
+    return;
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     if (session.mode !== "subscription") return;

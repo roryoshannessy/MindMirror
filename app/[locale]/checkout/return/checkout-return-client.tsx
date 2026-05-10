@@ -106,6 +106,15 @@ export function CheckoutReturnClient({ checkoutSessionId, resumeToken }: { check
     );
   }
 
+  if (status === "payment_refunded") {
+    return (
+      <div className="mx-auto max-w-md space-y-3 text-center">
+        <h1 className="text-xl font-semibold">{t("return_refunded_title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("return_refunded_body")}</p>
+      </div>
+    );
+  }
+
   return (
     <p className="text-center text-sm text-muted-foreground">
       {t("return_unknown_status", { status: String(status) })}

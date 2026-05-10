@@ -11,12 +11,17 @@ export type CheckoutResumeStatus =
   | "payment_pending"
   | "payment_settled_claim_pending"
   | "claim_email_sent"
-  | "already_claimed";
+  | "already_claimed"
+  | "payment_refunded";
 
 function normalizeResumeStatus(d: DocumentData): CheckoutResumeStatus {
   const st = d.status as string;
   const claim = d.claim as { status?: string } | undefined;
   const ent = d.entitlement as { status?: string } | undefined;
+
+  if (st === "refunded" || ent?.status === "refunded") {
+    return "payment_refunded";
+  }
 
   if (st === "completed" && ent?.status === "granted") {
     if (claim?.status === "pending") return "payment_settled_claim_pending";

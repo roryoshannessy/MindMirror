@@ -138,6 +138,8 @@
     "return_success_body": "Check your inbox for a sign-in link to access your account.",
     "return_claimed_title": "Welcome back",
     "return_claimed_body": "Your account is ready. You can close this tab.",
+    "return_refunded_title": "Your refund is confirmed",
+    "return_refunded_body": "You are on the early access list. We will email you as soon as MindMirror is ready.",
     "return_unknown_status": "Status: {status}"
   },
   "auth": {
