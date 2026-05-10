@@ -14,6 +14,9 @@ import {
 import { ensureUserDocForCheckout } from "@/lib/checkout-user";
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { LeadAttributionInput } from "@/lib/lead-attribution.types";
+import { CLIENT_SIGNALS_PROVENANCE } from "@/lib/lead-provenance";
+import { buildLeadRecord } from "@/lib/lead-schema";
+import { normalizeEmail } from "@/lib/normalize-email";
 import {
   buildCheckoutEmailIpRateLimitKey,
   buildCheckoutEmailRateLimitKey,
@@ -46,6 +49,8 @@ const bodySchema = z.object({
   metaFbp: z.string().max(256).optional(),
   metaFbc: z.string().max(256).optional(),
   entryUrl: z.string().max(4096).optional(),
+  browserLanguage: z.string().max(64).optional(),
+  timezone: z.string().max(128).optional(),
 });
 
 export async function POST(req: Request) {
@@ -63,6 +68,7 @@ export async function POST(req: Request) {
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       req.headers.get("x-real-ip") ??
       null;
+    const ua = req.headers.get("user-agent");
 
     const ipLimited = await checkRateLimit(
       buildCheckoutEmailIpRateLimitKey(ip),
@@ -102,9 +108,10 @@ export async function POST(req: Request) {
     const stripePriceId = plan.metadata?.stripe_price_id;
     const email = parsed.data.email.trim();
     const locale = parsed.data.locale?.trim() || "en";
+    const db = getAdminDb();
 
     const uid = await getOrCreateAuthUserByEmail(email);
-    const userSnap = await getAdminDb().doc(`users/${uid}`).get();
+    const userSnap = await db.doc(`users/${uid}`).get();
     const existedBefore = userSnap.exists;
     if (isPaidBillingUser(userSnap.data())) {
       return NextResponse.json({
@@ -137,7 +144,7 @@ export async function POST(req: Request) {
         });
         customerId = c.id;
       }
-      await getAdminDb()
+      await db
         .doc(`users/${uid}`)
         .set(
           { billingCustomerId: customerId, updatedAt: FieldValue.serverTimestamp() },
@@ -155,6 +162,52 @@ export async function POST(req: Request) {
       entryUrl: parsed.data.entryUrl,
       ip,
     });
+
+    const country = req.headers.get("x-vercel-ip-country");
+    const region = req.headers.get("x-vercel-ip-country-region");
+    const city = req.headers.get("x-vercel-ip-city");
+    const leadRef = db.doc(`leads/${normalizeEmail(email)}`);
+    const leadSnap = await leadRef.get();
+    const leadFields = buildLeadRecord({
+      email,
+      posthogDistinctId: parsed.data.posthogDistinctId ?? null,
+      posthogSessionId: parsed.data.posthogSessionId ?? null,
+      metaFbp: parsed.data.metaFbp ?? null,
+      metaFbc: parsed.data.metaFbc ?? null,
+      attribution: (parsed.data.attribution as LeadAttributionInput | undefined) ?? null,
+      funnelSessionId: parsed.data.funnelSessionId ?? null,
+      entryUrl: parsed.data.entryUrl ?? null,
+      locale,
+      browserLanguage: parsed.data.browserLanguage ?? null,
+      timezone: parsed.data.timezone ?? null,
+      userAgent: ua?.slice(0, 512) ?? null,
+      geoCountry: country,
+      geoRegion: region,
+      geoCity: city,
+      ip,
+      clientSignalsProvenance: CLIENT_SIGNALS_PROVENANCE,
+    });
+
+    if (!leadSnap.exists) {
+      await leadRef.set({
+        ...leadFields,
+        source: "checkout",
+        lastCaptureSource: "checkout",
+        createdAt: FieldValue.serverTimestamp(),
+        convertedToUser: true,
+        uid,
+      });
+    } else {
+      await leadRef.set(
+        {
+          ...leadFields,
+          lastCaptureSource: "checkout",
+          convertedToUser: true,
+          uid,
+        },
+        { merge: true },
+      );
+    }
 
     const checkoutSessionId = newCheckoutSessionId();
     const purchaseEventId = newPurchaseEventId(checkoutSessionId);

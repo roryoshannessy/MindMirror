@@ -49,6 +49,8 @@ export function CheckoutEmailClient({
         metaFbp: lead.metaFbp,
         metaFbc: lead.metaFbc,
         entryUrl: lead.entryUrl,
+        browserLanguage: lead.browserLanguage,
+        timezone: lead.timezone,
       });
 
       if (json.nextStep === "show_already_subscribed") {
