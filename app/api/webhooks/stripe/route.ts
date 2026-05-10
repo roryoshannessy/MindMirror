@@ -47,6 +47,29 @@ function invoiceIdFromCharge(charge: Stripe.Charge): string | null {
   return expandableId((charge as ChargeWithInvoice).invoice);
 }
 
+async function invoiceFromRefundedCharge(
+  stripe: Stripe,
+  charge: Stripe.Charge,
+  customerId: string | null,
+): Promise<Stripe.Invoice | null> {
+  const directInvoiceId = invoiceIdFromCharge(charge);
+  if (directInvoiceId) {
+    return stripe.invoices.retrieve(directInvoiceId);
+  }
+
+  if (!customerId) return null;
+  const invoices = await stripe.invoices.list({ customer: customerId, limit: 10 });
+  const chargeCreated = charge.created ?? 0;
+  const chargeAmount = charge.amount ?? 0;
+
+  return (
+    invoices.data.find((invoice) => {
+      const closeToCharge = Math.abs(invoice.created - chargeCreated) <= 60 * 60;
+      return invoice.amount_paid === chargeAmount && closeToCharge;
+    }) ?? null
+  );
+}
+
 function checkoutSessionIdFromInvoice(invoice: Stripe.Invoice | null): string | null {
   if (!invoice) return null;
   const direct = invoice.metadata?.checkoutSessionId;
@@ -161,14 +184,10 @@ async function handleChargeRefunded(
   const amountRefundedCents = charge.amount_refunded ?? 0;
   if (!chargeId || amountRefundedCents <= 0) return;
 
-  const invoiceId = invoiceIdFromCharge(charge);
-  let invoice: Stripe.Invoice | null = null;
-  if (invoiceId) {
-    invoice = await stripe.invoices.retrieve(invoiceId);
-  }
-
-  const subscriptionId = invoice ? subscriptionIdFromInvoice(invoice) : null;
   const customerId = expandableId(charge.customer);
+  const invoice = await invoiceFromRefundedCharge(stripe, charge, customerId);
+  const invoiceId = invoice?.id ?? null;
+  const subscriptionId = invoice ? subscriptionIdFromInvoice(invoice) : null;
   const checkoutSessionId = checkoutSessionIdFromInvoice(invoice);
   const checkout = await findCheckoutSessionForRefund(db, {
     checkoutSessionId,
@@ -194,6 +213,9 @@ async function handleChargeRefunded(
         : typeof invoice?.parent?.subscription_details?.metadata?.planId === "string"
           ? invoice.parent.subscription_details.metadata.planId
           : null;
+  const effectiveSubscriptionId =
+    subscriptionId ??
+    (typeof data.externalSubscriptionId === "string" ? data.externalSubscriptionId : null);
   const originalAmountCents = charge.amount ?? 0;
   const currency = (charge.currency ?? "usd").toUpperCase();
   const isFullRefund =
@@ -208,7 +230,7 @@ async function handleChargeRefunded(
     currency,
     chargeId,
     invoiceId,
-    subscriptionId,
+    subscriptionId: effectiveSubscriptionId,
     customerId,
     planId,
     stripeEventId: event.id,
@@ -272,7 +294,7 @@ async function handleChargeRefunded(
   if (isFullRefund) {
     const subscriptionCancelStatus = await cancelSubscriptionAfterFullRefund(
       stripe,
-      subscriptionId,
+      effectiveSubscriptionId,
     );
     await checkout.ref.set(
       {
