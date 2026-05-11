@@ -167,7 +167,7 @@
     "welcome_purchase_title": "You’re all set",
     "welcome_purchase_body": "Your subscription is active. Jump into MindMirror whenever you’re ready.",
     "billing_title": "Billing",
-    "billing_already_subscribed": "This email already has an active subscription. Manage billing from your account when portal billing ships, or use the Stripe customer portal link from your last receipt."
+    "billing_already_subscribed": "This email already has an active subscription. Use the Stripe customer portal link from your latest receipt, or email support@getmindmirror.com if you need help."
   },
   "how_it_works": {
     "title": "How it works",

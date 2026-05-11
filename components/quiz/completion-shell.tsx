@@ -74,14 +74,13 @@ export function CompletionShell() {
         </Card>
       </div>
 
-      <p className="text-center text-sm text-muted-foreground">
-        Trusted by {brand.SOCIAL_PROOF_COUNT} founders and professionals
-      </p>
-
-      <div className="flex flex-col items-stretch gap-2 sm:items-center">
+      <div className="flex flex-col items-stretch gap-3 sm:items-center">
         <Button asChild size="lg" className="w-full max-w-md self-center">
           <Link href={primaryCheckout}>Start your 7-day free trial — $0 today</Link>
         </Button>
+        <p className="text-center text-sm text-muted-foreground">
+          Trusted by {brand.SOCIAL_PROOF_COUNT} founders and professionals
+        </p>
         <p className="text-center text-xs text-muted-foreground">
           Cancel anytime · No questions asked · Your data is yours
         </p>
