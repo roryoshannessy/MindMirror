@@ -46,7 +46,7 @@ export function CompletionShell() {
   const primaryCheckout = `/checkout/email?planId=${encodeURIComponent(defaultPlan)}&session=quiz&qz=${encodeURIComponent(sessionId)}`;
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-12 px-4 py-8 pb-24 sm:px-6">
+    <div className="mx-auto w-full max-w-3xl space-y-12 px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6">
       <div className="text-center">
         <h1 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl">
           {name}, here&apos;s what your mind keeps doing.

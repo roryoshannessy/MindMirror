@@ -11,17 +11,17 @@ export async function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Logo />
         <nav
-          className="flex items-center gap-1 sm:gap-6"
+          className="flex min-w-0 items-center gap-2 md:gap-6"
           aria-label="Primary"
         >
           {siteConfig.nav.map((item) => {
             const isCta = item.variant === "cta";
             if (isCta) {
               return (
-                <Button key={item.href} asChild size="sm" className="rounded-lg">
+                <Button key={item.href} asChild size="sm" className="shrink-0 rounded-lg px-3 sm:px-4">
                   <Link href={item.href}>{t(item.labelKey)}</Link>
                 </Button>
               );
@@ -31,7 +31,7 @@ export async function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                  "hidden rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex",
                 )}
               >
                 {t(item.labelKey)}

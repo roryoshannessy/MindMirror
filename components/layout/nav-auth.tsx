@@ -15,7 +15,7 @@ export function NavAuth() {
   if (isLoading) {
     return (
       <div
-        className="h-8 w-14 shrink-0 animate-pulse rounded-md bg-muted"
+        className="hidden h-8 w-14 shrink-0 animate-pulse rounded-md bg-muted md:block"
         aria-hidden
       />
     );
@@ -27,7 +27,7 @@ export function NavAuth() {
         type="button"
         variant="ghost"
         size="sm"
-        className="text-muted-foreground hover:text-foreground"
+        className="hidden text-muted-foreground hover:text-foreground md:inline-flex"
         onClick={() => void signOut()}
       >
         {t("sign_out")}
@@ -39,7 +39,7 @@ export function NavAuth() {
     <Link
       href="/auth/login"
       className={cn(
-        "rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground",
+        "hidden rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex",
       )}
     >
       {t("sign_in")}
