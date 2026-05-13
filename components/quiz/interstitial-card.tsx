@@ -11,18 +11,18 @@ type Props = {
 
 export function InterstitialCard({ node, onContinue }: Props) {
   return (
-    <Card className="border-border bg-card/80 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-balance text-lg font-semibold leading-snug tracking-tight text-foreground sm:text-xl">
+    <Card className="border-border bg-card shadow-xl">
+      <CardHeader className="px-5 pt-6 sm:px-6">
+        <CardTitle className="text-balance text-2xl font-semibold leading-tight text-foreground">
           {node.headline}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground sm:text-base">
+      <CardContent className="px-5 sm:px-6">
+        <p className="whitespace-pre-line text-base leading-8 text-muted-foreground">
           {node.body}
         </p>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="px-5 pb-6 sm:px-6">
         <Button type="button" className="w-full sm:w-auto" size="lg" onClick={onContinue}>
           {node.ctaLabel}
         </Button>

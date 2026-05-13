@@ -17,10 +17,10 @@
   },
   "hero": {
     "headline": "You've thought about this before. And the time before that.",
-    "subheadline": "MindMirror is the first app that shows you what you keep thinking but never change. Voice journal. AI analysis. Pattern recognition.",
-    "cta_primary": "Discover your thought patterns →",
+    "subheadline": "Take the 60-second pattern quiz and see the loop your mind may keep running before you build another plan around it.",
+    "cta_primary": "Start the pattern quiz",
     "cta_secondary": "See how it works",
-    "social_proof": "Join 4,200+ people who finally see clearly"
+    "social_proof": "Built for founders, professionals, and ambitious overthinkers"
   },
   "features": {
     "f1": {
@@ -49,12 +49,12 @@
     }
   },
   "social_proof": {
-    "stat1": "4,200+ active journallers",
-    "stat2": "94% say they discovered something they didn't know about themselves",
-    "stat3": "Average 3.4 patterns identified in first month",
-    "quote1": "\"I didn't realise I had been talking about quitting for 9 months.\" — James R.",
-    "quote2": "\"It's like therapy, but it actually shows you the data.\" — Priya M.",
-    "quote3": "\"Finally an app that tells me the truth about my own thinking.\" — Tom K."
+    "stat1": "60-second quiz",
+    "stat2": "Personalized pattern profile",
+    "stat3": "Voice-first app concept",
+    "quote1": "Most journaling tools help you record thoughts. MindMirror is built to show what keeps repeating.",
+    "quote2": "The quiz turns vague overthinking into a named pattern you can actually inspect.",
+    "quote3": "Privacy, cancellation clarity, and exportability stay visible before checkout."
   },
   "pricing": {
     "title": "Pricing",

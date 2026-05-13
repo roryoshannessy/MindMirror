@@ -35,12 +35,12 @@ export function GateName({ node, defaultName, onSubmit }: Props) {
   });
 
   return (
-    <Card className="border-border bg-card shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">{node.title}</CardTitle>
-        <CardDescription>{node.subtitle}</CardDescription>
+    <Card className="border-border bg-card shadow-xl">
+      <CardHeader className="px-5 pt-6 sm:px-6">
+        <CardTitle className="text-2xl font-semibold leading-tight">{node.title}</CardTitle>
+        <CardDescription className="text-base leading-7">{node.subtitle}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-5 pb-6 sm:px-6">
         <form
           onSubmit={handleSubmit((data) => onSubmit(data.firstName.trim()))}
           className="flex flex-col gap-4"
