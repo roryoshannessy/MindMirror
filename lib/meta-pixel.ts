@@ -1,10 +1,19 @@
 declare global {
   interface Window {
-    fbq?: (...args: unknown[]) => void;
+    fbq?: MetaFbq;
+    _fbq?: MetaFbq;
   }
 }
 
 const SCRIPT_ID = "mm-meta-pixel-fbevents";
+
+type MetaFbq = ((...args: unknown[]) => void) & {
+  callMethod?: (...args: unknown[]) => void;
+  loaded?: boolean;
+  push?: MetaFbq;
+  queue?: unknown[][];
+  version?: string;
+};
 
 function pixelId(): string | null {
   if (process.env.NEXT_PUBLIC_ANALYTICS_DISABLED === "1") return null;
@@ -15,27 +24,35 @@ function pixelId(): string | null {
 let initDone = false;
 let loadPromise: Promise<void> | null = null;
 
+function installFbqStub(): void {
+  if (typeof window === "undefined") return;
+  if (window.fbq) return;
+
+  const fbq = ((...args: unknown[]) => {
+    const current = window.fbq;
+    if (current?.callMethod) {
+      current.callMethod(...args);
+      return;
+    }
+    current?.queue?.push(args);
+  }) as MetaFbq;
+
+  window.fbq = fbq;
+  window._fbq = fbq;
+  fbq.push = fbq;
+  fbq.loaded = true;
+  fbq.version = "2.0";
+  fbq.queue = [];
+}
+
 function injectPixelScript(): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
-  if (window.fbq) return Promise.resolve();
+  installFbqStub();
   if (loadPromise) return loadPromise;
 
   loadPromise = new Promise<void>((resolve, reject) => {
-    const waitForFbq = (started: number) => {
-      if (window.fbq) {
-        resolve();
-        return;
-      }
-      if (Date.now() - started > 15_000) {
-        loadPromise = null;
-        reject(new Error("Meta Pixel: fbq not available"));
-        return;
-      }
-      requestAnimationFrame(() => waitForFbq(started));
-    };
-
     if (document.getElementById(SCRIPT_ID)) {
-      waitForFbq(Date.now());
+      resolve();
       return;
     }
 
@@ -43,7 +60,7 @@ function injectPixelScript(): Promise<void> {
     s.id = SCRIPT_ID;
     s.async = true;
     s.src = "https://connect.facebook.net/en_US/fbevents.js";
-    s.onload = () => waitForFbq(Date.now());
+    s.onload = () => resolve();
     s.onerror = () => {
       loadPromise = null;
       reject(new Error("Meta Pixel script failed to load"));
