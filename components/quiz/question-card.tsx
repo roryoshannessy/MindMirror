@@ -13,9 +13,9 @@ type Props = {
 
 export function QuestionCard({ node, value, onSelect }: Props) {
   return (
-    <Card className="border-border bg-card shadow-xl">
-      <CardHeader className="gap-3 px-5 pb-4 pt-6 sm:px-6">
-        <CardTitle className="text-balance text-2xl font-semibold leading-tight">
+    <Card className="mm-fade-up border-border bg-card/80 shadow-2xl">
+      <CardHeader className="gap-3 px-5 pb-5 pt-7 sm:px-7 sm:pt-8">
+        <CardTitle className="text-balance text-2xl font-semibold leading-tight sm:text-3xl">
           {node.title}
         </CardTitle>
         {node.subtitle ? (
@@ -24,7 +24,7 @@ export function QuestionCard({ node, value, onSelect }: Props) {
           </CardDescription>
         ) : null}
       </CardHeader>
-      <CardContent className="grid gap-3 px-5 pb-6 sm:px-6">
+      <CardContent className="grid gap-3 px-5 pb-7 sm:px-7">
         {node.options.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -32,10 +32,10 @@ export function QuestionCard({ node, value, onSelect }: Props) {
               key={opt.value}
               type="button"
               className={cn(
-                "group flex min-h-14 w-full items-center justify-between gap-4 rounded-lg border px-4 py-3 text-left text-base font-medium transition-colors",
+                "group flex min-h-16 w-full items-center justify-between gap-4 rounded-lg border px-4 py-4 text-left text-base font-medium transition-colors",
                 selected
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:border-primary/60 hover:bg-muted",
+                  : "border-border bg-background/80 text-foreground hover:border-primary/60 hover:bg-muted",
               )}
               onClick={() => onSelect(opt.value)}
             >

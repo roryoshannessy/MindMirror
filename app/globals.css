@@ -61,3 +61,58 @@
     font-family: var(--font-sans), system-ui, sans-serif;
   }
 }
+
+@layer utilities {
+  .mm-fade-up {
+    animation: mm-fade-up 650ms ease-out both;
+  }
+
+  .mm-float {
+    animation: mm-float 7s ease-in-out infinite;
+  }
+
+  .mm-scan {
+    animation: mm-scan 4.5s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-fade-up,
+  .mm-float,
+  .mm-scan {
+    animation: none;
+  }
+}
+
+@keyframes mm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mm-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes mm-scan {
+  0%,
+  100% {
+    transform: translateX(-15%);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(15%);
+    opacity: 0.8;
+  }
+}

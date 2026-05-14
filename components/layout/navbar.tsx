@@ -1,13 +1,17 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import { siteConfig } from "@/config/site";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { NavAuth } from "./nav-auth";
 
-export async function Navbar() {
-  const t = await getTranslations("nav");
+export function Navbar() {
+  const t = useTranslations("nav");
+  const pathname = usePathname();
+  const isQuizRoute = pathname === "/quiz";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -19,6 +23,7 @@ export async function Navbar() {
         >
           {siteConfig.nav.map((item) => {
             const isCta = item.variant === "cta";
+            if (isQuizRoute) return null;
             if (isCta) {
               return (
                 <Button key={item.href} asChild size="sm" className="shrink-0 rounded-lg px-3 sm:px-4">
@@ -38,7 +43,11 @@ export async function Navbar() {
               </Link>
             );
           })}
-          <NavAuth />
+          {isQuizRoute ? (
+            <span className="text-xs font-medium text-muted-foreground">60-sec quiz</span>
+          ) : (
+            <NavAuth />
+          )}
         </nav>
       </div>
     </header>

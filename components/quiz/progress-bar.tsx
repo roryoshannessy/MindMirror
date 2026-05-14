@@ -14,13 +14,15 @@ export function QuizProgressBar({ current, total, className }: Props) {
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="mb-2 flex justify-between text-xs font-medium text-muted-foreground">
-        <span>Your progress</span>
+      <div className="mb-3 flex items-center justify-between text-xs font-medium text-muted-foreground">
         <span>
-          {Math.min(current, safeTotal)} / {safeTotal}
+          Question {Math.min(current, safeTotal)} of {safeTotal}
+        </span>
+        <span>
+          about 60 sec
         </span>
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
           style={{ width: `${pct}%` }}

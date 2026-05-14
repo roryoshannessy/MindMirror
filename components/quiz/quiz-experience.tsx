@@ -70,7 +70,7 @@ export function QuizExperience() {
     const theater = QUIZ_NODES.theater;
     if (theater?.kind === "theater") {
       return (
-        <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-10">
+        <div className="mx-auto w-full max-w-xl px-4 py-8 sm:py-14">
           <div className="mb-4 flex items-center">
             {canBack ? (
               <Button type="button" variant="ghost" size="icon" onClick={goBack} aria-label="Back">
@@ -98,8 +98,8 @@ export function QuizExperience() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-10">
-      <div className="mb-4 flex items-center justify-between gap-2">
+    <div className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-xl flex-col justify-center px-4 py-8 sm:py-14">
+      <div className="mb-5 flex items-center justify-between gap-2">
         {canBack ? (
           <Button type="button" variant="ghost" size="icon" onClick={goBack} aria-label="Back">
             <ChevronLeft className="size-4" />
@@ -110,7 +110,7 @@ export function QuizExperience() {
       </div>
 
       {progress.total > 0 ? (
-        <QuizProgressBar current={progress.current} total={progress.total} className="mb-6" />
+        <QuizProgressBar current={progress.current} total={progress.total} className="mb-7" />
       ) : null}
 
       {node.kind === "question_single" ? (

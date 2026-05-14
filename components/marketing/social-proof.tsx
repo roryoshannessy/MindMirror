@@ -17,21 +17,24 @@ export async function SocialProof() {
   ] as const;
 
   return (
-    <section className="border-t border-border bg-secondary/20 px-4 py-14 sm:px-6">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-8 grid gap-3 sm:grid-cols-3">
+    <section className="border-t border-border bg-card/20 px-4 py-16 sm:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 grid gap-3 sm:grid-cols-3">
           {stats.map((stat, i) => (
-            <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+            <div
+              key={i}
+              className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground"
+            >
               <CheckCircle2 className="size-4 text-primary" aria-hidden />
               <span>{stat}</span>
             </div>
           ))}
         </div>
-        <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           {quotes.map((quote, i) => (
             <blockquote
               key={i}
-              className="bg-background p-5 text-sm leading-6 text-muted-foreground"
+              className="rounded-lg border border-border bg-background p-5 text-sm leading-6 text-muted-foreground"
             >
               {quote}
             </blockquote>
