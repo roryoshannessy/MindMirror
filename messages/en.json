@@ -134,12 +134,12 @@
     "redirecting": "Redirecting…",
     "return_pending": "Confirming your payment…",
     "return_timeout": "Your payment is taking longer than expected. Refresh this page in a moment, or contact support if it keeps happening.",
-    "return_success_title": "You’re in",
-    "return_success_body": "Check your inbox for a sign-in link to access your account.",
+    "return_success_title": "Payment confirmed",
+    "return_success_body": "Check your inbox for a sign-in link. MindMirror is in early-access validation; the full app is not available yet.",
     "return_claimed_title": "Welcome back",
     "return_claimed_body": "Your account is ready. You can close this tab.",
-    "return_refunded_title": "Your refund is confirmed",
-    "return_refunded_body": "You are on the early access list. We will email you as soon as MindMirror is ready.",
+    "return_refunded_title": "Refund confirmed — waitlist only",
+    "return_refunded_body": "Your payment has been refunded. You do not have access to a live MindMirror app yet; you are only on the early-access waitlist.",
     "return_unknown_status": "Status: {status}"
   },
   "auth": {
@@ -165,7 +165,7 @@
     "welcome_title": "Your account",
     "welcome_body": "You’re signed in. Billing and settings will live here in upcoming milestones.",
     "welcome_purchase_title": "You’re all set",
-    "welcome_purchase_body": "Your subscription is active. Jump into MindMirror whenever you’re ready.",
+    "welcome_purchase_body": "Your purchase is recorded. MindMirror is still in early-access validation, so full app access is not available yet.",
     "billing_title": "Billing",
     "billing_already_subscribed": "This email already has an active subscription. Use the Stripe customer portal link from your latest receipt, or email support@getmindmirror.com if you need help."
   },

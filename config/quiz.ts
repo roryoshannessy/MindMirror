@@ -212,7 +212,7 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
       { id: "s1", text: "Analysing your responses...", durationMs: stepDuration },
       { id: "s2", text: "Mapping your thought patterns...", durationMs: stepDuration },
       { id: "s3", text: "Building your personal profile...", durationMs: stepDuration },
-      { id: "s4", text: "Your MindMirror is ready.", durationMs: stepDuration },
+      { id: "s4", text: "Your sample profile is ready.", durationMs: stepDuration },
     ],
   },
 };
@@ -331,4 +331,3 @@ export const QUIZ_TESTIMONIALS = [
     quote: "\"Finally an app that tells me the truth about my own thinking.\"",
   },
 ] as const;
-
