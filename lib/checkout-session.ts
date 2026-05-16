@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { FieldValue, Timestamp, type DocumentData } from "firebase-admin/firestore";
 import type { CommercialAttributionContext } from "@/lib/attribution-server";
+import type { LeadAttributionInput } from "@/lib/lead-attribution.types";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { normalizeEmail } from "@/lib/normalize-email";
 
@@ -66,6 +67,7 @@ export type CheckoutSessionDoc = {
     subscriptionCancelStatus?: "pending" | "cancelled" | "skipped_no_subscription";
     subscriptionCancelledAt?: Timestamp;
   };
+  attributionTouches: LeadAttributionInput | null;
   attributionSnapshot: CommercialAttributionContext;
   funnelSessionId: string | null;
   createdAt: FieldValue | Timestamp;
@@ -120,6 +122,7 @@ export function buildNewCheckoutSessionPayload(input: {
   planId: string;
   locale: string;
   uid: string | null;
+  attributionTouches: LeadAttributionInput | null;
   attributionSnapshot: CommercialAttributionContext;
   funnelSessionId: string | null;
   purchaseEventId: string;
@@ -143,6 +146,7 @@ export function buildNewCheckoutSessionPayload(input: {
     purchaseEventId: input.purchaseEventId,
     claim: { status: "pending" as const },
     entitlement: { status: "pending" as const },
+    attributionTouches: input.attributionTouches,
     attributionSnapshot: input.attributionSnapshot,
     funnelSessionId: input.funnelSessionId,
     createdAt: now,

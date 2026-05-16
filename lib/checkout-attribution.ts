@@ -9,7 +9,7 @@ import type { LeadAttributionInput } from "@/lib/lead-attribution.types";
 function acquisitionFromLeadInput(
   attr: LeadAttributionInput | null | undefined,
 ): CommercialAcquisition {
-  const t = attr?.firstTouch ?? attr?.lastTouch;
+  const t = attr?.lastTouch ?? attr?.firstTouch;
   if (!t) return emptyAcquisition();
   return {
     utmSource: t.utmSource,

@@ -217,6 +217,7 @@ export async function POST(req: Request) {
       planId: plan.id,
       locale,
       uid,
+      attributionTouches: (parsed.data.attribution as LeadAttributionInput | undefined) ?? null,
       attributionSnapshot,
       funnelSessionId: parsed.data.funnelSessionId ?? null,
       purchaseEventId,

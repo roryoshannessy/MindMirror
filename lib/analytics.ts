@@ -54,12 +54,15 @@ export function buildLeadCapturePayload(input: {
   const funnelSessionId = getOrCreateFunnelSessionId();
   let posthogDistinctId: string | undefined;
   let posthogSessionId: string | undefined;
-  try {
-    const ph = getPostHog();
-    posthogDistinctId = ph.get_distinct_id?.();
-    posthogSessionId = (ph as { get_session_id?: () => string | undefined }).get_session_id?.();
-  } catch {
-    /* optional */
+  if (isAnalyticsVendorAllowed()) {
+    try {
+      initPostHog();
+      const ph = getPostHog();
+      posthogDistinctId = ph.get_distinct_id?.();
+      posthogSessionId = (ph as { get_session_id?: () => string | undefined }).get_session_id?.();
+    } catch {
+      /* optional */
+    }
   }
   const { fbp, fbc } = getMetaCookies();
   const out: Record<string, unknown> = {
