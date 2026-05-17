@@ -513,6 +513,8 @@ async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Fire
           externalInvoiceId: invoiceId,
           ...(subRef ? { externalSubscriptionId: subRef } : {}),
           ...(customerId ? { externalCustomerId: customerId } : {}),
+          amountPaidCents: paid,
+          currency,
           updatedAt: FieldValue.serverTimestamp(),
         },
         { merge: true },

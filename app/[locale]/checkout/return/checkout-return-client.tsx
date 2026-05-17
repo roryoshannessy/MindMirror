@@ -45,8 +45,9 @@ export function CheckoutReturnClient({ checkoutSessionId, resumeToken }: { check
             capturePurchaseCompleted({
               planId: r.planId,
               purchaseEventId: r.purchaseEventId,
-              valueCents: plan?.amountCents ?? 0,
-              currency: plan?.currency ?? "USD",
+              valueCents:
+                typeof r.amountPaidCents === "number" ? r.amountPaidCents : plan?.amountCents ?? 0,
+              currency: r.currency ?? plan?.currency ?? "USD",
             });
           }
         }

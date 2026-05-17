@@ -1,6 +1,6 @@
 # MindMirror Launch QA Scratchpad
 
-Last updated: May 16, 2026
+Last updated: May 17, 2026
 
 Use this file as the working log before sending paid traffic. Each run should record:
 
@@ -27,6 +27,8 @@ Use this file as the working log before sending paid traffic. Each run should re
 - PostHog: do not launch until the production key/events are confirmed; May 16 QA showed no PostHog IDs on the lead/checkout records
 - Attribution: checkout now uses last-touch for the purchase attribution snapshot and stores both first-touch and last-touch on new checkout sessions
 - Attribution patch deploy: confirmed in production with checkout `chk_b6461a47bcc35f68ae8200096fe4b3e1`
+- Quiz result CTA: now points to the monthly refundable checkout path, not the annual `$0 today` trial path
+- Purchase analytics: return-page `purchase_completed` can use Stripe-paid amount from the checkout session when available
 
 ## Attribution Simulation URLs
 
@@ -74,6 +76,26 @@ Expected:
 | Existing subscriber | Same email again | App blocks duplicate subscription clearly |
 
 ## QA Runs
+
+### May 17, 2026 — Launch Blocker Fix Pass
+
+- Purpose: remove the mismatch between tested monthly refund QA and the quiz's previous annual trial CTA.
+- Changes:
+  - Quiz result CTA now prefers `mindmirror-monthly`.
+  - CTA copy now says `Join early access — refundable $12.99`.
+  - Checkout success copy now says `Checkout received — waitlist only`.
+  - Legal terms now include an early-access demand-test refund exception.
+  - Stripe `invoice.paid` webhook now stores `amountPaidCents` and `currency` on the checkout session.
+  - Checkout resume now returns `amountPaidCents` and `currency` for settled purchases.
+  - Browser purchase analytics now uses actual paid amount when available instead of blindly using catalog price.
+- Verification:
+  - `npm run lint` passed with the existing PostCSS warning only.
+  - `npm run build` passed after rerunning with network access for Google Fonts.
+- Still blocked:
+  - `NEXT_PUBLIC_POSTHOG_KEY` is not available locally and was not found embedded in the live production bundle.
+  - Vercel CLI is not logged in on this machine, so env vars were not verified or updated from Codex.
+  - Production must be redeployed after adding `NEXT_PUBLIC_POSTHOG_KEY`.
+  - One clean mobile QA from a fake Meta URL must still confirm PostHog events and Firestore PostHog IDs.
 
 ### May 16, 2026 — Mobile Fake Meta → Quiz → Monthly Checkout → Refund
 

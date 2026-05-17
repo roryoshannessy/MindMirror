@@ -41,6 +41,8 @@ export async function getCheckoutResume(session: string, token?: string): Promis
   status: string;
   planId?: string;
   purchaseEventId?: string;
+  amountPaidCents?: number;
+  currency?: string;
 }> {
   const params = new URLSearchParams({ session });
   if (token) params.append("token", token);

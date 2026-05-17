@@ -7,6 +7,7 @@ import { getPostHog, initPostHog } from "@/lib/posthog";
 import { QUIZ_ID, QUIZ_TESTIMONIALS, getInsightForRole, getPatternForStruggle } from "@/config/quiz";
 import { getCatalog } from "@/config/commercial-catalog";
 import { brand } from "@/config/brand";
+import { formatPrice } from "@/lib/format-price";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuizStore } from "@/stores/quiz-store";
@@ -42,8 +43,16 @@ export function CompletionShell() {
   const role = String(answers.q1_role ?? "");
   const pattern = getPatternForStruggle(struggle);
   const insight = getInsightForRole(role);
-  const defaultPlan = getCatalog().defaultPlanId;
-  const primaryCheckout = `/checkout/email?planId=${encodeURIComponent(defaultPlan)}&session=quiz&qz=${encodeURIComponent(sessionId)}`;
+  const catalog = getCatalog();
+  const primaryPlan =
+    catalog.plans.find((plan) => plan.id === "mindmirror-monthly") ??
+    catalog.plans.find((plan) => plan.id === catalog.defaultPlanId) ??
+    catalog.plans[0];
+  const primaryPlanId = primaryPlan?.id ?? catalog.defaultPlanId;
+  const primaryPlanPrice = primaryPlan
+    ? formatPrice(primaryPlan.amountCents, primaryPlan.currency)
+    : "$12.99";
+  const primaryCheckout = `/checkout/email?planId=${encodeURIComponent(primaryPlanId)}&session=quiz&qz=${encodeURIComponent(sessionId)}`;
 
   return (
     <div className="mx-auto w-full max-w-3xl space-y-12 px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6">
@@ -76,13 +85,13 @@ export function CompletionShell() {
 
       <div className="flex flex-col items-stretch gap-3 sm:items-center">
         <Button asChild size="lg" className="w-full max-w-md self-center">
-          <Link href={primaryCheckout}>Start your 7-day free trial — $0 today</Link>
+          <Link href={primaryCheckout}>Join early access — refundable {primaryPlanPrice}</Link>
         </Button>
         <p className="text-center text-sm text-muted-foreground">
           Trusted by {brand.SOCIAL_PROOF_COUNT} founders and professionals
         </p>
         <p className="text-center text-xs text-muted-foreground">
-          Cancel anytime · No questions asked · Your data is yours
+          Early-access demand test · Waitlist only · Your data is yours
         </p>
       </div>
 

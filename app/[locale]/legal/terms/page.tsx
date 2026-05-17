@@ -72,6 +72,12 @@ export default async function TermsPage() {
             takes effect at the end of the current billing period. We do not provide refunds for
             partial billing periods except where required by law.
           </p>
+          <p className="mt-3">
+            During early-access demand tests, checkout pages may state that payment is refundable
+            and that you are joining a waitlist rather than buying access to a live app. In that
+            case, we will refund the checkout amount and you will not receive live product access
+            until MindMirror is available.
+          </p>
         </section>
 
         <section>

@@ -66,6 +66,8 @@ export async function GET(req: Request) {
       checkoutSessionId: string;
       planId: string;
       purchaseEventId?: string;
+      amountPaidCents?: number;
+      currency?: string;
     } = {
       status,
       checkoutSessionId: sessionId,
@@ -82,6 +84,12 @@ export async function GET(req: Request) {
       d.purchaseEventId
     ) {
       response.purchaseEventId = d.purchaseEventId as string;
+      if (typeof d.amountPaidCents === "number") {
+        response.amountPaidCents = d.amountPaidCents;
+      }
+      if (typeof d.currency === "string") {
+        response.currency = d.currency;
+      }
     }
 
     return NextResponse.json(response);
