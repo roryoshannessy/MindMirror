@@ -26,6 +26,7 @@ Use this file as the working log before sending paid traffic. Each run should re
 - Firebase lead capture: verified for quiz and checkout in the May 16 mobile QA run
 - PostHog: do not launch until the production key/events are confirmed; May 16 QA showed no PostHog IDs on the lead/checkout records
 - Attribution: checkout now uses last-touch for the purchase attribution snapshot and stores both first-touch and last-touch on new checkout sessions
+- Attribution patch deploy: confirmed in production with checkout `chk_b6461a47bcc35f68ae8200096fe4b3e1`
 
 ## Attribution Simulation URLs
 
@@ -116,7 +117,22 @@ https://getmindmirror.com/quiz?utm_source=facebook&utm_medium=paid_social&utm_ca
   - Before the attribution patch, checkout purchase acquisition used the older `firstTouch`; new checkout sessions now use `lastTouch` for purchase attribution and store both touches.
 - PostHog note:
   - Firestore showed no `posthogDistinctId` or `posthogSessionId` for the May 16 lead/checkout.
+  - Production bundle check found PostHog code but no embedded public PostHog key.
   - This must be resolved or manually confirmed in PostHog before paid ads.
+
+### May 16, 2026 — Production Attribution Patch Smoke Test
+
+- Email used: `rory.oshannessy+codexqa20260516b@gmail.com`
+- Checkout session ID: `chk_b6461a47bcc35f68ae8200096fe4b3e1`
+- Purpose: confirm checkout attribution patch deployed before the next paid-traffic QA.
+- Result:
+  - Checkout `attributionSnapshot.acquisition` used the current fake Meta click:
+    - `utmSource`: `facebook`
+    - `utmMedium`: `paid_social`
+    - `utmCampaign`: `qa_after_patch`
+    - `fbclid`: `qa_fbclid_after_patch_20260516`
+  - Checkout also stored `attributionTouches.firstTouch` and `attributionTouches.lastTouch`.
+  - PostHog IDs were still null, which points to missing/invalid production PostHog public key rather than attribution capture.
 
 ## Stripe Test Cards
 
@@ -160,7 +176,7 @@ https://getmindmirror.com/es/quiz?utm_source=facebook&utm_medium=paid_social&utm
 - Add `META_CAPI_TEST_EVENT_CODE` only while using Meta Test Events.
 - Verify browser Pixel PageView in Meta Events Manager.
 - Verify Pixel Purchase and CAPI Purchase dedupe once CAPI token exists.
-- Confirm production has `NEXT_PUBLIC_POSTHOG_KEY` set and that `quiz_started`, `email_captured`, `quiz_completed`, and `purchase_completed` appear for a single known test email/session.
+- Add/confirm production `NEXT_PUBLIC_POSTHOG_KEY`, redeploy, then verify `quiz_started`, `email_captured`, `quiz_completed`, and `purchase_completed` appear for a single known test email/session.
 - Re-run one fresh mobile QA after the attribution patch deploys, using a fresh/incognito browser or cleared storage.
 - Run Stripe decline matrix.
 - Run one fresh mobile screen recording from ad URL through checkout/refund.
