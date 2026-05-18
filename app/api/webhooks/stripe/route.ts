@@ -7,10 +7,15 @@ import {
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
+import {
+  capiSiteUrl,
+  processQueuedCapiPurchase,
+  queueCapiPurchase,
+} from "@/lib/capi-purchases";
 import { isCheckoutSessionId } from "@/lib/checkout-session";
 import { sendTransactionalEmail } from "@/lib/email-sender";
 import { getAdminDb } from "@/lib/firebase-admin";
-import { sendPurchase, type CapiUserData } from "@/lib/meta-capi";
+import type { CapiUserData } from "@/lib/meta-capi";
 import type { PurchaseAttributionSnapshot } from "@/lib/purchase-attribution";
 import { buildRefundProcessedEmail } from "@/lib/refund-email";
 import { userBillingPatchFromSubscription } from "@/lib/stripe-billing-projection";
@@ -126,21 +131,6 @@ async function findCheckoutSessionForRefund(
     (await checkoutSessionByField(db, "externalInvoiceId", input.invoiceId)) ??
     (await checkoutSessionByField(db, "externalSubscriptionId", input.subscriptionId)) ??
     (await checkoutSessionByField(db, "externalCustomerId", input.customerId))
-  );
-}
-
-function testEventCode(): string | null {
-  return process.env.META_CAPI_TEST_EVENT_CODE?.trim() || null;
-}
-
-function siteUrl(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
-}
-
-function isMetaCapiConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() &&
-      process.env.META_CAPI_ACCESS_TOKEN?.trim(),
   );
 }
 
@@ -562,68 +552,100 @@ async function dispatchStripeEvent(event: Stripe.Event, stripe: Stripe, db: Fire
         (checkoutMatching?.metaFbc as string | undefined) ??
         (leadData.metaFbc as string | undefined) ??
         null,
+      clientIpAddress:
+        (checkoutMatching?.ip as string | undefined) ??
+        (leadData.ip as string | undefined) ??
+        null,
+      clientUserAgent:
+        (checkoutMatching?.userAgent as string | undefined) ??
+        (leadData.userAgent as string | undefined) ??
+        null,
+      country:
+        (checkoutMatching?.country as string | undefined) ??
+        (leadData.geoCountry as string | undefined) ??
+        null,
+      state:
+        (checkoutMatching?.region as string | undefined) ??
+        (leadData.geoRegion as string | undefined) ??
+        null,
+      city:
+        (checkoutMatching?.city as string | undefined) ??
+        (leadData.geoCity as string | undefined) ??
+        null,
       externalId: uid || null,
     };
 
-    const capiLogRef = db.doc(`capi_purchase_events/${invoiceId}`);
-    const baseCapiLog = {
-      invoiceId,
-      subscriptionId: subRef ?? null,
-      uid: uid ?? "",
-      amountPaidCents: paid,
-      currencyCode: currency,
-      contentName: snap.contentName,
-      attributionSnapshot: snap,
-      purchaseEventId,
-      stripeEventId: event.id,
-      eventSourceUrl: siteUrl(),
-      attemptedAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    };
-
-    try {
-      if (profile?.isTestUser === true) {
-        await capiLogRef.set({
-          ...baseCapiLog,
-          status: "skipped_test_user",
-        });
-        return;
-      }
-
-      if (!isMetaCapiConfigured()) {
-        await capiLogRef.set({
-          ...baseCapiLog,
-          status: "skipped_not_configured",
-        });
-        return;
-      }
-
-      const capiResult = await sendPurchase({
-        eventId: purchaseEventId,
+    await queueCapiPurchase(
+      {
+        invoiceId,
+        subscriptionId: subRef ?? null,
+        uid,
+        amountPaidCents: paid,
+        currencyCode: currency,
+        contentName: snap.contentName,
+        attributionSnapshot: snap,
+        purchaseEventId,
+        stripeEventId: event.id,
         eventTime: event.created,
-        eventSourceUrl: siteUrl(),
+        eventSourceUrl: capiSiteUrl(),
         userData,
         customData: {
           value: paid / 100,
           currency,
           contentName: snap.contentName,
         },
-        testEventCode: testEventCode(),
-      });
+        isTestUser: profile?.isTestUser === true,
+      },
+      db,
+    );
 
-      await capiLogRef.set({
-        ...baseCapiLog,
-        status: capiResult.ok ? "sent" : "failed",
-        sentAt: capiResult.ok ? FieldValue.serverTimestamp() : null,
-        error: capiResult.ok ? null : capiResult.error,
-      });
+    const queuedLog = {
+      invoiceId,
+      subscriptionId: subRef ?? null,
+      uid: uid ?? null,
+      amountPaidCents: paid,
+      currencyCode: currency,
+      contentName: snap.contentName,
+      attributionSnapshot: snap,
+      purchaseEventId,
+      stripeEventId: event.id,
+      eventSourceUrl: capiSiteUrl(),
+      status: "queued",
+      queuedAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp(),
+    };
+
+    await db.doc(`capi_purchase_events/${invoiceId}`).set(queuedLog, { merge: true });
+
+    try {
+      const result = await processQueuedCapiPurchase(invoiceId, db);
+      await db.doc(`capi_purchase_events/${invoiceId}`).set(
+        {
+          processorResult: result,
+          status:
+            result.status === "sent"
+              ? "sent"
+              : result.status === "queued"
+                ? "pending_configuration"
+                : result.status === "failed"
+                  ? result.retryable
+                    ? "failed_retryable"
+                    : "failed_max_attempts"
+                  : result.reason === "test_user"
+                    ? "skipped_test_user"
+                    : "queued",
+          processedAt: result.status === "sent" ? FieldValue.serverTimestamp() : null,
+          updatedAt: FieldValue.serverTimestamp(),
+        },
+        { merge: true },
+      );
     } catch (e) {
-      console.error("[stripe webhook] CAPI send/log failed", e);
+      console.error("[stripe webhook] CAPI queue processing failed", e);
       try {
-        await capiLogRef.set(
+        await db.doc(`capi_purchase_events/${invoiceId}`).set(
           {
-            ...baseCapiLog,
-            status: "failed",
+            ...queuedLog,
+            status: "failed_retryable",
             error: String(e),
             updatedAt: FieldValue.serverTimestamp(),
           },

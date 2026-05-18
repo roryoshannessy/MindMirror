@@ -27,6 +27,24 @@ export type BuildLeadRecordInput = {
   clientSignalsProvenance?: string;
 };
 
+const NULL_PRESERVING_MERGE_KEYS = [
+  "posthogDistinctId",
+  "posthogSessionId",
+  "metaFbp",
+  "metaFbc",
+  "attribution",
+  "funnelSessionId",
+  "entryUrl",
+  "browserLanguage",
+  "timezone",
+  "userAgent",
+  "geoCountry",
+  "geoRegion",
+  "geoCity",
+  "ip",
+  "clientSignalsProvenance",
+] as const;
+
 /**
  * Firestore field payload (no immutable `source` — the route sets `source` / `lastCaptureSource`).
  * `posthogSessionId` is best-effort from posthog-js and may be null depending on SDK/version.
@@ -56,6 +74,23 @@ export function buildLeadRecord(input: BuildLeadRecordInput): Record<string, unk
   };
   if (input.quiz != null) {
     out.quiz = input.quiz;
+  }
+  return out;
+}
+
+/**
+ * Existing leads may contain better first-touch/browser signals than the current request.
+ * Use this before Firestore merge writes so a checkout in a fresh browser cannot wipe
+ * quiz attribution, PostHog IDs, or Meta cookies with nulls.
+ */
+export function omitNullLeadSignalFieldsForMerge(
+  record: Record<string, unknown>,
+): Record<string, unknown> {
+  const out = { ...record };
+  for (const key of NULL_PRESERVING_MERGE_KEYS) {
+    if (out[key] == null) {
+      delete out[key];
+    }
   }
   return out;
 }

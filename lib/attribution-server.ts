@@ -115,8 +115,8 @@ function touchToAcquisition(t: AttributionTouch): CommercialAcquisition {
 
 function acquisitionFromLeadDoc(data: DocumentData): CommercialAcquisition {
   const attr = data.attribution as { firstTouch?: AttributionTouch; lastTouch?: AttributionTouch } | null;
-  const first = attr?.firstTouch;
-  if (first) return touchToAcquisition(first);
+  const touch = attr?.lastTouch ?? attr?.firstTouch;
+  if (touch) return touchToAcquisition(touch);
   return emptyAcquisition();
 }
 
@@ -214,6 +214,7 @@ export function mergeMatchingFreshWins(layers: CommercialMatching[]): Commercial
 export type ResolveCommercialAttributionInput = {
   uid?: string | null;
   email?: string | null;
+  funnelSessionId?: string | null;
   checkoutSessionId?: string | null;
   requestSignals?: {
     ip: string | null;
@@ -248,13 +249,13 @@ export async function resolveCommercialAttribution(
   }
 
   let leadData: DocumentData | null = null;
-  let funnelSessionId: string | null = null;
+  let funnelSessionId: string | null = strOrNull(args.funnelSessionId);
   if (args.email) {
     const id = normalizeEmail(args.email);
     const l = await db.doc(`leads/${id}`).get();
     if (l.exists) {
       leadData = l.data()!;
-      funnelSessionId = strOrNull(leadData.funnelSessionId);
+      funnelSessionId = strOrNull(leadData.funnelSessionId) ?? funnelSessionId;
     }
   }
 

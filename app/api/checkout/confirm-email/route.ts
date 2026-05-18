@@ -2,6 +2,11 @@ import { FieldValue } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getPlanById } from "@/config/commercial-catalog";
+import {
+  mergeAcquisitionFirstWins,
+  mergeMatchingFreshWins,
+  resolveCommercialAttribution,
+} from "@/lib/attribution-server";
 import { getOrCreateAuthUserByEmail } from "@/lib/auth-user";
 import { checkoutAttributionFromPayload } from "@/lib/checkout-attribution";
 import {
@@ -15,7 +20,7 @@ import { ensureUserDocForCheckout } from "@/lib/checkout-user";
 import { getAdminDb } from "@/lib/firebase-admin";
 import type { LeadAttributionInput } from "@/lib/lead-attribution.types";
 import { CLIENT_SIGNALS_PROVENANCE } from "@/lib/lead-provenance";
-import { buildLeadRecord } from "@/lib/lead-schema";
+import { buildLeadRecord, omitNullLeadSignalFieldsForMerge } from "@/lib/lead-schema";
 import { normalizeEmail } from "@/lib/normalize-email";
 import {
   buildCheckoutEmailIpRateLimitKey,
@@ -152,7 +157,11 @@ export async function POST(req: Request) {
         );
     }
 
-    const attributionSnapshot = checkoutAttributionFromPayload({
+    const country = req.headers.get("x-vercel-ip-country");
+    const region = req.headers.get("x-vercel-ip-country-region");
+    const city = req.headers.get("x-vercel-ip-city");
+
+    const clientAttributionSnapshot = checkoutAttributionFromPayload({
       attribution: parsed.data.attribution as LeadAttributionInput | undefined,
       funnelSessionId: parsed.data.funnelSessionId,
       posthogDistinctId: parsed.data.posthogDistinctId,
@@ -163,9 +172,29 @@ export async function POST(req: Request) {
       ip,
     });
 
-    const country = req.headers.get("x-vercel-ip-country");
-    const region = req.headers.get("x-vercel-ip-country-region");
-    const city = req.headers.get("x-vercel-ip-city");
+    const persistedAttributionSnapshot = await resolveCommercialAttribution({
+      uid,
+      email,
+      funnelSessionId: parsed.data.funnelSessionId,
+      requestSignals: {
+        ip,
+        country,
+        region,
+        city,
+        userAgent: ua?.slice(0, 512) ?? null,
+      },
+    });
+    const attributionSnapshot = {
+      acquisition: mergeAcquisitionFirstWins([
+        clientAttributionSnapshot.acquisition,
+        persistedAttributionSnapshot.acquisition,
+      ]),
+      matching: mergeMatchingFreshWins([
+        persistedAttributionSnapshot.matching,
+        clientAttributionSnapshot.matching,
+      ]),
+    };
+
     const leadRef = db.doc(`leads/${normalizeEmail(email)}`);
     const leadSnap = await leadRef.get();
     const leadFields = buildLeadRecord({
@@ -200,7 +229,7 @@ export async function POST(req: Request) {
     } else {
       await leadRef.set(
         {
-          ...leadFields,
+          ...omitNullLeadSignalFieldsForMerge(leadFields),
           lastCaptureSource: "checkout",
           convertedToUser: true,
           uid,

@@ -3,7 +3,11 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
 import { CLIENT_SIGNALS_PROVENANCE } from "@/lib/lead-provenance";
-import { LEAD_SOURCES, buildLeadRecord } from "@/lib/lead-schema";
+import {
+  LEAD_SOURCES,
+  buildLeadRecord,
+  omitNullLeadSignalFieldsForMerge,
+} from "@/lib/lead-schema";
 import { normalizeEmail } from "@/lib/normalize-email";
 import {
   buildLeadCaptureIpOnlyRateLimitKey,
@@ -202,7 +206,7 @@ export async function POST(req: Request) {
     } else {
       await ref.set(
         {
-          ...fields,
+          ...omitNullLeadSignalFieldsForMerge(fields),
           lastCaptureSource: data.source,
         },
         { merge: true },
