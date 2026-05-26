@@ -23,8 +23,9 @@ export default async function PricingPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
       <header className="mb-12 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
-        <p className="mt-3 max-w-2xl mx-auto text-muted-foreground">{t("subtitle")}</p>
+        <p className="text-sm font-medium text-primary">Early access</p>
+        <h1 className="mt-3 text-3xl font-semibold text-foreground sm:text-5xl">{t("title")}</h1>
+        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{t("subtitle")}</p>
       </header>
       <PricingPlans catalog={catalog} />
     </div>

@@ -13,8 +13,10 @@ type Props = {
 
 export function QuestionCard({ node, value, onSelect }: Props) {
   return (
-    <Card className="mm-fade-up border-border bg-card/80 shadow-2xl">
+    <Card className="mm-fade-up overflow-hidden border-border bg-card/80 shadow-2xl">
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       <CardHeader className="gap-3 px-5 pb-5 pt-7 sm:px-7 sm:pt-8">
+        <p className="text-xs font-medium uppercase text-primary">Answer privately</p>
         <CardTitle className="text-balance text-2xl font-semibold leading-tight sm:text-3xl">
           {node.title}
         </CardTitle>
@@ -25,7 +27,7 @@ export function QuestionCard({ node, value, onSelect }: Props) {
         ) : null}
       </CardHeader>
       <CardContent className="grid gap-3 px-5 pb-7 sm:px-7">
-        {node.options.map((opt) => {
+        {node.options.map((opt, index) => {
           const selected = value === opt.value;
           return (
             <button
@@ -34,12 +36,24 @@ export function QuestionCard({ node, value, onSelect }: Props) {
               className={cn(
                 "group flex min-h-16 w-full items-center justify-between gap-4 rounded-lg border px-4 py-4 text-left text-base font-medium transition-colors",
                 selected
-                  ? "border-primary bg-primary text-primary-foreground"
+                  ? "border-primary bg-primary text-primary-foreground shadow-[0_12px_36px_rgb(99_102_241/0.22)]"
                   : "border-border bg-background/80 text-foreground hover:border-primary/60 hover:bg-muted",
               )}
               onClick={() => onSelect(opt.value)}
             >
-              <span className="min-w-0 text-pretty">{opt.label}</span>
+              <span className="flex min-w-0 items-center gap-3">
+                <span
+                  className={cn(
+                    "flex size-7 shrink-0 items-center justify-center rounded-md border text-xs tabular-nums",
+                    selected
+                      ? "border-primary-foreground/40 bg-primary-foreground/15 text-primary-foreground"
+                      : "border-border bg-card text-muted-foreground",
+                  )}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0 text-pretty">{opt.label}</span>
+              </span>
               <span
                 className={cn(
                   "flex size-5 shrink-0 items-center justify-center rounded-full border",

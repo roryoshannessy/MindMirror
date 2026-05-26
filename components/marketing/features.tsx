@@ -5,8 +5,10 @@ import {
   ChartNoAxesColumnIncreasing,
   LockKeyhole,
   Search,
+  Sparkles,
   Waypoints,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const featureKeys = ["f1", "f2", "f3", "f4", "f5", "f6"] as const;
 
@@ -19,37 +21,56 @@ const icons = {
   f6: LockKeyhole,
 };
 
+const cardStyles = {
+  f1: "lg:col-span-2",
+  f2: "",
+  f3: "",
+  f4: "lg:row-span-2",
+  f5: "lg:col-span-2",
+  f6: "",
+} as const;
+
 export async function Features() {
   const t = await getTranslations("features");
 
   return (
     <section
       id="features"
-      className="scroll-mt-20 border-t border-border px-4 py-20 sm:px-6 lg:py-28"
+      className="scroll-mt-20 border-t border-border bg-card/10 px-4 py-20 sm:px-6 lg:py-28"
       aria-label="Features"
     >
-      <div className="mx-auto max-w-6xl">
-        <div className="mx-auto mb-14 max-w-2xl text-center">
-          <p className="text-sm font-medium text-primary">What MindMirror is testing</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Everything you need to understand your own mind
-          </h2>
-          <p className="mt-4 text-base leading-7 text-muted-foreground">
-            The promise is simple: capture what you say, spot what repeats, and show the pattern clearly enough to act on it.
+      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-12">
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <p className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
+            <Sparkles className="size-4" aria-hidden />
+            What MindMirror is becoming
           </p>
+          <h2 className="mt-5 text-balance text-3xl font-semibold leading-tight text-foreground sm:text-5xl">
+            A personal intelligence system for your life
+          </h2>
+          <p className="mt-5 text-base leading-7 text-muted-foreground">
+            The first test is simple: capture demand for pattern insights. The long-term product is deeper: thoughts, habits, decisions, and progress connected in one dashboard.
+          </p>
+          <div className="mt-7 rounded-lg border border-border bg-background/70 p-4 text-sm leading-6 text-muted-foreground">
+            This page should sell the direction without pretending the full app is live today.
+          </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featureKeys.map((key) => {
             const Icon = icons[key];
             return (
               <div
                 key={key}
-                className="rounded-lg border border-border bg-card/50 p-6 transition-colors hover:border-primary/40"
+                className={cn(
+                  "group relative overflow-hidden rounded-lg border border-border bg-background/80 p-6 transition-colors hover:border-primary/40",
+                  cardStyles[key],
+                )}
               >
-                <div className="flex size-10 items-center justify-center rounded-lg border border-border bg-background">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="flex size-10 items-center justify-center rounded-lg border border-border bg-card">
                   <Icon className="size-5 text-primary" aria-hidden />
                 </div>
-                <h3 className="mt-5 font-semibold text-foreground">{t(`${key}.title`)}</h3>
+                <h3 className="mt-5 text-lg font-semibold text-foreground">{t(`${key}.title`)}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {t(`${key}.body`)}
                 </p>

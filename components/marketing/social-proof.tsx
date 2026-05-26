@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export async function SocialProof() {
   const t = await getTranslations("social_proof");
@@ -17,9 +17,23 @@ export async function SocialProof() {
   ] as const;
 
   return (
-    <section className="border-t border-border bg-card/20 px-4 py-16 sm:px-6">
+    <section className="border-t border-border bg-card/20 px-4 py-12 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 grid gap-3 sm:grid-cols-3">
+        <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+              <ShieldCheck className="size-4" aria-hidden />
+              Clear early access
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-foreground sm:text-3xl">
+              See the preview before you join.
+            </h2>
+          </div>
+          <p className="max-w-md text-sm leading-6 text-muted-foreground">
+            MindMirror is still being built, so the page makes the current state visible before checkout.
+          </p>
+        </div>
+        <div className="mb-5 grid gap-3 sm:grid-cols-3">
           {stats.map((stat, i) => (
             <div
               key={i}
@@ -34,7 +48,7 @@ export async function SocialProof() {
           {quotes.map((quote, i) => (
             <blockquote
               key={i}
-              className="rounded-lg border border-border bg-background p-5 text-sm leading-6 text-muted-foreground"
+              className="rounded-lg border border-border bg-background/80 p-5 text-sm leading-6 text-muted-foreground"
             >
               {quote}
             </blockquote>

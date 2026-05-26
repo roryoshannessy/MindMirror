@@ -156,6 +156,40 @@ https://getmindmirror.com/quiz?utm_source=facebook&utm_medium=paid_social&utm_ca
   - Checkout also stored `attributionTouches.firstTouch` and `attributionTouches.lastTouch`.
   - PostHog IDs were still null, which points to missing/invalid production PostHog public key rather than attribution capture.
 
+### May 20, 2026 — Job 1 Launch-Safety Audit
+
+- Purpose: fresh check of paid-traffic readiness before UI work.
+- Production bundle checks:
+  - `NEXT_PUBLIC_POSTHOG_KEY` is now embedded in the live browser bundle.
+  - Meta Pixel ID `26709756288674893` is embedded in the live browser bundle.
+  - Quiz bundle contains `quiz_started`, `email_captured`, and `quiz_completed`.
+  - Checkout return bundle contains `purchase_completed` and refund-status handling.
+  - PostHog proxy `/t` responds through Vercel.
+  - CAPI cron endpoint returns `401` without auth, as expected.
+- Production Firestore sanitized audit:
+  - Leads collection has records from recent QA.
+  - Latest lead has PostHog distinct/session IDs.
+  - Latest monthly checkout/refund session `chk_26d6572dc132454bb851062a665ccd18` stored:
+    - plan `mindmirror-monthly`
+    - status `refunded`
+    - purchase event id `purchase_chk_26d6572dc132454bb851062a665ccd18`
+    - UTM source/medium/campaign/term/content
+    - `fbclid`
+    - Meta `_fbp` and `_fbc`
+    - PostHog distinct/session IDs
+    - refund status `refunded`
+    - refund email status `sent`
+  - `capi_purchase_events` still show `skipped_not_configured`.
+  - `capi_purchases_pending` still has a `pending_configuration` document.
+  - `capi_purchases_processed` is empty.
+- Current blockers:
+  - Meta CAPI token is still not configured/verified.
+  - Need one fresh mobile QA user after PostHog key is live to confirm actual PostHog events in the dashboard.
+  - Need Events Manager proof for Pixel PageView/Purchase and CAPI dedupe once CAPI token exists.
+- UI deployment note:
+  - Production has the safer checkout/refund/quiz-result language.
+  - The latest landing-page redesign/copy polish is still local and not yet deployed.
+
 ## Stripe Test Cards
 
 Use future expiry, any valid CVC, and any postal code unless Stripe asks otherwise.
@@ -198,7 +232,7 @@ https://getmindmirror.com/es/quiz?utm_source=facebook&utm_medium=paid_social&utm
 - Add `META_CAPI_TEST_EVENT_CODE` only while using Meta Test Events.
 - Verify browser Pixel PageView in Meta Events Manager.
 - Verify Pixel Purchase and CAPI Purchase dedupe once CAPI token exists.
-- Add/confirm production `NEXT_PUBLIC_POSTHOG_KEY`, redeploy, then verify `quiz_started`, `email_captured`, `quiz_completed`, and `purchase_completed` appear for a single known test email/session.
+- Production `NEXT_PUBLIC_POSTHOG_KEY` is now embedded; verify `quiz_started`, `email_captured`, `quiz_completed`, and `purchase_completed` appear in PostHog for a single known fresh test email/session.
 - Re-run one fresh mobile QA after the attribution patch deploys, using a fresh/incognito browser or cleared storage.
 - Run Stripe decline matrix.
 - Run one fresh mobile screen recording from ad URL through checkout/refund.

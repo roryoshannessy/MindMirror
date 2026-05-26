@@ -74,12 +74,47 @@
   .mm-scan {
     animation: mm-scan 4.5s ease-in-out infinite;
   }
+
+  .mm-hero-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, transparent, black 16%, black 72%, transparent);
+  }
+
+  .mm-mira-bot {
+    display: grid;
+    height: 2.65rem;
+    width: 2.65rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.32rem;
+    place-items: center;
+    border: 1px solid color-mix(in oklab, var(--primary) 36%, var(--border));
+    border-radius: 0.85rem;
+    background:
+      linear-gradient(145deg, color-mix(in oklab, var(--primary) 20%, transparent), transparent 60%),
+      color-mix(in oklab, var(--background) 80%, var(--card));
+    box-shadow:
+      0 0 0 5px color-mix(in oklab, var(--primary) 7%, transparent),
+      0 18px 40px rgb(0 0 0 / 0.35);
+    animation: mm-mira-breathe 5.5s ease-in-out infinite;
+  }
+
+  .mm-mira-bot span {
+    height: 0.55rem;
+    width: 0.55rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    box-shadow: 0 0 20px color-mix(in oklab, var(--primary) 80%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .mm-fade-up,
   .mm-float,
-  .mm-scan {
+  .mm-scan,
+  .mm-mira-bot {
     animation: none;
   }
 }
@@ -114,5 +149,15 @@
   50% {
     transform: translateX(15%);
     opacity: 0.8;
+  }
+}
+
+@keyframes mm-mira-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.04);
   }
 }

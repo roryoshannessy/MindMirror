@@ -49,10 +49,13 @@ function PlanCard({ plan }: { plan: Plan }) {
   return (
     <Card
       className={cn(
-        "relative border-border",
-        plan.highlighted && "border-primary ring-2 ring-primary/40",
+        "relative overflow-hidden border-border bg-card/70",
+        plan.highlighted && "border-primary ring-2 ring-primary/35",
       )}
     >
+      {plan.highlighted ? (
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
+      ) : null}
       {plan.highlighted ? (
         <span className="absolute right-4 top-4 rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
           {t("badge_popular")}

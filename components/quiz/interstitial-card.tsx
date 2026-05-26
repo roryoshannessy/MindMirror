@@ -11,8 +11,10 @@ type Props = {
 
 export function InterstitialCard({ node, onContinue }: Props) {
   return (
-    <Card className="border-border bg-card shadow-xl">
+    <Card className="mm-fade-up overflow-hidden border-border bg-card/80 shadow-2xl">
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       <CardHeader className="px-5 pt-6 sm:px-6">
+        <p className="text-xs font-medium uppercase text-primary">Pattern checkpoint</p>
         <CardTitle className="text-balance text-2xl font-semibold leading-tight text-foreground">
           {node.headline}
         </CardTitle>

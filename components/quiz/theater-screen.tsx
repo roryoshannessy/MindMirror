@@ -40,11 +40,16 @@ export function TheaterScreen({ node, onComplete }: Props) {
       className="flex min-h-[min(100dvh,640px)] flex-col items-center justify-center gap-8 px-4 py-12"
       style={{ minHeight: "50vh" }}
     >
-      <div className="relative h-16 w-16">
+      <div className="relative grid h-24 w-24 place-items-center rounded-lg border border-border bg-card/70 shadow-2xl">
         <motion.div
-          className="absolute inset-0 rounded-full border-2 border-primary/30 border-t-primary"
+          className="absolute inset-4 rounded-full border-2 border-primary/30 border-t-primary"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="h-5 w-5 rounded-md bg-primary shadow-[0_0_24px_rgb(99_102_241/0.75)]"
+          animate={{ scale: [1, 1.18, 1], opacity: [0.75, 1, 0.75] }}
+          transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
       <div className="min-h-24 w-full max-w-md text-center">
@@ -60,6 +65,13 @@ export function TheaterScreen({ node, onComplete }: Props) {
             {node.steps[index]?.text ?? ""}
           </motion.p>
         </AnimatePresence>
+        <div className="mx-auto mt-5 h-2 w-full max-w-xs overflow-hidden rounded-full border border-border bg-muted">
+          <motion.div
+            className="h-full rounded-full bg-primary"
+            animate={{ width: `${Math.round(((index + 1) / node.steps.length) * 100)}%` }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          />
+        </div>
       </div>
     </div>
   );

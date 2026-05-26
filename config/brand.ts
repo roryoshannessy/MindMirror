@@ -2,12 +2,10 @@ export const brand = {
   NAME: "MindMirror",
   TAGLINE: "See what you keep thinking but never change.",
   DESCRIPTION:
-    "A voice-first journaling app that detects your thought patterns over time and shows you what's holding you back.",
+    "An early-access voice-first journaling concept for spotting thought patterns over time.",
   DOMAIN: "getmindmirror.com",
 
   STORAGE_PREFIX: "mm",
-
-  SOCIAL_PROOF_COUNT: "4,200+",
 
   EMAIL_SUPPORT: "support@getmindmirror.com",
   EMAIL_LEGAL: "legal@getmindmirror.com",
