@@ -308,3 +308,21 @@ https://getmindmirror.com/es/quiz?utm_source=facebook&utm_medium=paid_social&utm
   - Meta Events Manager Test Events shows browser `Purchase` and server `Purchase`.
   - Meta dedupes browser/server `Purchase` using the shared `purchaseEventId`.
   - Firestore checkout session stores UTM values, `fbclid`, `_fbp`, `_fbc`, PostHog distinct/session IDs, and purchase/refund status.
+
+### May 30, 2026 — First Real App Loop Started
+
+- Direction change:
+  - Started building actual MindMirror product usage instead of only the conversion funnel.
+- Implemented locally:
+  - `/account` now renders the first MindMirror workspace instead of a placeholder account card.
+  - Users can write a reflection or use browser dictation where available.
+  - New server route `/api/app/entries` stores entries under the signed-in user's Firestore document using Firebase Admin.
+  - Entries are analyzed with lightweight local pattern heuristics for emotion, topics, recurring pattern label, and signals.
+  - The workspace shows recent entries plus a basic pattern dashboard.
+- Verification:
+  - `npm run lint` passed with the existing `postcss.config.mjs` warning only.
+  - `npm run build` passed.
+  - Local browser loaded `/account`; signed-in browser calls to `/api/app/entries` returned 200.
+- Follow-up:
+  - Replace heuristic analysis with proper AI analysis once the first manual loop feels right.
+  - Improve signed-in profile subscription warning seen locally: `[subscribeUserDoc] Missing or insufficient permissions`.

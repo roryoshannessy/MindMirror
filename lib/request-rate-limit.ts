@@ -128,3 +128,13 @@ export function buildCheckoutEmailRateLimitKey(ip: string | null, email: string)
     .slice(0, 16);
   return `chk-email:${ip ?? "unknown"}:${eh}`;
 }
+
+/** Per-user+IP bucket for journal entry API calls. */
+export function buildJournalEntriesRateLimitKey(
+  ip: string | null,
+  uid: string,
+  action: "read" | "write",
+): string {
+  const uh = createHash("sha256").update(uid).digest("hex").slice(0, 16);
+  return `journal:${action}:${ip ?? "unknown"}:${uh}`;
+}

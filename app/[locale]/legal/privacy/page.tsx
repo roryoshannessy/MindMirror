@@ -64,8 +64,10 @@ export default async function PrivacyPage() {
           <h2>3. Your Journal Entries Are Private</h2>
           <p>
             Your voice recordings and transcriptions are private to your account. We do not read,
-            sell, or share your journal content with third parties. AI processing of your entries
-            occurs to power the pattern detection feature and for no other purpose.
+            sell, or share your journal content for advertising. AI processing of your entries
+            occurs to power the pattern detection feature and for no other purpose. If you use
+            browser dictation, speech recognition may be processed by your browser provider before
+            the resulting text is saved to {brand.NAME}.
           </p>
         </section>
 
@@ -116,7 +118,7 @@ export default async function PrivacyPage() {
             <li>Access the personal data we hold about you.</li>
             <li>Request correction of inaccurate data.</li>
             <li>Request deletion of your account and data.</li>
-            <li>Export your journal entries at any time from your account settings.</li>
+            <li>Request an export of your journal entries.</li>
           </ul>
           <p className="mt-3">
             To exercise any of these rights, contact us at{" "}

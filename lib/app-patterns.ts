@@ -1,0 +1,449 @@
+export type ReflectionSource = "text" | "voice";
+
+export type ReflectionAnalysis = {
+  summary: string;
+  emotion: string;
+  patternKey: string;
+  patternLabel: string;
+  topics: string[];
+  signals: string[];
+  confidence: "low" | "medium" | "high";
+  evidence: string[];
+  note: string;
+};
+
+const STOP_WORDS = new Set([
+  "able",
+  "about",
+  "after",
+  "again",
+  "almost",
+  "also",
+  "another",
+  "around",
+  "away",
+  "because",
+  "been",
+  "before",
+  "being",
+  "better",
+  "cannot",
+  "could",
+  "didn",
+  "doesn",
+  "doing",
+  "done",
+  "else",
+  "every",
+  "feel",
+  "feeling",
+  "felt",
+  "find",
+  "first",
+  "from",
+  "getting",
+  "going",
+  "good",
+  "got",
+  "have",
+  "having",
+  "into",
+  "just",
+  "keep",
+  "kind",
+  "know",
+  "like",
+  "maybe",
+  "more",
+  "much",
+  "need",
+  "now",
+  "only",
+  "other",
+  "over",
+  "quite",
+  "really",
+  "right",
+  "same",
+  "some",
+  "something",
+  "still",
+  "that",
+  "them",
+  "then",
+  "their",
+  "there",
+  "these",
+  "they",
+  "thing",
+  "things",
+  "think",
+  "thinking",
+  "this",
+  "thought",
+  "today",
+  "very",
+  "want",
+  "wanted",
+  "wasn",
+  "when",
+  "where",
+  "which",
+  "with",
+  "without",
+  "would",
+  "your",
+]);
+
+const PATTERNS = [
+  {
+    key: "clarity_loop",
+    label: "Possible clarity-seeking loop",
+    words: [
+      "certain",
+      "clarity",
+      "confused",
+      "decide",
+      "decision",
+      "doubt",
+      "overthink",
+      "ruminate",
+      "sure",
+      "unclear",
+      "unsure",
+    ],
+    phrases: [
+      "can't decide",
+      "cannot decide",
+      "keep thinking",
+      "make the wrong choice",
+      "not sure",
+      "over and over",
+      "second guessing",
+      "too many options",
+    ],
+  },
+  {
+    key: "avoidance_loop",
+    label: "Possible avoidance loop",
+    words: [
+      "avoid",
+      "delay",
+      "distract",
+      "later",
+      "postpone",
+      "procrastinate",
+      "scroll",
+      "stuck",
+      "waiting",
+    ],
+    phrases: [
+      "didn't start",
+      "keep putting",
+      "put it off",
+      "putting it off",
+      "start tomorrow",
+      "wasting time",
+    ],
+  },
+  {
+    key: "pressure_loop",
+    label: "Possible pressure and expectation loop",
+    words: [
+      "behind",
+      "expect",
+      "failure",
+      "guilty",
+      "perfect",
+      "pressure",
+      "prove",
+      "should",
+      "supposed",
+    ],
+    phrases: [
+      "falling behind",
+      "have to",
+      "not enough",
+      "should be",
+      "supposed to",
+      "what if i fail",
+    ],
+  },
+  {
+    key: "work_loop",
+    label: "Possible work identity loop",
+    words: [
+      "boss",
+      "career",
+      "client",
+      "company",
+      "deadline",
+      "founder",
+      "manager",
+      "meeting",
+      "project",
+      "team",
+      "work",
+    ],
+    phrases: ["at work", "my job", "performance review", "work email", "work feels"],
+  },
+  {
+    key: "relationship_loop",
+    label: "Possible relationship meaning loop",
+    words: [
+      "alone",
+      "family",
+      "friend",
+      "ignored",
+      "mother",
+      "partner",
+      "relationship",
+      "said",
+      "texted",
+    ],
+    phrases: [
+      "didn't reply",
+      "felt ignored",
+      "my dad",
+      "my mom",
+      "my partner",
+      "my relationship",
+      "they said",
+    ],
+  },
+  {
+    key: "energy_loop",
+    label: "Possible energy and capacity loop",
+    words: [
+      "burned",
+      "capacity",
+      "depleted",
+      "drained",
+      "energy",
+      "exhausted",
+      "rest",
+      "sleep",
+      "tired",
+    ],
+    phrases: [
+      "burned out",
+      "can't focus",
+      "couldn't sleep",
+      "low energy",
+      "need rest",
+      "no energy",
+    ],
+  },
+  {
+    key: "self_trust_loop",
+    label: "Possible self-trust loop",
+    words: [
+      "ashamed",
+      "blame",
+      "confidence",
+      "failure",
+      "guilt",
+      "mistake",
+      "regret",
+      "trust",
+      "worth",
+    ],
+    phrases: [
+      "beat myself up",
+      "don't trust myself",
+      "i messed up",
+      "my fault",
+      "not good enough",
+      "why can't i",
+    ],
+  },
+];
+
+const EMOTIONS = [
+  {
+    label: "anxious",
+    words: ["anxious", "fear", "nervous", "overwhelmed", "panic", "scared", "stress", "worried"],
+    phrases: ["what if", "can't relax", "on edge", "worried about"],
+  },
+  {
+    label: "frustrated",
+    words: ["angry", "annoyed", "frustrated", "irritated", "resent", "mad"],
+    phrases: ["fed up", "so annoying", "tired of"],
+  },
+  {
+    label: "heavy",
+    words: ["down", "empty", "flat", "heavy", "lonely", "low", "sad", "shame"],
+    phrases: ["feel alone", "felt alone", "hard to care"],
+  },
+  {
+    label: "uncertain",
+    words: ["confused", "unclear", "unsure", "stuck", "lost", "doubt"],
+    phrases: ["don't know", "not sure", "can't tell"],
+  },
+  {
+    label: "motivated",
+    words: ["excited", "hopeful", "ready", "clear", "proud", "grateful"],
+    phrases: ["looking forward", "feel ready", "more clear"],
+  },
+];
+
+const TOPIC_PHRASES = [
+  "career change",
+  "family expectations",
+  "friend group",
+  "future plans",
+  "morning routine",
+  "money stress",
+  "performance review",
+  "relationship",
+  "sleep schedule",
+  "social media",
+  "work email",
+  "work project",
+];
+
+type Candidate = {
+  key?: string;
+  label: string;
+  words: string[];
+  phrases: string[];
+};
+
+type ScoredCandidate<T extends Candidate> = T & {
+  evidence: string[];
+  score: number;
+};
+
+function normalizeWord(word: string): string {
+  if (word.length > 5 && word.endsWith("ies")) return `${word.slice(0, -3)}y`;
+  if (word.length > 5 && word.endsWith("ing")) return word.slice(0, -3);
+  if (word.length > 4 && word.endsWith("ed")) return word.slice(0, -2);
+  if (word.length > 4 && word.endsWith("s")) return word.slice(0, -1);
+  return word;
+}
+
+function wordsFrom(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[’]/g, "'")
+    .replace(/[^a-z0-9\s']/g, " ")
+    .split(/\s+/)
+    .map((w) => normalizeWord(w.trim().replace(/^'+|'+$/g, "")))
+    .filter((w) => w.length >= 3 && !STOP_WORDS.has(w));
+}
+
+function cleanText(text: string): string {
+  return text.toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, " ").trim();
+}
+
+function scoreWordMatches(words: string[], candidates: string[]): string[] {
+  const bag = new Set(words);
+  return candidates.filter((word) => bag.has(normalizeWord(word)));
+}
+
+function phraseMatches(text: string, candidates: string[]): string[] {
+  return candidates.filter((phrase) => text.includes(phrase));
+}
+
+function scoreCandidate<T extends Candidate>(
+  candidate: T,
+  words: string[],
+  text: string,
+): ScoredCandidate<T> {
+  const wordEvidence = scoreWordMatches(words, candidate.words);
+  const phraseEvidence = phraseMatches(text, candidate.phrases);
+  const evidence = [...phraseEvidence, ...wordEvidence];
+  return {
+    ...candidate,
+    evidence,
+    score: phraseEvidence.length * 2 + wordEvidence.length,
+  };
+}
+
+function bestCandidate<T extends Candidate>(
+  candidates: T[],
+  words: string[],
+  text: string,
+): ScoredCandidate<T> {
+  return candidates
+    .map((candidate) => scoreCandidate(candidate, words, text))
+    .sort((a, b) => b.score - a.score || b.evidence.length - a.evidence.length)[0]!;
+}
+
+function confidenceFrom(score: number, wordCount: number): ReflectionAnalysis["confidence"] {
+  if (score >= 5 && wordCount >= 35) return "high";
+  if (score >= 2 && wordCount >= 12) return "medium";
+  return "low";
+}
+
+function topTerms(words: string[], count: number): string[] {
+  const totals = new Map<string, number>();
+  for (const word of words) {
+    totals.set(word, (totals.get(word) ?? 0) + 1);
+  }
+  return [...totals.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, count)
+    .map(([word]) => word);
+}
+
+function topTopics(words: string[], text: string, count: number): string[] {
+  const phrases = TOPIC_PHRASES.filter((phrase) => text.includes(phrase));
+  const terms = topTerms(words, count + 2);
+  return [...new Set([...phrases, ...terms])].slice(0, count);
+}
+
+function firstSentence(text: string): string {
+  const clean = text.trim().replace(/\s+/g, " ");
+  if (!clean) return "No reflection text was saved.";
+  const sentence = clean.match(/^(.{1,160}?[.!?])\s/)?.[1] ?? clean.slice(0, 160);
+  return sentence.length < clean.length ? `${sentence.replace(/[.!?]$/, "")}...` : sentence;
+}
+
+function evidenceNote(confidence: ReflectionAnalysis["confidence"], hasPattern: boolean): string {
+  if (!hasPattern) {
+    return "Early read only: there was not enough repeated language to name a specific loop yet.";
+  }
+  if (confidence === "high") {
+    return "This is still a deterministic read, but several words or phrases point in the same direction.";
+  }
+  if (confidence === "medium") {
+    return "A few cues point here; treat this as a prompt to check, not a diagnosis.";
+  }
+  return "Early read only: this is based on limited evidence from one short reflection.";
+}
+
+function fallbackTopics(text: string): string[] {
+  const summary = firstSentence(text).toLowerCase();
+  if (!summary || summary === "no reflection text was saved.") return [];
+  return summary
+    .replace(/[^a-z0-9\s']/g, " ")
+    .split(/\s+/)
+    .map((word) => normalizeWord(word.trim()))
+    .filter((word) => word.length >= 4 && !STOP_WORDS.has(word))
+    .slice(0, 3);
+}
+
+export function analyzeReflection(text: string): ReflectionAnalysis {
+  const normalizedText = cleanText(text);
+  const words = wordsFrom(text);
+  const pattern = bestCandidate(PATTERNS, words, normalizedText);
+  const emotion = bestCandidate(EMOTIONS, words, normalizedText);
+  const hasPattern = pattern.score > 0;
+  const confidence = confidenceFrom(pattern.score + Math.min(emotion.score, 2), words.length);
+  const topics = topTopics(words, normalizedText, 5);
+  const evidence = [...new Set([...pattern.evidence, ...emotion.evidence])].slice(0, 6);
+  const fallbackSignals = topics.length > 0 ? topics.slice(0, 3) : fallbackTopics(text);
+
+  return {
+    summary: firstSentence(text),
+    emotion: emotion.score > 0 ? emotion.label : "reflective",
+    patternKey: hasPattern ? pattern.key! : "emerging_pattern",
+    patternLabel: hasPattern ? pattern.label : "Emerging pattern, not enough signal yet",
+    topics: topics.length > 0 ? topics : fallbackSignals,
+    signals: evidence.length > 0 ? evidence : fallbackSignals,
+    confidence,
+    evidence,
+    note: evidenceNote(confidence, hasPattern),
+  };
+}
