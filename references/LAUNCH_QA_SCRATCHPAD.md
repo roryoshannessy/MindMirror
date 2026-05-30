@@ -1,6 +1,6 @@
 # MindMirror Launch QA Scratchpad
 
-Last updated: May 17, 2026
+Last updated: May 29, 2026
 
 Use this file as the working log before sending paid traffic. Each run should record:
 
@@ -236,3 +236,75 @@ https://getmindmirror.com/es/quiz?utm_source=facebook&utm_medium=paid_social&utm
 - Re-run one fresh mobile QA after the attribution patch deploys, using a fresh/incognito browser or cleared storage.
 - Run Stripe decline matrix.
 - Run one fresh mobile screen recording from ad URL through checkout/refund.
+
+### May 29, 2026 — Full-Speed Restart
+
+- Working mode:
+  - One active Codex project thread.
+  - Building locally on Rory's personal laptop.
+  - Using the personal Codex account/email context.
+  - Goal is launch readiness and paid-traffic validation, not building the full journaling app yet.
+- Repo state:
+  - Branch `main` is aligned with `origin/main`.
+  - `npm run lint` passed with the existing `postcss.config.mjs` anonymous default-export warning only.
+  - `next-env.d.ts` may be rewritten by local Next.js dev runs from `.next/types/routes.d.ts` to `.next/dev/types/routes.d.ts`; treat this as generated local churn unless it becomes persistent.
+- Local environment note:
+  - Local `.env.local` has empty launch-tracking values for `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_META_PIXEL_ID`, `META_CAPI_ACCESS_TOKEN`, and `META_CAPI_TEST_EVENT_CODE`.
+  - Production was previously audited on May 20 with PostHog and Meta Pixel present in the live bundle, but Meta CAPI token still pending.
+- Next action:
+  - Review the local funnel visually, then run one fresh mobile QA from a fake Meta attribution URL once local/production tracking setup is confirmed.
+
+### May 29, 2026 — Gate 1 Offer-Clarity Pass
+
+- Purpose: make sure visitors understand they are joining early access / waitlist validation, not buying a finished app today.
+- Changes:
+  - Pricing cards now state: `Early-access waitlist reservation. No live app access yet.`
+  - Trial copy now says the Stripe trial is `waitlist only today`.
+  - Checkout review title now frames payment as an `early-access reservation`.
+  - Checkout review now shows a waitlist-only notice before the terms checkbox.
+  - Checkout terms checkbox now requires acknowledgement that MindMirror is not a live app yet.
+  - Checkout button now says `Continue to Stripe` instead of `Pay with card`.
+- Verification:
+  - `npm run lint` passed with the existing `postcss.config.mjs` warning only.
+  - Local landing and pricing pages loaded through the dev server.
+
+### May 30, 2026 — Saturday Launch Sprint Start
+
+- Start time: 10:38 AM local time.
+- Sprint window: work until 4:00 PM.
+- Gate 1 verification:
+  - `npm run lint` passed with the existing `postcss.config.mjs` warning only.
+  - `npm run build` passed after rerunning with network access for Google Fonts.
+- Next action:
+  - Move into Gate 2 tracking readiness: PostHog, Meta Pixel, Meta CAPI token, purchase dedupe, and one fresh mobile QA path.
+
+### May 30, 2026 — Gate 2 Tracking Readiness Map
+
+- Code path status:
+  - PostHog initializes from `NEXT_PUBLIC_POSTHOG_KEY`.
+  - Meta Pixel initializes from `NEXT_PUBLIC_META_PIXEL_ID`.
+  - Route changes send browser `PageView` to Meta Pixel and `$pageview` to PostHog when analytics are allowed.
+  - Quiz sends `quiz_started`, `email_captured`, and `quiz_completed` to PostHog.
+  - Checkout return sends browser `purchase_completed` to PostHog and browser `Purchase` to Meta Pixel.
+  - Stripe webhook queues server-side CAPI `Purchase` with the same server-generated `purchaseEventId` used by browser Pixel Purchase, which is the dedupe key.
+  - CAPI batcher keeps purchases queued as `pending_configuration` until both `NEXT_PUBLIC_META_PIXEL_ID` and `META_CAPI_ACCESS_TOKEN` are configured.
+  - Vercel cron runs `/api/cron/capi-batcher` daily; manual verification can use the same endpoint with `CRON_SECRET`.
+- Local env status:
+  - `NEXT_PUBLIC_POSTHOG_KEY` is blank locally.
+  - `NEXT_PUBLIC_META_PIXEL_ID` is blank locally.
+  - `META_CAPI_ACCESS_TOKEN` is blank locally.
+  - `META_CAPI_TEST_EVENT_CODE` is blank locally.
+  - `CRON_SECRET` is blank locally.
+- User/business actions needed before first ads:
+  - Confirm production has `NEXT_PUBLIC_POSTHOG_KEY`.
+  - Confirm production has `NEXT_PUBLIC_META_PIXEL_ID=26709756288674893`.
+  - Generate/add Meta `META_CAPI_ACCESS_TOKEN` for the same Pixel.
+  - Add `META_CAPI_TEST_EVENT_CODE` only during Test Events validation, then remove it before real ads.
+  - Confirm `CRON_SECRET` exists in production if manual cron verification is needed.
+  - Redeploy production after any env changes.
+- Verification needed:
+  - Meta Events Manager shows browser `PageView`.
+  - PostHog shows one fresh test user's `$pageview`, `quiz_started`, `email_captured`, `quiz_completed`, and `purchase_completed`.
+  - Meta Events Manager Test Events shows browser `Purchase` and server `Purchase`.
+  - Meta dedupes browser/server `Purchase` using the shared `purchaseEventId`.
+  - Firestore checkout session stores UTM values, `fbclid`, `_fbp`, `_fbc`, PostHog distinct/session IDs, and purchase/refund status.

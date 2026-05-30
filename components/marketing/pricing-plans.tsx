@@ -66,6 +66,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         <CardDescription className="space-y-1">
           <span className="block text-2xl font-semibold text-foreground">{priceLabel}</span>
           <span className="text-xs text-muted-foreground">{billingNote}</span>
+          <span className="block text-xs font-medium text-primary">{t("card_status")}</span>
           {plan.intervalUnit === "year" && plan.intervalCount === 1 ? (
             <span className="block text-xs text-primary font-medium">
               {t("annual_monthly_equiv")} · {t("annual_savings")}

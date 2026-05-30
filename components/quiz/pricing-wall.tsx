@@ -52,6 +52,7 @@ function PlanCard({ plan, sessionId }: { plan: Plan; sessionId: string }) {
         <CardDescription className="space-y-1">
           <span className="block text-2xl font-semibold text-foreground">{priceLabel}</span>
           <span className="text-xs text-muted-foreground">{billingNote}</span>
+          <span className="block text-xs font-medium text-primary">{t("card_status")}</span>
           {plan.trialDays ? (
             <span className="block text-xs text-muted-foreground">
               {t("trial_days", { days: plan.trialDays })}

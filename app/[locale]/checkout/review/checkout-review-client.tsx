@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, ShieldCheck } from "lucide-react";
+import { CreditCard, Info, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Plan } from "@/config/commercial-catalog";
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,16 @@ export function CheckoutReviewClient({
           })}
         </p>
         {trial ? <p className="mt-2 text-sm text-primary">{trial}</p> : null}
+      </div>
+
+      <div className="flex gap-3 rounded-lg border border-primary/30 bg-primary/10 p-4 text-sm">
+        <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+        <div>
+          <p className="font-medium text-foreground">{t("review_waitlist_notice_title")}</p>
+          <p className="mt-1 leading-6 text-muted-foreground">
+            {t("review_waitlist_notice_body")}
+          </p>
+        </div>
       </div>
 
       <label className="flex cursor-pointer items-start gap-2 text-sm">
