@@ -50,7 +50,10 @@ export function subscribeUserDoc(
       onUpdate(mapUserDocToClaims(uid, firebaseUser, snap.data()));
     },
     (error) => {
-      console.error("[subscribeUserDoc]", error);
+      // Fall back to the Firebase auth user when the profile mirror is unavailable.
+      // This keeps account surfaces usable while preserving the safest billing default.
+      onUpdate(mapUserDocToClaims(uid, firebaseUser, undefined));
+      console.warn("[subscribeUserDoc]", error);
       onSnapshotError?.(error);
     },
   );
