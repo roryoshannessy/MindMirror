@@ -5,6 +5,7 @@ import {
   AudioLines,
   BrainCircuit,
   CalendarDays,
+  CheckCircle2,
   Loader2,
   Mic,
   MicOff,
@@ -89,6 +90,10 @@ export function MindMirrorApp() {
   const [voiceDisclosureAccepted, setVoiceDisclosureAccepted] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognitionLike | null>(null);
 
+  const cleanText = text.trim();
+  const characterCount = cleanText.length;
+  const hasEntries = entries.length > 0;
+
   useEffect(() => {
     if (isLoadingAuth) return;
     let alive = true;
@@ -114,6 +119,12 @@ export function MindMirrorApp() {
     };
   }, [isLoadingAuth]);
 
+  useEffect(() => {
+    if (!savedEntryId) return;
+    const timeout = window.setTimeout(() => setSavedEntryId(null), 6500);
+    return () => window.clearTimeout(timeout);
+  }, [savedEntryId]);
+
   const dashboard = useMemo(() => {
     const patterns = countBy(entries.map((entry) => entry.analysis.patternLabel));
     const emotions = countBy(entries.map((entry) => entry.analysis.emotion));
@@ -127,8 +138,7 @@ export function MindMirrorApp() {
   }, [entries]);
 
   async function saveEntry() {
-    const clean = text.trim();
-    if (clean.length < 10) {
+    if (cleanText.length < 10) {
       setError("Write or dictate at least one real sentence.");
       return;
     }
@@ -142,7 +152,7 @@ export function MindMirrorApp() {
           "content-type": "application/json",
           ...(await authHeaders()),
         },
-        body: JSON.stringify({ text: clean, source }),
+        body: JSON.stringify({ text: cleanText, source }),
       });
       const json = (await res.json()) as { entry?: JournalEntry; error?: string };
       if (!res.ok || !json.entry) throw new Error(json.error ?? "Could not save entry.");
@@ -215,28 +225,32 @@ export function MindMirrorApp() {
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[0.95fr_1.05fr]">
-      <section className="space-y-4">
-        <div>
-          <p className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+    <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-5 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,0.98fr)_minmax(360px,1.02fr)] lg:gap-6">
+      <section className="space-y-5">
+        <div className="space-y-2">
+          <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-primary/90">
             <Sparkles className="size-4" aria-hidden />
-            MindMirror workspace
+            MindMirror
           </p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
             What keeps coming back?
           </h1>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            Capture one honest reflection. MindMirror will keep the language careful while the
-            evidence is still thin.
+          <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+            Capture one honest reflection. The first signals stay cautious until there is enough
+            evidence to compare.
           </p>
         </div>
 
-        <Card className="border-primary/25 bg-card/80">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+        <Card className="border-primary/20 bg-card/85 shadow-[0_18px_70px_rgba(0,0,0,0.28)]">
+          <CardHeader className="space-y-1 pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <AudioLines className="size-5 text-primary" aria-hidden />
               Capture a reflection
             </CardTitle>
+            <p className="text-sm leading-6 text-muted-foreground">
+              One real paragraph is enough. Voice or type, then save it to build your pattern
+              history.
+            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <textarea
@@ -247,14 +261,14 @@ export function MindMirrorApp() {
                 setSavedEntryId(null);
               }}
               placeholder="What has been taking up space in your mind today?"
-              className="min-h-48 w-full resize-none rounded-lg border border-border bg-background px-4 py-3 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground/70 focus:border-primary sm:text-sm sm:leading-6"
+              className="min-h-56 w-full resize-none rounded-lg border border-border bg-background/95 px-4 py-3 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground/65 focus:border-primary focus:ring-2 focus:ring-primary/15 sm:min-h-48 sm:text-sm sm:leading-6"
             />
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-row">
                 <Button
                   type="button"
                   variant={isListening ? "outline" : "default"}
-                  className="w-full sm:w-auto"
+                  className="min-h-11 w-full sm:w-auto"
                   onClick={toggleDictation}
                 >
                   {isListening ? (
@@ -267,7 +281,7 @@ export function MindMirrorApp() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full border-border bg-transparent sm:w-auto"
+                  className="min-h-11 w-full border-border bg-transparent sm:w-auto"
                   disabled={isSaving}
                   onClick={saveEntry}
                 >
@@ -279,85 +293,113 @@ export function MindMirrorApp() {
                   {isSaving ? "Saving..." : "Save reflection"}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="min-h-5 text-xs text-muted-foreground sm:text-right">
                 {isListening
                   ? "Listening through browser dictation"
-                  : text.trim().length > 0
-                    ? `${text.trim().length} characters`
+                  : characterCount > 0
+                    ? `${characterCount} characters`
                     : "Private by default"}
               </p>
             </div>
             {savedEntryId ? (
-              <p className="rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm text-primary">
-                Saved. Your dashboard has one more piece of evidence.
+              <div className="flex items-start gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm leading-6 text-primary">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />
+                <p>Saved. Your dashboard has one more piece of evidence.</p>
+              </div>
+            ) : null}
+            {error ? (
+              <p className="rounded-lg border border-destructive/25 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {error}
               </p>
             ) : null}
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
           </CardContent>
         </Card>
 
-        {entries.length === 0 && !isLoading ? (
-          <div className="grid gap-2 rounded-lg border border-border bg-card/50 p-4 text-sm text-muted-foreground sm:grid-cols-3">
-            <p className="text-foreground">Start anywhere.</p>
-            <p>A loop you keep replaying.</p>
-            <p>A decision you are avoiding.</p>
+        {!hasEntries && !isLoading ? (
+          <div className="rounded-lg border border-border bg-card/55 p-4">
+            <p className="text-sm font-medium text-foreground">Good first entries are ordinary.</p>
+            <div className="mt-3 grid gap-2 text-sm leading-6 text-muted-foreground sm:grid-cols-3">
+              <p>A loop you keep replaying.</p>
+              <p>A decision you are avoiding.</p>
+              <p>A feeling that keeps returning.</p>
+            </div>
           </div>
         ) : null}
 
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-muted-foreground">Recent entries</h2>
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-medium text-foreground">Recent entries</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {hasEntries ? "Newest reflection first" : "Your saved reflections will collect here"}
+              </p>
+            </div>
+            {hasEntries ? (
+              <p className="text-xs text-muted-foreground">
+                {entries.length} {entries.length === 1 ? "entry" : "entries"}
+              </p>
+            ) : null}
+          </div>
           {isLoading ? (
             <div className="rounded-lg border border-border bg-card/60 p-4 text-sm text-muted-foreground">
               Loading your mirror...
             </div>
-          ) : entries.length === 0 ? (
-            <div className="rounded-lg border border-border bg-card/60 p-4 text-sm leading-6 text-muted-foreground">
-              Your first reflection will appear here with its early read.
+          ) : !hasEntries ? (
+            <div className="rounded-lg border border-dashed border-border bg-card/45 p-5 text-sm leading-6 text-muted-foreground">
+              Your first saved reflection will appear here with a careful early read.
             </div>
           ) : (
             entries.slice(0, 6).map((entry) => (
               <article
                 key={entry.id}
-                className={`rounded-lg border p-4 transition ${
+                className={`rounded-lg border p-4 transition sm:p-5 ${
                   entry.id === savedEntryId
-                    ? "border-primary/40 bg-primary/10"
+                    ? "border-primary/45 bg-primary/10 shadow-[0_0_0_1px_rgba(99,102,241,0.16)]"
                     : "border-border bg-card/60"
                 }`}
               >
-                <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <CalendarDays className="size-3.5" aria-hidden />
-                  <span>{formatDate(entry.createdAt)}</span>
-                  <span className="rounded-full border border-border px-2 py-0.5">
-                    {entry.source === "voice" ? "voice" : "text"}
-                  </span>
-                  {entry.id === savedEntryId ? (
-                    <span className="rounded-full border border-primary/30 px-2 py-0.5 text-primary">
-                      saved
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    <CalendarDays className="size-3.5" aria-hidden />
+                    <span>{formatDate(entry.createdAt)}</span>
+                    <span className="rounded-full border border-border bg-background/60 px-2 py-0.5">
+                      {entry.source === "voice" ? "Voice" : "Text"}
                     </span>
-                  ) : null}
-                </div>
-                <p className="text-sm leading-6 text-foreground">{entry.text}</p>
-                <p className="mt-3 text-sm text-primary">
-                  Early read: {entry.analysis.patternLabel}
-                </p>
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <p className="text-xs text-muted-foreground">
-                    Confidence: {entry.analysis.confidence ?? "low"}
-                  </p>
+                    {entry.id === savedEntryId ? (
+                      <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary">
+                        New
+                      </span>
+                    ) : null}
+                  </div>
                   <Button
                     type="button"
-                    variant="outline"
-                    className="h-8 border-border bg-transparent px-2 text-xs text-muted-foreground"
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                     disabled={deletingEntryId === entry.id}
+                    aria-label="Delete entry"
                     onClick={() => deleteEntry(entry.id)}
                   >
                     {deletingEntryId === entry.id ? (
-                      <Loader2 className="size-3.5 animate-spin" aria-hidden />
+                      <Loader2 className="size-4 animate-spin" aria-hidden />
                     ) : (
-                      <Trash2 className="size-3.5" aria-hidden />
+                      <Trash2 className="size-4" aria-hidden />
                     )}
-                    Delete
                   </Button>
+                </div>
+                <p className="whitespace-pre-wrap text-[0.95rem] leading-7 text-foreground">
+                  {entry.text}
+                </p>
+                <div className="mt-4 rounded-lg border border-border bg-background/55 p-3">
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-primary/90">
+                    Early read
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-foreground">
+                    {entry.analysis.patternLabel}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Confidence: {entry.analysis.confidence ?? "low"}
+                  </p>
                 </div>
               </article>
             ))
@@ -365,43 +407,42 @@ export function MindMirrorApp() {
         </div>
       </section>
 
-      <aside className="space-y-4">
+      <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
         <Card className="border-border bg-card/80">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
+          <CardHeader className="space-y-1 pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <BrainCircuit className="size-5 text-primary" aria-hidden />
               Early signals
             </CardTitle>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Useful patterns usually need repeated evidence.
+            </p>
           </CardHeader>
           <CardContent className="space-y-5">
-            <p className="text-sm leading-6 text-muted-foreground">
-              This view gets more useful with repetition. For now, treat it as a careful read of
-              what is present, not a verdict.
-            </p>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-border bg-background p-3">
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              <div className="rounded-lg border border-border bg-background/70 p-3">
                 <p className="text-xs text-muted-foreground">Evidence</p>
                 <p className="mt-1 text-2xl font-semibold">{entries.length}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {entries.length === 1 ? "entry" : "entries"}
                 </p>
               </div>
-              <div className="rounded-lg border border-border bg-background p-3">
-                <p className="text-xs text-muted-foreground">Emotion showing up</p>
-                <p className="mt-1 text-sm font-medium">
+              <div className="rounded-lg border border-border bg-background/70 p-3">
+                <p className="text-xs text-muted-foreground">Possible emotion</p>
+                <p className="mt-1 text-sm font-medium leading-6">
                   {dashboard.emotions[0]?.[0] ?? "still forming"}
                 </p>
               </div>
-              <div className="rounded-lg border border-border bg-background p-3">
+              <div className="rounded-lg border border-border bg-background/70 p-3">
                 <p className="text-xs text-muted-foreground">Pattern hint</p>
-                <p className="mt-1 text-sm font-medium">
+                <p className="mt-1 text-sm font-medium leading-6">
                   {dashboard.patterns[0]?.[0] ?? "needs more entries"}
                 </p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-foreground">Repeated hints</h3>
+              <h3 className="text-sm font-medium text-foreground">Hints seen more than once</h3>
               <div className="mt-3 space-y-2">
                 {dashboard.patterns.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
@@ -411,10 +452,10 @@ export function MindMirrorApp() {
                   dashboard.patterns.map(([label, count]) => (
                     <div
                       key={label}
-                      className="flex items-center justify-between gap-4 rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                      className="flex items-start justify-between gap-4 rounded-lg border border-border bg-background/70 px-3 py-2 text-sm"
                     >
-                      <span>{label}</span>
-                      <span className="text-muted-foreground">
+                      <span className="leading-6">{label}</span>
+                      <span className="shrink-0 text-xs leading-6 text-muted-foreground">
                         seen {count} {count === 1 ? "time" : "times"}
                       </span>
                     </div>
@@ -424,7 +465,7 @@ export function MindMirrorApp() {
             </div>
 
             <div>
-              <h3 className="text-sm font-medium text-foreground">Topics in the evidence</h3>
+              <h3 className="text-sm font-medium text-foreground">Topics noticed</h3>
               <div className="mt-3 flex flex-wrap gap-2">
                 {dashboard.topics.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No topic evidence yet.</p>
@@ -432,7 +473,7 @@ export function MindMirrorApp() {
                   dashboard.topics.map(([topic, count]) => (
                     <span
                       key={topic}
-                      className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground"
+                      className="rounded-full border border-border bg-background/70 px-3 py-1 text-xs leading-5 text-muted-foreground"
                     >
                       {topic} · {count}
                     </span>
@@ -443,7 +484,9 @@ export function MindMirrorApp() {
 
             {dashboard.latest ? (
               <div className="rounded-lg border border-primary/25 bg-primary/10 p-4">
-                <p className="text-xs font-medium text-primary">Latest early read</p>
+                <p className="text-xs font-medium uppercase tracking-[0.12em] text-primary">
+                  Latest early read
+                </p>
                 <p className="mt-2 text-sm leading-6 text-foreground">
                   {dashboard.latest.analysis.summary}
                 </p>
@@ -452,7 +495,7 @@ export function MindMirrorApp() {
                 </p>
               </div>
             ) : (
-              <div className="rounded-lg border border-border bg-background p-4">
+              <div className="rounded-lg border border-dashed border-border bg-background/55 p-4">
                 <p className="text-sm text-foreground">Waiting for the first reflection.</p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   Once saved, MindMirror will show a cautious summary and the signals it used.
