@@ -296,7 +296,21 @@ const EMOTIONS = [
   },
   {
     label: "heavy",
-    words: ["down", "empty", "flat", "heavy", "lonely", "low", "sad", "shame"],
+    words: [
+      "burned",
+      "depleted",
+      "down",
+      "drained",
+      "empty",
+      "exhausted",
+      "flat",
+      "heavy",
+      "lonely",
+      "low",
+      "sad",
+      "shame",
+      "tired",
+    ],
     phrases: ["feel alone", "felt alone", "hard to care"],
   },
   {
@@ -475,6 +489,7 @@ export function analyzeReflection(text: string): ReflectionAnalysis {
   const pattern = bestCandidate(PATTERNS, words, normalizedText);
   const emotion = bestCandidate(EMOTIONS, words, normalizedText);
   const hasPattern = pattern.score > 0;
+  const patternGuidance = hasPattern ? pattern : undefined;
   const confidence = confidenceFrom(pattern.score + Math.min(emotion.score, 2), words.length);
   const topics = topTopics(words, normalizedText, 5);
   const evidence = [...new Set([...pattern.evidence, ...emotion.evidence])].slice(0, 6);
@@ -490,8 +505,8 @@ export function analyzeReflection(text: string): ReflectionAnalysis {
     confidence,
     evidence,
     note: evidenceNote(confidence, hasPattern),
-    loopCost: pattern.loopCost ?? defaultLoopCost(hasPattern),
-    nextQuestion: pattern.nextQuestion ?? defaultNextQuestion(hasPattern),
-    smallestAction: pattern.smallestAction ?? defaultSmallestAction(hasPattern),
+    loopCost: patternGuidance?.loopCost ?? defaultLoopCost(hasPattern),
+    nextQuestion: patternGuidance?.nextQuestion ?? defaultNextQuestion(hasPattern),
+    smallestAction: patternGuidance?.smallestAction ?? defaultSmallestAction(hasPattern),
   };
 }
