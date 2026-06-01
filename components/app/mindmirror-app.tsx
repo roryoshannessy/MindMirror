@@ -70,6 +70,10 @@ function countBy<T extends string>(items: T[]): Array<[T, number]> {
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
+function mirrorField(value: string | undefined, fallback: string): string {
+  return value?.trim() || fallback;
+}
+
 async function authHeaders(): Promise<HeadersInit> {
   const user = getClientAuth().currentUser;
   if (!user) throw new Error("Sign in again to save entries.");
@@ -304,7 +308,7 @@ export function MindMirrorApp() {
             {savedEntryId ? (
               <div className="flex items-start gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm leading-6 text-primary">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />
-                <p>Saved. Your dashboard has one more piece of evidence.</p>
+                <p>Saved. Your mirror has one more piece of evidence.</p>
               </div>
             ) : null}
             {error ? (
@@ -397,7 +401,42 @@ export function MindMirrorApp() {
                   <p className="mt-1 text-sm leading-6 text-foreground">
                     {entry.analysis.patternLabel}
                   </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
+                  <div className="mt-3 grid gap-2 text-sm leading-6 text-muted-foreground sm:grid-cols-3">
+                    <div className="rounded-md border border-border bg-card/60 p-2">
+                      <p className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                        Cost
+                      </p>
+                      <p className="mt-1 text-foreground/90">
+                        {mirrorField(
+                          entry.analysis.loopCost,
+                          "This may be costing attention, momentum, or emotional energy.",
+                        )}
+                      </p>
+                    </div>
+                    <div className="rounded-md border border-border bg-card/60 p-2">
+                      <p className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                        Question
+                      </p>
+                      <p className="mt-1 text-foreground/90">
+                        {mirrorField(
+                          entry.analysis.nextQuestion,
+                          "Where does this show up outside this reflection?",
+                        )}
+                      </p>
+                    </div>
+                    <div className="rounded-md border border-border bg-card/60 p-2">
+                      <p className="text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                        Next
+                      </p>
+                      <p className="mt-1 text-foreground/90">
+                        {mirrorField(
+                          entry.analysis.smallestAction,
+                          "Take one small action that tests the pattern.",
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground">
                     Confidence: {entry.analysis.confidence ?? "low"}
                   </p>
                 </div>
@@ -490,6 +529,22 @@ export function MindMirrorApp() {
                 <p className="mt-2 text-sm leading-6 text-foreground">
                   {dashboard.latest.analysis.summary}
                 </p>
+                <div className="mt-3 space-y-2 text-sm leading-6">
+                  <p>
+                    <span className="text-muted-foreground">Question: </span>
+                    {mirrorField(
+                      dashboard.latest.analysis.nextQuestion,
+                      "What is the one thought you would want MindMirror to remember from this?",
+                    )}
+                  </p>
+                  <p>
+                    <span className="text-muted-foreground">Next: </span>
+                    {mirrorField(
+                      dashboard.latest.analysis.smallestAction,
+                      "Save one more honest reflection when the thought returns.",
+                    )}
+                  </p>
+                </div>
                 <p className="mt-3 text-xs text-muted-foreground">
                   Evidence: {dashboard.latest.analysis.signals.join(", ") || "still forming"}
                 </p>

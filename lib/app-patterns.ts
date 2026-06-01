@@ -10,6 +10,9 @@ export type ReflectionAnalysis = {
   confidence: "low" | "medium" | "high";
   evidence: string[];
   note: string;
+  loopCost: string;
+  nextQuestion: string;
+  smallestAction: string;
 };
 
 const STOP_WORDS = new Set([
@@ -99,6 +102,9 @@ const PATTERNS = [
   {
     key: "clarity_loop",
     label: "Possible clarity-seeking loop",
+    loopCost: "More thinking may be replacing the discomfort of choosing.",
+    nextQuestion: "What would you do next if certainty was not required?",
+    smallestAction: "Pick one decision and define the next visible step.",
     words: [
       "certain",
       "clarity",
@@ -126,6 +132,9 @@ const PATTERNS = [
   {
     key: "avoidance_loop",
     label: "Possible avoidance loop",
+    loopCost: "Delay can make the task feel heavier than the task itself.",
+    nextQuestion: "What are you avoiding feeling by not starting?",
+    smallestAction: "Do the first two minutes, then stop if you still want to.",
     words: [
       "avoid",
       "delay",
@@ -149,6 +158,9 @@ const PATTERNS = [
   {
     key: "pressure_loop",
     label: "Possible pressure and expectation loop",
+    loopCost: "Pressure may be turning progress into proof that you are enough.",
+    nextQuestion: "Whose standard are you trying to satisfy right now?",
+    smallestAction: "Name the one thing that would count as enough for today.",
     words: [
       "behind",
       "expect",
@@ -172,6 +184,9 @@ const PATTERNS = [
   {
     key: "work_loop",
     label: "Possible work identity loop",
+    loopCost: "Work may be carrying more of your identity than it needs to.",
+    nextQuestion: "What part of this is the actual work, and what part is self-worth?",
+    smallestAction: "Separate the next work task from the story about what it means.",
     words: [
       "boss",
       "career",
@@ -190,6 +205,9 @@ const PATTERNS = [
   {
     key: "relationship_loop",
     label: "Possible relationship meaning loop",
+    loopCost: "A relationship moment may be becoming a larger story about your value.",
+    nextQuestion: "What did they actually do, and what meaning did your mind add?",
+    smallestAction: "Write the fact and the interpretation as two separate lines.",
     words: [
       "alone",
       "family",
@@ -214,6 +232,9 @@ const PATTERNS = [
   {
     key: "energy_loop",
     label: "Possible energy and capacity loop",
+    loopCost: "Low capacity can make every thought feel more urgent and final.",
+    nextQuestion: "What would this look like if tiredness was part of the data?",
+    smallestAction: "Choose one recovery action before solving the whole problem.",
     words: [
       "burned",
       "capacity",
@@ -237,6 +258,9 @@ const PATTERNS = [
   {
     key: "self_trust_loop",
     label: "Possible self-trust loop",
+    loopCost: "Self-blame may be using energy that could go into repair.",
+    nextQuestion: "What would rebuilding trust look like in one small action?",
+    smallestAction: "Do one repair step and record it as evidence.",
     words: [
       "ashamed",
       "blame",
@@ -305,6 +329,9 @@ const TOPIC_PHRASES = [
 type Candidate = {
   key?: string;
   label: string;
+  loopCost?: string;
+  nextQuestion?: string;
+  smallestAction?: string;
   words: string[];
   phrases: string[];
 };
@@ -413,6 +440,24 @@ function evidenceNote(confidence: ReflectionAnalysis["confidence"], hasPattern: 
   return "Early read only: this is based on limited evidence from one short reflection.";
 }
 
+function defaultLoopCost(hasPattern: boolean): string {
+  return hasPattern
+    ? "This pattern may be costing attention, momentum, or emotional energy."
+    : "There is not enough evidence yet to name a clear cost.";
+}
+
+function defaultNextQuestion(hasPattern: boolean): string {
+  return hasPattern
+    ? "Where does this show up outside this reflection?"
+    : "What is the one thought you would want MindMirror to remember from this?";
+}
+
+function defaultSmallestAction(hasPattern: boolean): string {
+  return hasPattern
+    ? "Take one small action that tests the pattern instead of arguing with it."
+    : "Save one more honest reflection when the thought returns.";
+}
+
 function fallbackTopics(text: string): string[] {
   const summary = firstSentence(text).toLowerCase();
   if (!summary || summary === "no reflection text was saved.") return [];
@@ -445,5 +490,8 @@ export function analyzeReflection(text: string): ReflectionAnalysis {
     confidence,
     evidence,
     note: evidenceNote(confidence, hasPattern),
+    loopCost: pattern.loopCost ?? defaultLoopCost(hasPattern),
+    nextQuestion: pattern.nextQuestion ?? defaultNextQuestion(hasPattern),
+    smallestAction: pattern.smallestAction ?? defaultSmallestAction(hasPattern),
   };
 }
