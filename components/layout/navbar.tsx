@@ -12,9 +12,17 @@ export function Navbar() {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const isQuizRoute = pathname === "/quiz";
+  const isMarketingHome = pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-50 border-b backdrop-blur-md",
+        isMarketingHome
+          ? "border-[#e6edf0] bg-white/88 text-[#172120]"
+          : "border-border bg-background/80",
+      )}
+    >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Logo />
         <nav
@@ -36,7 +44,10 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "hidden rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex",
+                  "hidden rounded-md px-2 py-1.5 text-sm transition-colors md:inline-flex",
+                  isMarketingHome
+                    ? "text-[#60706d] hover:text-[#172120]"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {t(item.labelKey)}

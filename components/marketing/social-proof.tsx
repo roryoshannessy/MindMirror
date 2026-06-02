@@ -17,29 +17,29 @@ export async function SocialProof() {
   ] as const;
 
   return (
-    <section className="border-t border-border bg-card/20 px-4 py-12 sm:px-6">
+    <section className="border-t border-[#e6edf0] bg-white px-4 py-14 text-[#172120] sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="inline-flex items-center gap-2 text-sm font-medium text-primary">
+            <p className="inline-flex items-center gap-2 text-sm font-medium text-[#42615d]">
               <ShieldCheck className="size-4" aria-hidden />
-              Clear product ladder
+              Clear funnel test
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-foreground sm:text-3xl">
-              Start useful. Get sharper.
+            <h2 className="mt-2 text-2xl font-semibold text-[#172120] sm:text-3xl">
+              Simple enough to test.
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            MindMirror should earn trust quickly: one thought gives a first read, then more evidence improves the map.
+          <p className="max-w-md text-sm leading-6 text-[#60706d]">
+            The page has one job: help someone understand the promise, take the quiz, and decide whether early access is worth paying for.
           </p>
         </div>
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
           {stats.map((stat, i) => (
             <div
               key={i}
-              className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground"
+              className="flex items-center gap-2 rounded-2xl border border-[#dfe9e7] bg-[#f8fbfa] px-4 py-3 text-sm text-[#172120]"
             >
-              <CheckCircle2 className="size-4 text-primary" aria-hidden />
+              <CheckCircle2 className="size-4 text-[#42615d]" aria-hidden />
               <span>{stat}</span>
             </div>
           ))}
@@ -48,7 +48,7 @@ export async function SocialProof() {
           {quotes.map((quote, i) => (
             <blockquote
               key={i}
-              className="rounded-lg border border-border bg-background/80 p-5 text-sm leading-6 text-muted-foreground"
+              className="rounded-2xl border border-[#dfe9e7] bg-white p-5 text-sm leading-6 text-[#60706d] shadow-sm"
             >
               {quote}
             </blockquote>
