@@ -145,6 +145,11 @@ export function MindMirrorApp() {
   const characterCount = cleanText.length;
   const hasEntries = entries.length > 0;
   const canSave = characterCount >= 10 && !isSaving;
+  const starterPrompts = [
+    "The thought that keeps coming back is...",
+    "I feel stuck because...",
+    "The decision I keep avoiding is...",
+  ];
 
   useEffect(() => {
     if (isLoadingAuth) return;
@@ -202,6 +207,7 @@ export function MindMirrorApp() {
   const thoughtChips =
     latestEntry?.analysis.signals.slice(0, 3).filter(Boolean) ??
     (cleanText.length > 0 ? cleanText.split(/\s+/).filter((word) => word.length > 4).slice(0, 3) : []);
+  const mirrorChips = thoughtChips.length > 0 ? thoughtChips : ["thought", "loop", "mirror"];
   const unlockSteps = [
     {
       count: 1,
@@ -252,6 +258,20 @@ export function MindMirrorApp() {
     } finally {
       setIsSaving(false);
     }
+  }
+
+  function startFromPrompt(prompt: string) {
+    setText(prompt);
+    setSource("text");
+    setSavedEntryId(null);
+    setError(null);
+  }
+
+  function continueFromQuestion(question: string) {
+    setText(`${question}\n\n`);
+    setSource("text");
+    setSavedEntryId(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function deleteEntry(entryId: string) {
@@ -334,16 +354,14 @@ export function MindMirrorApp() {
             </div>
             <div className="relative flex min-h-56 w-full items-end justify-center rounded-lg border border-white/10 bg-background/80 p-4 sm:w-[21rem]">
               <div className="absolute left-4 top-4 max-w-[12rem] space-y-2">
-                {(thoughtChips.length > 0 ? thoughtChips : ["thought", "loop", "mirror"]).map(
-                  (chip) => (
-                    <span
-                      key={chip}
-                      className="mm-thought-chip block w-fit rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-muted-foreground"
-                    >
-                      {chip}
-                    </span>
-                  ),
-                )}
+                {mirrorChips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="mm-thought-chip block w-fit rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-muted-foreground"
+                  >
+                    {chip}
+                  </span>
+                ))}
               </div>
               <BrainMirrorMascot active={isSaving || isRevealingMirror || Boolean(savedEntryId)} />
             </div>
@@ -393,6 +411,21 @@ export function MindMirrorApp() {
             placeholder="I keep thinking about..."
             className="min-h-64 w-full resize-none rounded-lg border border-border bg-background/95 px-4 py-4 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-foreground focus:ring-2 focus:ring-white/10 sm:min-h-56"
           />
+
+          {!hasEntries && characterCount === 0 ? (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {starterPrompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  className="rounded-full border border-border bg-background/70 px-3 py-2 text-left text-xs text-muted-foreground transition hover:border-white/25 hover:bg-white/[0.06] hover:text-foreground"
+                  onClick={() => startFromPrompt(prompt)}
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-center">
             <Button
@@ -476,7 +509,7 @@ export function MindMirrorApp() {
             <div className="mm-reveal overflow-hidden rounded-lg border border-white/15 bg-white/[0.04] p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative flex min-h-44 items-end justify-center rounded-lg border border-white/10 bg-background/70 px-8 pt-8 sm:w-64">
-                  {thoughtChips.slice(0, 3).map((chip) => (
+                  {mirrorChips.slice(0, 3).map((chip) => (
                     <span
                       key={chip}
                       className="mm-thought-chip absolute rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-muted-foreground first:left-4 first:top-4 [&:nth-child(2)]:right-5 [&:nth-child(2)]:top-10 [&:nth-child(3)]:left-8 [&:nth-child(3)]:top-20"
@@ -559,6 +592,32 @@ export function MindMirrorApp() {
 
               <div className="rounded-lg border border-border bg-background/60 p-3 text-xs leading-5 text-muted-foreground">
                 Evidence: {latestEntry.analysis.signals.join(", ") || "still forming"}
+              </div>
+
+              <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4">
+                <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  Continue the thread
+                </p>
+                <p className="mt-2 text-base font-medium leading-7 text-foreground">
+                  {mirrorField(
+                    latestEntry.analysis.nextQuestion,
+                    "Where does this show up outside this reflection?",
+                  )}
+                </p>
+                <Button
+                  type="button"
+                  className="mt-4 min-h-11 rounded-full bg-foreground px-5 text-background hover:bg-foreground/90"
+                  onClick={() =>
+                    continueFromQuestion(
+                      mirrorField(
+                        latestEntry.analysis.nextQuestion,
+                        "Where does this show up outside this reflection?",
+                      ),
+                    )
+                  }
+                >
+                  Answer this next
+                </Button>
               </div>
             </div>
           ) : (
