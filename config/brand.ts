@@ -2,7 +2,7 @@ export const brand = {
   NAME: "MindMirror",
   TAGLINE: "See what you keep thinking but never change.",
   DESCRIPTION:
-    "An early-access voice-first journaling concept for spotting thought patterns over time.",
+    "An early-access voice-first journaling product for spotting thought patterns over time.",
   DOMAIN: "getmindmirror.com",
 
   STORAGE_PREFIX: "mm",

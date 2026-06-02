@@ -23,15 +23,15 @@ export async function Hero() {
   const t = await getTranslations("hero");
 
   const proofPoints = [
-    ["Quiz first", "60-second preview"],
-    ["Clear status", "waitlist only"],
-    ["Refund tested", "Stripe path checked"],
+    ["One thought", "first mirror"],
+    ["3 reflections", "early signals"],
+    ["10 reflections", "pattern map"],
   ] as const;
 
   const timelineRows = [
-    ["Decision loop", "11 signals", "w-[82%]", "text-indigo-200"],
-    ["Energy crash", "7 signals", "w-[58%]", "text-emerald-200"],
-    ["Morning focus", "5 signals", "w-[44%]", "text-amber-100"],
+    ["Decision loop", "11 signals", "w-[82%]", "text-zinc-100"],
+    ["Energy crash", "7 signals", "w-[58%]", "text-zinc-300"],
+    ["Morning focus", "5 signals", "w-[44%]", "text-zinc-400"],
   ] as const;
 
   const insightRows = [
@@ -47,7 +47,7 @@ export async function Hero() {
         <div className="mm-fade-up relative z-10 text-center lg:text-left">
           <p className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="size-4" aria-hidden />
-            AI life dashboard concept
+            Voice-first thought mirror
           </p>
           <h1 className="mx-auto mt-5 max-w-3xl text-balance text-4xl font-semibold leading-tight text-foreground sm:text-6xl lg:mx-0">
             {t("headline")}
@@ -73,7 +73,7 @@ export async function Hero() {
 
           <div className="mx-auto mt-7 flex max-w-xl flex-col gap-3 sm:flex-row lg:mx-0">
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/quiz">
+              <Link href="/auth/signup?returnTo=%2Faccount">
                 {t("cta_primary")}
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
@@ -84,7 +84,7 @@ export async function Hero() {
               size="lg"
               className="w-full border-border bg-transparent sm:w-auto"
             >
-              <Link href="/#how-it-works">{t("cta_secondary")}</Link>
+              <Link href="/quiz">{t("cta_secondary")}</Link>
             </Button>
           </div>
 
@@ -103,7 +103,7 @@ export async function Hero() {
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Mic2 className="size-3.5 text-primary" aria-hidden />
-                  <span>live concept preview</span>
+                  <span>first mirror preview</span>
                 </div>
               </div>
 
@@ -225,13 +225,13 @@ export async function Hero() {
                 <ShieldCheck className="size-4 text-emerald-200" aria-hidden />
               </div>
               <div>
-                <p className="text-xs font-medium text-foreground">Validation mode</p>
-                <p className="text-xs text-muted-foreground">Checkout is for early-access demand testing.</p>
+                <p className="text-xs font-medium text-foreground">Early product access</p>
+                <p className="text-xs text-muted-foreground">Start with one thought. Add more to sharpen the map.</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Target className="size-3.5 text-primary" aria-hidden />
-              <span>quiz to checkout</span>
+              <span>landing to first mirror</span>
               <ChevronRight className="size-3.5" aria-hidden />
               <CircleDot className="size-3.5 text-primary" aria-hidden />
             </div>

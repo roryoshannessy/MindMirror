@@ -5,7 +5,7 @@
     "pricing": "Pricing",
     "sign_in": "Sign in",
     "sign_out": "Sign out",
-    "quiz": "See your pattern"
+    "quiz": "Try the mirror"
   },
   "footer": {
     "pricing": "Pricing",
@@ -16,32 +16,32 @@
     "support_contact": "support@getmindmirror.com"
   },
   "hero": {
-    "headline": "See the patterns your mind keeps repeating.",
-    "subheadline": "Take the 60-second quiz, get a sample pattern profile, and see the AI dashboard we are building for thoughts, habits, goals, and decisions.",
-    "cta_primary": "Start the pattern quiz",
-    "cta_secondary": "See how it works",
-    "social_proof": "Early-access waitlist only. No live app access yet."
+    "headline": "Say the thought. See the loop.",
+    "subheadline": "MindMirror is an early product for voice-first reflection. Start with one thought, save it, and see the possible pattern, cost, question, and next step.",
+    "cta_primary": "Try your first mirror",
+    "cta_secondary": "See the pattern quiz",
+    "social_proof": "Early product access. The mirror gets sharper as you add more reflections."
   },
   "features": {
     "f1": {
-      "title": "Planned input modes",
-      "body": "MindMirror is being designed around voice first, with room to support text, photos, and video over time."
+      "title": "Voice-first capture",
+      "body": "Start with browser dictation or text. The product is being shaped around getting thoughts out quickly, not writing perfect journal entries."
     },
     "f2": {
-      "title": "Searchable memory",
-      "body": "The product direction is to turn scattered reflections into something you can search, revisit, and understand over time."
+      "title": "Memory that builds",
+      "body": "Every saved reflection becomes evidence. One entry gives a mirror; three starts early signals; ten unlocks a clearer pattern map."
     },
     "f3": {
       "title": "Pattern detection",
-      "body": "The core promise being tested: show which topics, problems, goals, and decisions keep coming back."
+      "body": "MindMirror looks for topics, emotions, repeated phrases, and decision loops so the reflection becomes useful immediately."
     },
     "f4": {
       "title": "Honest pattern insight",
       "body": "Less vague positivity. More: 'This keeps appearing when you talk about work decisions.'"
     },
     "f5": {
-      "title": "Life dashboard direction",
-      "body": "The long-term idea is to connect habits, milestones, goals, and recurring life areas in one place."
+      "title": "Daily insight direction",
+      "body": "The long-term direction is a simple daily surface: what came up, what repeated, what it cost, and what to do next."
     },
     "f6": {
       "title": "Your data, forever",
@@ -49,12 +49,12 @@
     }
   },
   "social_proof": {
-    "stat1": "Sample profile before checkout",
-    "stat2": "Early-access status upfront",
-    "stat3": "Refund/waitlist flow verified",
+    "stat1": "First mirror after one reflection",
+    "stat2": "Early signals after three",
+    "stat3": "Pattern map after ten",
     "quote1": "Most journaling tools help you record thoughts. MindMirror is built to show what keeps repeating.",
-    "quote2": "The quiz turns vague overthinking into a named pattern you can actually inspect.",
-    "quote3": "The page is intentionally clear: this is early-access validation, not a live app launch."
+    "quote2": "The first mirror turns vague overthinking into a named loop you can inspect.",
+    "quote3": "The product is early, but the core promise is live: one honest thought should give you something useful back."
   },
   "pricing": {
     "title": "Pricing",
@@ -96,11 +96,11 @@
   },
   "faq": {
     "q1": "Is this just another journaling app?",
-    "a1": "No. Most journaling apps store your thoughts. MindMirror is being built to analyze them over time and surface patterns. It's the difference between a diary and a dashboard.",
+    "a1": "No. Most journaling apps store your thoughts. MindMirror analyzes reflections for repeated topics, emotions, phrases, and decision loops. It's the difference between a diary and a mirror.",
     "q2": "How does the pattern detection work?",
     "a2": "The intended product analyzes entries for topics, goals, emotions, and recurring phrases. Over time, it should connect the dots and show what keeps coming up.",
     "q3": "Do I have to write or type anything?",
-    "a3": "The planned product is voice-first, so the core experience should be pressing record and speaking instead of forcing a writing habit.",
+    "a3": "No. You can use browser dictation or type. The core experience is designed around getting the thought out quickly instead of forcing a writing habit.",
     "q4": "Can I cancel anytime?",
     "a4": "For the early-access demand test, checkout is waitlist-only and refundable where stated. Full subscription management will be handled when the live product ships.",
     "q5": "Is my data private?",
@@ -168,19 +168,19 @@
     "welcome_title": "Your account",
     "welcome_body": "You’re signed in. Billing and settings will live here in upcoming milestones.",
     "welcome_purchase_title": "You’re all set",
-    "welcome_purchase_body": "Your purchase is recorded. MindMirror is still in early-access validation, so full app access is not available yet.",
+    "welcome_purchase_body": "Your purchase is recorded. You can try the early MindMirror loop now while the full paid product is still being shaped.",
     "billing_title": "Billing",
     "billing_already_subscribed": "This email already has an active subscription. Use the Stripe customer portal link from your latest receipt, or email support@getmindmirror.com if you need help."
   },
   "how_it_works": {
     "title": "How it works",
-    "subtitle": "The quiz shows a preview now. The full product is being designed around three steps.",
-    "step1_title": "Record a voice note",
-    "step1_body": "In the full product, you would record a thought in 30 seconds. Say what's on your mind, what happened, or what you're worried about.",
-    "step2_title": "AI detects your patterns",
-    "step2_body": "Entries would be transcribed and analyzed for topics, emotions, and goals, then compared for what keeps coming up.",
-    "step3_title": "See what you keep thinking",
-    "step3_body": "MindMirror is being built to show patterns you may not notice: goals you mention but don't act on, problems you revisit, and themes that hold you back."
+    "subtitle": "The first product moment is intentionally simple: one thought in, one useful mirror out.",
+    "step1_title": "Capture one thought",
+    "step1_body": "Dictate or type what keeps coming back. No mood survey, no long setup, no pressure to make it polished.",
+    "step2_title": "Reveal the mirror",
+    "step2_body": "MindMirror names the possible loop, the cost, the evidence it used, and the next reflection question.",
+    "step3_title": "Build the pattern map",
+    "step3_body": "As you add reflections, MindMirror starts comparing what repeats across days instead of treating every entry as isolated."
   },
   "legal": {
     "terms_title": "Terms of Service",
@@ -191,9 +191,9 @@
   "errors": {},
   "meta": {
     "title": "MindMirror",
-    "description": "A voice-first AI journaling concept designed to detect thought patterns over time and show what keeps coming back.",
-    "home_title": "See the patterns your mind keeps repeating",
-    "home_description": "Take the MindMirror quiz to preview a thought-pattern result and join the early-access waitlist.",
+    "description": "A voice-first AI journaling product designed to detect thought patterns over time and show what keeps coming back.",
+    "home_title": "Say the thought. See the loop.",
+    "home_description": "Try MindMirror's first reflection loop: capture one thought and see the possible pattern, cost, question, and next step.",
     "pricing_title": "Pricing",
     "pricing_description": "Early-access plans for the MindMirror waitlist. The live app is still being built.",
     "terms_title": "Terms of Service",

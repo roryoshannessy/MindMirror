@@ -13,13 +13,13 @@ export const siteConfig = {
   nav: [
     { labelKey: "how_it_works", href: "/#how-it-works" },
     { labelKey: "pricing", href: "/pricing" },
-    { labelKey: "quiz", href: "/quiz", variant: "cta" },
+    { labelKey: "quiz", href: "/auth/signup?returnTo=%2Faccount", variant: "cta" },
   ] satisfies NavLink[],
   footer: {
     product: [
       { labelKey: "pricing", href: "/pricing" },
       { labelKey: "how_it_works", href: "/#how-it-works" },
-      { labelKey: "quiz", href: "/quiz" },
+      { labelKey: "quiz", href: "/auth/signup?returnTo=%2Faccount" },
     ] satisfies FooterLink[],
     legal: [
       { labelKey: "terms", href: "/legal/terms" },

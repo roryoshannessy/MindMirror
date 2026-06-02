@@ -43,16 +43,16 @@ export async function Features() {
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
             <Sparkles className="size-4" aria-hidden />
-            What MindMirror is becoming
+            What MindMirror does first
           </p>
           <h2 className="mt-5 text-balance text-3xl font-semibold leading-tight text-foreground sm:text-5xl">
-            A personal intelligence system for your life
+            Less diary. More mirror.
           </h2>
           <p className="mt-5 text-base leading-7 text-muted-foreground">
-            The first test is simple: capture demand for pattern insights. The long-term product is deeper: thoughts, habits, decisions, and progress connected in one dashboard.
+            The first product loop is simple: capture what is on your mind, show the possible pattern, then ask the next useful question.
           </p>
           <div className="mt-7 rounded-lg border border-border bg-background/70 p-4 text-sm leading-6 text-muted-foreground">
-            This page should sell the direction without pretending the full app is live today.
+            MindMirror gets sharper as it has more evidence. One reflection is a first read; ten reflections begin a clearer map.
           </div>
         </div>
         <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">

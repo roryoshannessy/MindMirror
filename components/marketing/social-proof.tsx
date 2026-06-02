@@ -23,14 +23,14 @@ export async function SocialProof() {
           <div>
             <p className="inline-flex items-center gap-2 text-sm font-medium text-primary">
               <ShieldCheck className="size-4" aria-hidden />
-              Clear early access
+              Clear product ladder
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-foreground sm:text-3xl">
-              See the preview before you join.
+              Start useful. Get sharper.
             </h2>
           </div>
           <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            MindMirror is still being built, so the page makes the current state visible before checkout.
+            MindMirror should earn trust quickly: one thought gives a first read, then more evidence improves the map.
           </p>
         </div>
         <div className="mb-5 grid gap-3 sm:grid-cols-3">
