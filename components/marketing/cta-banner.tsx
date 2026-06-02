@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export function CtaBanner() {
-  const checks = ["one thought", "first mirror", "pattern map after 10"] as const;
+  const checks = ["60-second quiz", "sample pattern", "checkout intent"] as const;
 
   return (
     <section className="border-t border-border bg-card/20 px-4 py-20 sm:px-6 lg:py-28">
@@ -12,10 +12,10 @@ export function CtaBanner() {
         <div>
           <p className="text-sm font-medium text-primary">Ready when you are</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-semibold text-foreground sm:text-4xl">
-            Try the first mirror before you overthink it.
+            See the pattern first. Decide after.
           </h2>
           <p className="mt-4 max-w-2xl text-muted-foreground">
-            Create an account, save one honest thought, and let MindMirror show the possible loop it can see today.
+            Take the quiz, preview the kind of result MindMirror is being built to create, then choose whether early access is worth it.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start">
             {checks.map((check) => (
@@ -31,8 +31,8 @@ export function CtaBanner() {
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link href="/auth/signup?returnTo=%2Faccount">
-              Try your first mirror
+            <Link href="/quiz">
+              Start the quiz
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>
@@ -42,11 +42,11 @@ export function CtaBanner() {
             size="lg"
             className="w-full border-border bg-transparent sm:w-auto"
           >
-            <Link href="/quiz">See the quiz</Link>
+            <Link href="/auth/signup?returnTo=%2Faccount">Try the first mirror</Link>
           </Button>
         </div>
         <p className="text-xs text-muted-foreground lg:col-span-2">
-          One reflection gives a first read. More reflections give MindMirror better evidence.
+          The checkout path is the experiment. The first mirror is there to make the product feel real.
         </p>
         </div>
       </div>

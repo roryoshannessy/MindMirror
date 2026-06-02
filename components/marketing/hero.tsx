@@ -23,9 +23,9 @@ export async function Hero() {
   const t = await getTranslations("hero");
 
   const proofPoints = [
-    ["One thought", "first mirror"],
-    ["3 reflections", "early signals"],
-    ["10 reflections", "pattern map"],
+    ["60-sec quiz", "pattern preview"],
+    ["Early access", "checkout test"],
+    ["Clear status", "before payment"],
   ] as const;
 
   const timelineRows = [
@@ -73,7 +73,7 @@ export async function Hero() {
 
           <div className="mx-auto mt-7 flex max-w-xl flex-col gap-3 sm:flex-row lg:mx-0">
             <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href="/auth/signup?returnTo=%2Faccount">
+              <Link href="/quiz">
                 {t("cta_primary")}
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
@@ -84,7 +84,7 @@ export async function Hero() {
               size="lg"
               className="w-full border-border bg-transparent sm:w-auto"
             >
-              <Link href="/quiz">{t("cta_secondary")}</Link>
+              <Link href="/auth/signup?returnTo=%2Faccount">{t("cta_secondary")}</Link>
             </Button>
           </div>
 
@@ -103,7 +103,7 @@ export async function Hero() {
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Mic2 className="size-3.5 text-primary" aria-hidden />
-                  <span>first mirror preview</span>
+                  <span>sample result preview</span>
                 </div>
               </div>
 
@@ -225,13 +225,13 @@ export async function Hero() {
                 <ShieldCheck className="size-4 text-emerald-200" aria-hidden />
               </div>
               <div>
-                <p className="text-xs font-medium text-foreground">Early product access</p>
-                <p className="text-xs text-muted-foreground">Start with one thought. Add more to sharpen the map.</p>
+                <p className="text-xs font-medium text-foreground">Funnel test mode</p>
+                <p className="text-xs text-muted-foreground">Quiz result first. Checkout only if the promise lands.</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Target className="size-3.5 text-primary" aria-hidden />
-              <span>landing to first mirror</span>
+              <span>landing to quiz to checkout</span>
               <ChevronRight className="size-3.5" aria-hidden />
               <CircleDot className="size-3.5 text-primary" aria-hidden />
             </div>

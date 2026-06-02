@@ -5,7 +5,7 @@
     "pricing": "Pricing",
     "sign_in": "Sign in",
     "sign_out": "Sign out",
-    "quiz": "Try the mirror"
+    "quiz": "See your pattern"
   },
   "footer": {
     "pricing": "Pricing",
@@ -16,11 +16,11 @@
     "support_contact": "support@getmindmirror.com"
   },
   "hero": {
-    "headline": "Say the thought. See the loop.",
-    "subheadline": "MindMirror is an early product for voice-first reflection. Start with one thought, save it, and see the possible pattern, cost, question, and next step.",
-    "cta_primary": "Try your first mirror",
-    "cta_secondary": "See the pattern quiz",
-    "social_proof": "Early product access. The mirror gets sharper as you add more reflections."
+    "headline": "See the pattern your mind keeps repeating.",
+    "subheadline": "Take the 60-second quiz, get a sample MindMirror result, and see whether early access is worth paying for.",
+    "cta_primary": "Start the 60-second quiz",
+    "cta_secondary": "Try the first mirror",
+    "social_proof": "Quiz first. Pattern preview before checkout. Early access is clearly labelled before payment."
   },
   "features": {
     "f1": {
@@ -49,12 +49,12 @@
     }
   },
   "social_proof": {
-    "stat1": "First mirror after one reflection",
-    "stat2": "Early signals after three",
-    "stat3": "Pattern map after ten",
+    "stat1": "60-second quiz",
+    "stat2": "Sample pattern result",
+    "stat3": "Checkout intent test",
     "quote1": "Most journaling tools help you record thoughts. MindMirror is built to show what keeps repeating.",
-    "quote2": "The first mirror turns vague overthinking into a named loop you can inspect.",
-    "quote3": "The product is early, but the core promise is live: one honest thought should give you something useful back."
+    "quote2": "The quiz turns vague overthinking into a named pattern you can inspect.",
+    "quote3": "The funnel is intentionally simple: understand the promise, preview the result, then decide."
   },
   "pricing": {
     "title": "Pricing",
@@ -174,13 +174,13 @@
   },
   "how_it_works": {
     "title": "How it works",
-    "subtitle": "The first product moment is intentionally simple: one thought in, one useful mirror out.",
-    "step1_title": "Capture one thought",
-    "step1_body": "Dictate or type what keeps coming back. No mood survey, no long setup, no pressure to make it polished.",
-    "step2_title": "Reveal the mirror",
-    "step2_body": "MindMirror names the possible loop, the cost, the evidence it used, and the next reflection question.",
-    "step3_title": "Build the pattern map",
-    "step3_body": "As you add reflections, MindMirror starts comparing what repeats across days instead of treating every entry as isolated."
+    "subtitle": "The first test is simple: can the promise of seeing your repeated thought pattern make people want early access?",
+    "step1_title": "Take the quiz",
+    "step1_body": "Answer a few questions about what keeps coming back: work, decisions, stress, relationships, habits, or direction.",
+    "step2_title": "Preview your pattern",
+    "step2_body": "See a sample MindMirror result with a possible loop, cost, next question, and what the product would track over time.",
+    "step3_title": "Choose early access",
+    "step3_body": "If the result feels useful, continue to the early-access checkout. The product status is shown clearly before payment."
   },
   "legal": {
     "terms_title": "Terms of Service",
@@ -192,8 +192,8 @@
   "meta": {
     "title": "MindMirror",
     "description": "A voice-first AI journaling product designed to detect thought patterns over time and show what keeps coming back.",
-    "home_title": "Say the thought. See the loop.",
-    "home_description": "Try MindMirror's first reflection loop: capture one thought and see the possible pattern, cost, question, and next step.",
+    "home_title": "See the pattern your mind keeps repeating",
+    "home_description": "Take the 60-second MindMirror quiz, preview a sample thought-pattern result, and decide whether early access is worth paying for.",
     "pricing_title": "Pricing",
     "pricing_description": "Early-access plans for the MindMirror waitlist. The live app is still being built.",
     "terms_title": "Terms of Service",
