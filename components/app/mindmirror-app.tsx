@@ -201,6 +201,10 @@ export function MindMirrorApp() {
   }, [entries]);
 
   const latestEntry = dashboard.latest;
+  const latestQuestion = mirrorField(
+    latestEntry?.analysis.nextQuestion,
+    "Where does this show up outside this reflection?",
+  );
   const evidenceProgress = Math.min(entries.length, 10);
   const patternMapUnlocked = entries.length >= 10;
   const earlySignalsUnlocked = entries.length >= 3;
@@ -332,9 +336,13 @@ export function MindMirrorApp() {
   }
 
   return (
-    <main className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-5 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
+    <main className="mx-auto grid w-full max-w-7xl gap-4 px-4 py-4 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
       <section className="space-y-5">
-        <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <div
+          className={`overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 sm:p-5 ${
+            hasEntries ? "hidden sm:block" : ""
+          }`}
+        >
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-3">
               <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
@@ -401,6 +409,29 @@ export function MindMirrorApp() {
             </span>
           </div>
 
+          {isListening ? (
+            <div className="mb-4 rounded-lg border border-white/15 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-4">
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-foreground text-background">
+                  <Mic className="size-6" aria-hidden />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-foreground">Listening...</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                    Speak naturally. Your transcript will appear below when you pause.
+                  </p>
+                  <div className="mm-voice-bars mt-3" aria-hidden>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           <textarea
             value={text}
             onChange={(event) => {
@@ -409,7 +440,7 @@ export function MindMirrorApp() {
               setSavedEntryId(null);
             }}
             placeholder="I keep thinking about..."
-            className="min-h-64 w-full resize-none rounded-lg border border-border bg-background/95 px-4 py-4 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-foreground focus:ring-2 focus:ring-white/10 sm:min-h-56"
+            className="min-h-48 w-full resize-none rounded-lg border border-border bg-background/95 px-4 py-4 text-base leading-7 text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-foreground focus:ring-2 focus:ring-white/10 sm:min-h-56"
           />
 
           {!hasEntries && characterCount === 0 ? (
@@ -441,7 +472,7 @@ export function MindMirrorApp() {
               ) : (
                 <Mic className="size-4" aria-hidden />
               )}
-              {isListening ? "Stop dictation" : "Dictate"}
+              {isListening ? "Listening... tap to stop" : "Dictate"}
             </Button>
             <Button
               type="button"
@@ -541,8 +572,8 @@ export function MindMirrorApp() {
               </div>
             </div>
           ) : latestEntry ? (
-            <div className="mm-reveal space-y-4">
-              <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4">
+            <div className="mm-reveal">
+              <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
                   Possible loop
                 </p>
@@ -552,69 +583,48 @@ export function MindMirrorApp() {
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {latestEntry.analysis.summary}
                 </p>
-              </div>
 
-              <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-lg border border-border bg-background/70 p-3">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    Cost
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-foreground">
-                    {mirrorField(
-                      latestEntry.analysis.loopCost,
-                      "This may be costing attention, momentum, or emotional energy.",
-                    )}
-                  </p>
+                <div className="mt-5 space-y-4 border-t border-border pt-4">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      What it may be costing
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground">
+                      {mirrorField(
+                        latestEntry.analysis.loopCost,
+                        "This may be costing attention, momentum, or emotional energy.",
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      Next question
+                    </p>
+                    <p className="mt-2 text-lg font-medium leading-7 text-foreground">
+                      {latestQuestion}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border border-border bg-background/60 p-3">
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      Smallest next step
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground">
+                      {mirrorField(
+                        latestEntry.analysis.smallestAction,
+                        "Save one more honest reflection when the thought returns.",
+                      )}
+                    </p>
+                  </div>
                 </div>
-                <div className="rounded-lg border border-border bg-background/70 p-3">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    Question
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-foreground">
-                    {mirrorField(
-                      latestEntry.analysis.nextQuestion,
-                      "What is the one thought you would want MindMirror to remember from this?",
-                    )}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-border bg-background/70 p-3">
-                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                    Next
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-foreground">
-                    {mirrorField(
-                      latestEntry.analysis.smallestAction,
-                      "Save one more honest reflection when the thought returns.",
-                    )}
-                  </p>
-                </div>
-              </div>
 
-              <div className="rounded-lg border border-border bg-background/60 p-3 text-xs leading-5 text-muted-foreground">
-                Evidence: {latestEntry.analysis.signals.join(", ") || "still forming"}
-              </div>
+                <div className="mt-4 text-xs leading-5 text-muted-foreground">
+                  Evidence: {latestEntry.analysis.signals.join(", ") || "still forming"}
+                </div>
 
-              <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  Continue the thread
-                </p>
-                <p className="mt-2 text-base font-medium leading-7 text-foreground">
-                  {mirrorField(
-                    latestEntry.analysis.nextQuestion,
-                    "Where does this show up outside this reflection?",
-                  )}
-                </p>
                 <Button
                   type="button"
-                  className="mt-4 min-h-11 rounded-full bg-foreground px-5 text-background hover:bg-foreground/90"
-                  onClick={() =>
-                    continueFromQuestion(
-                      mirrorField(
-                        latestEntry.analysis.nextQuestion,
-                        "Where does this show up outside this reflection?",
-                      ),
-                    )
-                  }
+                  className="mt-5 min-h-12 w-full rounded-full bg-foreground px-5 text-background hover:bg-foreground/90 sm:w-auto"
+                  onClick={() => continueFromQuestion(latestQuestion)}
                 >
                   Answer this next
                 </Button>
@@ -632,72 +642,71 @@ export function MindMirrorApp() {
           )}
         </section>
 
-        <section className="space-y-3">
-          <div className="flex items-end justify-between gap-3">
+        <details className="group space-y-3 rounded-lg border border-border bg-card/45 p-4">
+          <summary className="flex cursor-pointer list-none items-end justify-between gap-3">
             <div>
               <h2 className="text-sm font-medium text-foreground">Entries</h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {hasEntries ? "Newest first" : "Your saved reflections collect here"}
               </p>
             </div>
-            {hasEntries ? (
-              <p className="text-xs text-muted-foreground">
-                {entries.length} {entries.length === 1 ? "entry" : "entries"}
-              </p>
-            ) : null}
-          </div>
-
-          {!hasEntries && !isLoading ? (
-            <div className="rounded-lg border border-border bg-card/45 p-4 text-sm leading-6 text-muted-foreground">
-              No saved reflections yet.
-            </div>
-          ) : (
-            entries.slice(0, 5).map((entry) => (
-              <article
-                key={entry.id}
-                className={`rounded-lg border p-4 transition ${
-                  entry.id === savedEntryId
-                    ? "border-white/25 bg-white/[0.06]"
-                    : "border-border bg-card/55"
-                }`}
-              >
-                <div className="mb-3 flex items-start justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <CalendarDays className="size-3.5" aria-hidden />
-                    <span>{formatDate(entry.createdAt)}</span>
-                    <span className="rounded-full border border-border bg-background/60 px-2 py-0.5">
-                      {entry.source === "voice" ? "Voice" : "Text"}
-                    </span>
-                    {entry.id === savedEntryId ? (
-                      <span className="rounded-full border border-white/20 bg-white/[0.06] px-2 py-0.5 text-foreground">
-                        New
+            <span className="text-xs text-muted-foreground">
+              {hasEntries ? `${entries.length} ${entries.length === 1 ? "entry" : "entries"}` : "Open"}
+            </span>
+          </summary>
+          <div className="mt-4 space-y-3">
+            {!hasEntries && !isLoading ? (
+              <div className="rounded-lg border border-border bg-card/45 p-4 text-sm leading-6 text-muted-foreground">
+                No saved reflections yet.
+              </div>
+            ) : (
+              entries.slice(0, 5).map((entry) => (
+                <article
+                  key={entry.id}
+                  className={`rounded-lg border p-4 transition ${
+                    entry.id === savedEntryId
+                      ? "border-white/25 bg-white/[0.06]"
+                      : "border-border bg-card/55"
+                  }`}
+                >
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <CalendarDays className="size-3.5" aria-hidden />
+                      <span>{formatDate(entry.createdAt)}</span>
+                      <span className="rounded-full border border-border bg-background/60 px-2 py-0.5">
+                        {entry.source === "voice" ? "Voice" : "Text"}
                       </span>
-                    ) : null}
+                      {entry.id === savedEntryId ? (
+                        <span className="rounded-full border border-white/20 bg-white/[0.06] px-2 py-0.5 text-foreground">
+                          New
+                        </span>
+                      ) : null}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-9 shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      disabled={deletingEntryId === entry.id}
+                      aria-label="Delete entry"
+                      onClick={() => deleteEntry(entry.id)}
+                    >
+                      {deletingEntryId === entry.id ? (
+                        <Loader2 className="size-4 animate-spin" aria-hidden />
+                      ) : (
+                        <Trash2 className="size-4" aria-hidden />
+                      )}
+                    </Button>
                   </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 shrink-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                    disabled={deletingEntryId === entry.id}
-                    aria-label="Delete entry"
-                    onClick={() => deleteEntry(entry.id)}
-                  >
-                    {deletingEntryId === entry.id ? (
-                      <Loader2 className="size-4 animate-spin" aria-hidden />
-                    ) : (
-                      <Trash2 className="size-4" aria-hidden />
-                    )}
-                  </Button>
-                </div>
-                <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">{entry.text}</p>
-              </article>
-            ))
-          )}
-        </section>
+                  <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">{entry.text}</p>
+                </article>
+              ))
+            )}
+          </div>
+        </details>
       </section>
 
-      <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+      <aside className="hidden space-y-4 lg:sticky lg:top-24 lg:block lg:self-start">
         <section className="rounded-lg border border-white/10 bg-card/70 p-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-sm font-semibold text-foreground">Evidence ladder</h2>

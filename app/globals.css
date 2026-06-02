@@ -185,6 +185,39 @@
   .mm-reveal {
     animation: mm-fade-up 520ms ease-out both;
   }
+
+  .mm-voice-bars {
+    align-items: center;
+    display: flex;
+    gap: 0.28rem;
+    height: 1.35rem;
+  }
+
+  .mm-voice-bars span {
+    animation: mm-voice-bar 900ms ease-in-out infinite;
+    background: var(--foreground);
+    border-radius: 9999px;
+    display: block;
+    height: 0.45rem;
+    opacity: 0.95;
+    width: 0.28rem;
+  }
+
+  .mm-voice-bars span:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .mm-voice-bars span:nth-child(3) {
+    animation-delay: 180ms;
+  }
+
+  .mm-voice-bars span:nth-child(4) {
+    animation-delay: 270ms;
+  }
+
+  .mm-voice-bars span:nth-child(5) {
+    animation-delay: 360ms;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -198,7 +231,8 @@
   .mm-brain-mirror.is-active .mm-mascot-handle,
   .mm-brain-mirror.is-active .mm-mascot-shine,
   .mm-thought-chip,
-  .mm-reveal {
+  .mm-reveal,
+  .mm-voice-bars span {
     animation: none;
   }
 }
@@ -285,5 +319,15 @@
   50% {
     opacity: 1;
     transform: translateY(-8px);
+  }
+}
+
+@keyframes mm-voice-bar {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+  }
+  50% {
+    transform: scaleY(2.2);
   }
 }
