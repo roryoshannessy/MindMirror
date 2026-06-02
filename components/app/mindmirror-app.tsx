@@ -88,19 +88,34 @@ function nextUnlockLabel(entryCount: number): string {
   return "Pattern map unlocked.";
 }
 
-function MirrorMark({ active }: { active: boolean }) {
+function BrainMirrorMascot({ active, compact = false }: { active: boolean; compact?: boolean }) {
   return (
     <div
       aria-hidden
-      className={`relative h-20 w-20 shrink-0 rounded-full border border-white/15 bg-white text-black shadow-[0_20px_60px_rgba(0,0,0,0.35)] ${
-        active ? "animate-pulse" : ""
+      className={`mm-brain-mirror relative shrink-0 ${active ? "is-active" : ""} ${
+        compact ? "scale-75" : ""
       }`}
     >
-      <div className="absolute left-4 top-5 h-7 w-8 rounded-full border-2 border-black" />
-      <div className="absolute left-8 top-5 h-7 w-8 rounded-full border-2 border-black" />
-      <div className="absolute left-5 top-8 h-7 w-10 rounded-b-full border-x-2 border-b-2 border-black" />
-      <div className="absolute bottom-4 right-3 h-8 w-8 rounded-full border-2 border-black bg-white" />
-      <div className="absolute bottom-7 right-6 h-5 w-px rotate-45 bg-black" />
+      <svg viewBox="0 0 220 220" role="img" focusable="false">
+        <path
+          className="mm-brain-body"
+          d="M71 93c-18-2-31-16-31-34 0-21 17-37 38-36 8-14 24-22 41-18 14 3 24 13 29 26 19 1 34 17 34 36 0 17-11 31-27 36 2 17-9 33-26 37-13 4-26-1-34-11-13 7-30 5-41-6-13-13-13-33 0-46 5-5 10-8 17-10z"
+        />
+        <path className="mm-brain-line" d="M75 54c14 1 22 9 23 22" />
+        <path className="mm-brain-line" d="M121 45c-10 7-14 17-11 30" />
+        <path className="mm-brain-line" d="M139 75c-13 0-22 6-27 18" />
+        <path className="mm-brain-line" d="M78 96c9-7 21-8 34-3" />
+        <path className="mm-brain-line" d="M111 105c3 13 11 21 24 24" />
+        <path className="mm-brain-arm left" d="M65 123c-18 14-29 27-34 41" />
+        <path className="mm-brain-arm right" d="M149 122c18 10 30 18 41 28" />
+        <path className="mm-brain-leg left" d="M87 137v39" />
+        <path className="mm-brain-leg right" d="M119 137v39" />
+        <path className="mm-brain-foot left" d="M72 177h28" />
+        <path className="mm-brain-foot right" d="M108 177h29" />
+        <circle className="mm-mascot-mirror" cx="179" cy="150" r="24" />
+        <path className="mm-mascot-handle" d="M162 167l-19 20" />
+        <path className="mm-mascot-shine" d="M169 144c5-6 12-9 20-7" />
+      </svg>
     </div>
   );
 }
@@ -118,6 +133,7 @@ export function MindMirrorApp() {
   const [source, setSource] = useState<ReflectionSource>("text");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRevealingMirror, setIsRevealingMirror] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
   const [savedEntryId, setSavedEntryId] = useState<string | null>(null);
@@ -161,6 +177,12 @@ export function MindMirrorApp() {
     return () => window.clearTimeout(timeout);
   }, [savedEntryId]);
 
+  useEffect(() => {
+    if (!isRevealingMirror) return;
+    const timeout = window.setTimeout(() => setIsRevealingMirror(false), 1800);
+    return () => window.clearTimeout(timeout);
+  }, [isRevealingMirror]);
+
   const dashboard = useMemo(() => {
     const patterns = countBy(entries.map((entry) => entry.analysis.patternLabel));
     const emotions = countBy(entries.map((entry) => entry.analysis.emotion));
@@ -177,6 +199,9 @@ export function MindMirrorApp() {
   const evidenceProgress = Math.min(entries.length, 10);
   const patternMapUnlocked = entries.length >= 10;
   const earlySignalsUnlocked = entries.length >= 3;
+  const thoughtChips =
+    latestEntry?.analysis.signals.slice(0, 3).filter(Boolean) ??
+    (cleanText.length > 0 ? cleanText.split(/\s+/).filter((word) => word.length > 4).slice(0, 3) : []);
   const unlockSteps = [
     {
       count: 1,
@@ -221,6 +246,7 @@ export function MindMirrorApp() {
       setText("");
       setSource("text");
       setSavedEntryId(json.entry.id);
+      setIsRevealingMirror(true);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save entry.");
     } finally {
@@ -288,8 +314,8 @@ export function MindMirrorApp() {
   return (
     <main className="mx-auto grid w-full max-w-7xl gap-5 px-4 py-5 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
       <section className="space-y-5">
-        <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-3">
               <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                 <Sparkles className="size-4 text-foreground" aria-hidden />
@@ -306,7 +332,21 @@ export function MindMirrorApp() {
                 actually see.
               </p>
             </div>
-            <MirrorMark active={isSaving || Boolean(savedEntryId)} />
+            <div className="relative flex min-h-56 w-full items-end justify-center rounded-lg border border-white/10 bg-background/80 p-4 sm:w-[21rem]">
+              <div className="absolute left-4 top-4 max-w-[12rem] space-y-2">
+                {(thoughtChips.length > 0 ? thoughtChips : ["thought", "loop", "mirror"]).map(
+                  (chip) => (
+                    <span
+                      key={chip}
+                      className="mm-thought-chip block w-fit rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-muted-foreground"
+                    >
+                      {chip}
+                    </span>
+                  ),
+                )}
+              </div>
+              <BrainMirrorMascot active={isSaving || isRevealingMirror || Boolean(savedEntryId)} />
+            </div>
           </div>
 
           <div className="mt-5 rounded-lg border border-border bg-background/70 p-3">
@@ -394,9 +434,9 @@ export function MindMirrorApp() {
           </div>
 
           {savedEntryId ? (
-            <div className="mt-4 flex items-start gap-2 rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-sm leading-6 text-primary">
+            <div className="mt-4 flex items-start gap-2 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-2 text-sm leading-6 text-foreground">
               <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />
-              <p>Saved. Your latest mirror is ready.</p>
+              <p>Saved. MindMirror is looking for the loop.</p>
             </div>
           ) : null}
           {error ? (
@@ -414,10 +454,14 @@ export function MindMirrorApp() {
                 Mirror
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                {latestEntry ? "Latest read from your saved reflection." : "Waiting for a reflection."}
+                {isRevealingMirror
+                  ? "Comparing words, emotion, and possible loop."
+                  : latestEntry
+                    ? "Latest read from your saved reflection."
+                    : "Waiting for a reflection."}
               </p>
             </div>
-            {latestEntry ? (
+            {latestEntry && !isRevealingMirror ? (
               <span className="rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted-foreground">
                 {latestEntry.analysis.confidence ?? "low"} confidence
               </span>
@@ -428,8 +472,43 @@ export function MindMirrorApp() {
             <div className="rounded-lg border border-border bg-background/60 p-4 text-sm text-muted-foreground">
               Loading your mirror...
             </div>
+          ) : isRevealingMirror ? (
+            <div className="mm-reveal overflow-hidden rounded-lg border border-white/15 bg-white/[0.04] p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="relative flex min-h-44 items-end justify-center rounded-lg border border-white/10 bg-background/70 px-8 pt-8 sm:w-64">
+                  {thoughtChips.slice(0, 3).map((chip) => (
+                    <span
+                      key={chip}
+                      className="mm-thought-chip absolute rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs text-muted-foreground first:left-4 first:top-4 [&:nth-child(2)]:right-5 [&:nth-child(2)]:top-10 [&:nth-child(3)]:left-8 [&:nth-child(3)]:top-20"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                  <BrainMirrorMascot active compact />
+                </div>
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                    Analysing
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+                    Finding what this thought is doing.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
+                <div className="rounded-lg border border-border bg-background/60 p-3">
+                  Saving raw thought
+                </div>
+                <div className="rounded-lg border border-border bg-background/60 p-3">
+                  Naming possible loop
+                </div>
+                <div className="rounded-lg border border-border bg-background/60 p-3">
+                  Choosing next question
+                </div>
+              </div>
+            </div>
           ) : latestEntry ? (
-            <div className="space-y-4">
+            <div className="mm-reveal space-y-4">
               <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
                   Possible loop
@@ -519,7 +598,7 @@ export function MindMirrorApp() {
                 key={entry.id}
                 className={`rounded-lg border p-4 transition ${
                   entry.id === savedEntryId
-                    ? "border-primary/45 bg-primary/10"
+                    ? "border-white/25 bg-white/[0.06]"
                     : "border-border bg-card/55"
                 }`}
               >
@@ -531,7 +610,7 @@ export function MindMirrorApp() {
                       {entry.source === "voice" ? "Voice" : "Text"}
                     </span>
                     {entry.id === savedEntryId ? (
-                      <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-primary">
+                      <span className="rounded-full border border-white/20 bg-white/[0.06] px-2 py-0.5 text-foreground">
                         New
                       </span>
                     ) : null}

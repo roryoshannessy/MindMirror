@@ -108,13 +108,97 @@
     background: var(--primary);
     box-shadow: 0 0 20px color-mix(in oklab, var(--primary) 80%, transparent);
   }
+
+  .mm-brain-mirror {
+    height: 13rem;
+    width: 13rem;
+    animation: mm-character-breathe 6s ease-in-out infinite;
+    filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.46));
+    transform-origin: center bottom;
+  }
+
+  .mm-brain-mirror svg {
+    height: 100%;
+    overflow: visible;
+    width: 100%;
+  }
+
+  .mm-brain-body {
+    fill: #f5f5f5;
+    stroke: #f5f5f5;
+    stroke-linejoin: round;
+    stroke-width: 3;
+  }
+
+  .mm-brain-line,
+  .mm-brain-arm,
+  .mm-brain-leg,
+  .mm-brain-foot,
+  .mm-mascot-handle,
+  .mm-mascot-shine {
+    fill: none;
+    stroke: #0a0a0a;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 7;
+  }
+
+  .mm-brain-arm.right,
+  .mm-mascot-mirror,
+  .mm-mascot-handle,
+  .mm-mascot-shine {
+    transform-origin: 146px 123px;
+    transition: transform 500ms ease;
+  }
+
+  .mm-brain-mirror.is-active .mm-brain-arm.right,
+  .mm-brain-mirror.is-active .mm-mascot-mirror,
+  .mm-brain-mirror.is-active .mm-mascot-handle,
+  .mm-brain-mirror.is-active .mm-mascot-shine {
+    animation: mm-mirror-lift 1.8s ease-in-out infinite;
+  }
+
+  .mm-mascot-mirror {
+    fill: #ffffff;
+    stroke: #0a0a0a;
+    stroke-width: 7;
+  }
+
+  .mm-brain-mirror.is-active .mm-mascot-mirror {
+    animation:
+      mm-mirror-lift 1.8s ease-in-out infinite,
+      mm-mirror-glow 1.8s ease-in-out infinite;
+  }
+
+  .mm-thought-chip {
+    animation: mm-thought-drift 4.8s ease-in-out infinite;
+  }
+
+  .mm-thought-chip:nth-child(2) {
+    animation-delay: 600ms;
+  }
+
+  .mm-thought-chip:nth-child(3) {
+    animation-delay: 1.2s;
+  }
+
+  .mm-reveal {
+    animation: mm-fade-up 520ms ease-out both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .mm-fade-up,
   .mm-float,
   .mm-scan,
-  .mm-mira-bot {
+  .mm-mira-bot,
+  .mm-brain-mirror,
+  .mm-brain-mirror.is-active .mm-brain-arm.right,
+  .mm-brain-mirror.is-active .mm-mascot-mirror,
+  .mm-brain-mirror.is-active .mm-mascot-handle,
+  .mm-brain-mirror.is-active .mm-mascot-shine,
+  .mm-thought-chip,
+  .mm-reveal {
     animation: none;
   }
 }
@@ -159,5 +243,47 @@
   }
   50% {
     transform: translateY(-3px) scale(1.04);
+  }
+}
+
+@keyframes mm-character-breathe {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes mm-mirror-lift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-4deg);
+  }
+}
+
+@keyframes mm-mirror-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgb(255 255 255 / 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.62));
+  }
+}
+
+@keyframes mm-thought-drift {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-8px);
   }
 }
