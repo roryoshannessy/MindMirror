@@ -7,7 +7,11 @@ import { useAuthStore } from "@/stores/auth-store";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function NavAuth() {
+type NavAuthProps = {
+  isMarketingHome?: boolean;
+};
+
+export function NavAuth({ isMarketingHome = false }: NavAuthProps) {
   const t = useTranslations("nav");
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const isLoading = useAuthStore((s) => s.isLoading);
@@ -27,7 +31,12 @@ export function NavAuth() {
         type="button"
         variant="ghost"
         size="sm"
-        className="hidden text-muted-foreground hover:text-foreground md:inline-flex"
+        className={cn(
+          "hidden md:inline-flex",
+          isMarketingHome
+            ? "text-[#60706d] hover:text-[#172120]"
+            : "text-muted-foreground hover:text-foreground",
+        )}
         onClick={() => void signOut()}
       >
         {t("sign_out")}
@@ -39,7 +48,10 @@ export function NavAuth() {
     <Link
       href="/auth/login"
       className={cn(
-        "hidden rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground md:inline-flex",
+        "hidden rounded-md px-2 py-1.5 text-sm transition-colors md:inline-flex",
+        isMarketingHome
+          ? "text-[#60706d] hover:text-[#172120]"
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {t("sign_in")}

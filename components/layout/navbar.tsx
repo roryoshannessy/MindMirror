@@ -19,7 +19,7 @@ export function Navbar() {
       className={cn(
         "sticky top-0 z-50 border-b backdrop-blur-md",
         isMarketingHome
-          ? "border-[#e6edf0] bg-white/88 text-[#172120]"
+          ? "border-[#dce8e5] bg-[#eef7f4]/90 text-[#172120]"
           : "border-border bg-background/80",
       )}
     >
@@ -34,7 +34,15 @@ export function Navbar() {
             if (isQuizRoute) return null;
             if (isCta) {
               return (
-                <Button key={item.href} asChild size="sm" className="shrink-0 rounded-lg px-3 sm:px-4">
+                <Button
+                  key={item.href}
+                  asChild
+                  size="sm"
+                  className={cn(
+                    "shrink-0 rounded-full px-3 sm:px-4",
+                    isMarketingHome && "bg-[#172120] text-white hover:bg-[#263533]",
+                  )}
+                >
                   <Link href={item.href}>{t(item.labelKey)}</Link>
                 </Button>
               );
@@ -57,7 +65,7 @@ export function Navbar() {
           {isQuizRoute ? (
             <span className="text-xs font-medium text-muted-foreground">60-sec quiz</span>
           ) : (
-            <NavAuth />
+            <NavAuth isMarketingHome={isMarketingHome} />
           )}
         </nav>
       </div>
