@@ -13,15 +13,15 @@ type Props = {
 
 export function QuestionCard({ node, value, onSelect }: Props) {
   return (
-    <Card className="mm-fade-up overflow-hidden border-border bg-card/80 shadow-2xl">
-      <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+    <Card className="mm-fade-up overflow-hidden rounded-[2rem] border-[#d6e6e1] bg-white/88 text-[#172120] shadow-[0_28px_90px_rgb(51_84_79/0.16)] backdrop-blur">
+      <div className="h-px bg-gradient-to-r from-transparent via-[#7aa39c] to-transparent" />
       <CardHeader className="gap-3 px-5 pb-5 pt-7 sm:px-7 sm:pt-8">
-        <p className="text-xs font-medium uppercase text-primary">Answer privately</p>
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#42615d]">Private quiz</p>
         <CardTitle className="text-balance text-2xl font-semibold leading-tight sm:text-3xl">
           {node.title}
         </CardTitle>
         {node.subtitle ? (
-          <CardDescription className="text-base leading-7 text-muted-foreground">
+          <CardDescription className="text-base leading-7 text-[#60706d]">
             {node.subtitle}
           </CardDescription>
         ) : null}
@@ -34,10 +34,10 @@ export function QuestionCard({ node, value, onSelect }: Props) {
               key={opt.value}
               type="button"
               className={cn(
-                "group flex min-h-16 w-full items-center justify-between gap-4 rounded-lg border px-4 py-4 text-left text-base font-medium transition-colors",
+                "group flex min-h-16 w-full items-center justify-between gap-4 rounded-2xl border px-4 py-4 text-left text-base font-medium transition-colors",
                 selected
-                  ? "border-primary bg-primary text-primary-foreground shadow-[0_12px_36px_rgb(99_102_241/0.22)]"
-                  : "border-border bg-background/80 text-foreground hover:border-primary/60 hover:bg-muted",
+                  ? "border-[#172120] bg-[#172120] text-white shadow-[0_12px_36px_rgb(23_33_32/0.2)]"
+                  : "border-[#dfe9e7] bg-[#f8fbfa] text-[#172120] hover:border-[#9fbdb7] hover:bg-white",
               )}
               onClick={() => onSelect(opt.value)}
             >
@@ -46,8 +46,8 @@ export function QuestionCard({ node, value, onSelect }: Props) {
                   className={cn(
                     "flex size-7 shrink-0 items-center justify-center rounded-md border text-xs tabular-nums",
                     selected
-                      ? "border-primary-foreground/40 bg-primary-foreground/15 text-primary-foreground"
-                      : "border-border bg-card text-muted-foreground",
+                      ? "border-white/40 bg-white/15 text-white"
+                      : "border-[#dfe9e7] bg-white text-[#81908d]",
                   )}
                 >
                   {String(index + 1).padStart(2, "0")}
@@ -58,8 +58,8 @@ export function QuestionCard({ node, value, onSelect }: Props) {
                 className={cn(
                   "flex size-5 shrink-0 items-center justify-center rounded-full border",
                   selected
-                    ? "border-primary-foreground/70 bg-primary-foreground text-primary"
-                    : "border-muted-foreground/40 text-transparent group-hover:border-primary",
+                    ? "border-white bg-white text-[#172120]"
+                    : "border-[#9fb0ac] text-transparent group-hover:border-[#42615d]",
                 )}
                 aria-hidden
               >

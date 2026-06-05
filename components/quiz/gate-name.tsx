@@ -35,10 +35,10 @@ export function GateName({ node, defaultName, onSubmit }: Props) {
   });
 
   return (
-    <Card className="border-border bg-card shadow-xl">
+    <Card className="rounded-[2rem] border-[#d6e6e1] bg-white/88 text-[#172120] shadow-[0_28px_90px_rgb(51_84_79/0.16)] backdrop-blur">
       <CardHeader className="px-5 pt-6 sm:px-6">
         <CardTitle className="text-2xl font-semibold leading-tight">{node.title}</CardTitle>
-        <CardDescription className="text-base leading-7">{node.subtitle}</CardDescription>
+        <CardDescription className="text-base leading-7 text-[#60706d]">{node.subtitle}</CardDescription>
       </CardHeader>
       <CardContent className="px-5 pb-6 sm:px-6">
         <form
@@ -58,7 +58,12 @@ export function GateName({ node, defaultName, onSubmit }: Props) {
               <p className="text-sm text-destructive">{errors.firstName.message}</p>
             ) : null}
           </div>
-          <Button type="submit" disabled={isSubmitting} size="lg" className="w-full sm:w-auto">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            size="lg"
+            className="w-full rounded-full bg-[#172120] text-white hover:bg-[#263533] sm:w-auto"
+          >
             Continue
           </Button>
         </form>

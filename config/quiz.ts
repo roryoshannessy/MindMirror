@@ -103,39 +103,44 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   q1_role: {
     id: "q1_role",
     kind: "question_single",
-    title: "First, what best describes you?",
-    subtitle: "We'll tailor your MindMirror profile to your life.",
+    title: "Where do recurring thoughts show up most for you?",
+    subtitle: "MindMirror is built to spot patterns in the situations you actually live through.",
     options: [
-      { value: "founder_entrepreneur", label: "Founder / Entrepreneur" },
-      { value: "professional", label: "Professional / Executive" },
-      { value: "creative", label: "Creative / Artist" },
-      { value: "student", label: "Student" },
-      { value: "other", label: "Something else" },
+      { value: "anxiety_social", label: "Anxiety, social events, or overthinking" },
+      { value: "founder_entrepreneur", label: "Building a business or side project" },
+      { value: "athlete_performer", label: "Sport, training, or performance pressure" },
+      { value: "relationships", label: "Dating, relationships, or family patterns" },
+      { value: "habits_identity", label: "Habits, discipline, alcohol, vaping, or identity" },
+      { value: "self_awareness", label: "I just want to understand myself better" },
     ],
     next: { fallback: "q2_struggle" },
   },
   q2_struggle: {
     id: "q2_struggle",
     kind: "question_single",
-    title: "What's your biggest mental challenge right now?",
+    title: "What loop would you most want to catch earlier?",
+    subtitle: "Pick the one that feels most familiar.",
     options: [
-      { value: "overthinking", label: "I overthink everything and go in circles" },
-      { value: "no_clarity", label: "I struggle to get clear on what I actually want" },
-      { value: "stuck", label: "I keep setting goals but never follow through" },
-      { value: "stress", label: "I carry stress without knowing why" },
-      { value: "patterns", label: "I feel like I keep repeating the same mistakes" },
+      { value: "social_anxiety", label: "I get anxious before people, events, or plans" },
+      { value: "business_doubt", label: "I doubt myself when I need to take action" },
+      { value: "performance_pressure", label: "Pressure changes how I think or perform" },
+      { value: "relationship_reactivity", label: "I react the same way in relationships" },
+      { value: "habit_relapse", label: "I slip back into habits I said I was done with" },
+      { value: "overthinking", label: "I overthink and keep replaying the same thought" },
     ],
     next: { fallback: "q3_journal" },
   },
   q3_journal: {
     id: "q3_journal",
     kind: "question_single",
-    title: "How often do you currently journal or reflect?",
+    title: "How do you usually process what is going on?",
+    subtitle: "MindMirror should be easier than forcing a perfect journaling habit.",
     options: [
-      { value: "never", label: "Never — I don't have a habit" },
-      { value: "sometimes", label: "Sometimes — but I'm not consistent" },
-      { value: "regularly", label: "Regularly — but I don't get much from it" },
-      { value: "always", label: "Always — I journal a lot" },
+      { value: "voice_notes", label: "Voice notes or talking it out" },
+      { value: "journal_sometimes", label: "Journaling sometimes, but not consistently" },
+      { value: "think_alone", label: "Mostly in my head, which can spiral" },
+      { value: "messages", label: "Texts, notes, screenshots, or random reminders" },
+      { value: "avoid", label: "I avoid it until it catches up with me" },
     ],
     next: { fallback: "interstitial_1" },
   },
@@ -144,36 +149,37 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     kind: "interstitial",
     progressStep: false,
     variant: "stat",
-    headline:
-      "78% of MindMirror users discover a thought pattern they had no idea existed — within their first week.",
-    body: "Most people journal without ever seeing the bigger picture. MindMirror is the first app that connects the dots across everything you've said.",
-    ctaLabel: "Continue →",
+    headline: "Journaling records what happened. MindMirror is being built to prepare you for what repeats.",
+    body: "The useful moment is not just writing after the event. It is recognising: \"I have felt this before, in this exact type of situation.\"",
+    ctaLabel: "Continue",
     next: { fallback: "q4_goal" },
   },
   q4_goal: {
     id: "q4_goal",
     kind: "question_single",
-    title: "What would getting clarity on your thinking patterns give you?",
-    subtitle: "Pick the one that resonates most.",
+    title: "What would you want MindMirror to help you do next time?",
+    subtitle: "This shapes the kind of sample result you see.",
     options: [
-      { value: "confidence", label: "More confidence in my decisions" },
-      { value: "momentum", label: "Finally make progress on my goals" },
-      { value: "peace", label: "Less mental noise and stress" },
-      { value: "understanding", label: "Understand why I keep self-sabotaging" },
-      { value: "growth", label: "Accelerate my personal growth" },
+      { value: "prepare", label: "Prepare before a trigger, event, or hard moment" },
+      { value: "notice", label: "Notice the loop while it is happening" },
+      { value: "choose", label: "Make a better choice instead of reacting" },
+      { value: "calm", label: "Reduce anxiety and mental noise" },
+      { value: "follow_through", label: "Follow through on who I said I wanted to be" },
     ],
     next: { fallback: "q5_awareness" },
   },
   q5_awareness: {
     id: "q5_awareness",
     kind: "question_single",
-    title: "How self-aware do you think you are?",
-    subtitle: "Be honest — this shapes your results.",
+    title: "Is there something coming up where this would help?",
+    subtitle: "Think about a weekend, meeting, competition, date, conversation, or decision.",
     options: [
-      { value: "very", label: "Very — I reflect constantly" },
-      { value: "somewhat", label: "Somewhat — I try but miss things" },
-      { value: "not_much", label: "Not much — I'm not sure where to start" },
-      { value: "unsure", label: "I genuinely don't know" },
+      { value: "social_event", label: "A social event or night out" },
+      { value: "work_business", label: "A work or business decision" },
+      { value: "performance", label: "Training, sport, or a performance moment" },
+      { value: "relationship_talk", label: "A relationship conversation" },
+      { value: "habit_test", label: "A habit test: alcohol, vaping, scrolling, discipline" },
+      { value: "not_sure", label: "Not sure yet — I just want the pattern" },
     ],
     next: { fallback: "interstitial_2" },
   },
@@ -182,9 +188,9 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     kind: "interstitial",
     progressStep: false,
     variant: "testimonial",
-    headline: "\"I didn't realise I had been talking about quitting my job for 9 months until MindMirror showed me.\"",
-    body: "— James R., Founder, London\n\nMindMirror doesn't just store your thoughts. It shows you what they mean over time.",
-    ctaLabel: "See your profile →",
+    headline: "\"I do not need another diary. I need something that tells me when I am about to repeat myself.\"",
+    body: "That is the point of MindMirror: voice-first reflection, recurring thought detection, and preparation for the next real-life trigger.",
+    ctaLabel: "See your sample profile",
     next: { fallback: "gate_name" },
   },
   gate_name: {
@@ -198,8 +204,8 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   gate_email: {
     id: "gate_email",
     kind: "gate_email",
-    title: "Enter your email to unlock your pattern profile",
-    subtitle: "We'll save your result so you can continue to checkout. No report email.",
+    title: "Enter your email to unlock your sample pattern",
+    subtitle: "We'll save your quiz result so you can review the sample and decide whether early access is worth it.",
     placeholder: "your@email.com",
     // Transition to theater is handled by enterTheater() in GateEmail.onSuccess,
     // not through getNextNodeId routing, so no `next` field is needed.
@@ -209,10 +215,10 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     kind: "theater",
     progressStep: false,
     steps: [
-      { id: "s1", text: "Analysing your responses...", durationMs: stepDuration },
-      { id: "s2", text: "Mapping your thought patterns...", durationMs: stepDuration },
-      { id: "s3", text: "Building your personal profile...", durationMs: stepDuration },
-      { id: "s4", text: "Your sample profile is ready.", durationMs: stepDuration },
+      { id: "s1", text: "Reading your real-life trigger...", durationMs: stepDuration },
+      { id: "s2", text: "Finding the recurring thought loop...", durationMs: stepDuration },
+      { id: "s3", text: "Preparing your next-moment mirror...", durationMs: stepDuration },
+      { id: "s4", text: "Your sample pattern is ready.", durationMs: stepDuration },
     ],
   },
 };
@@ -245,6 +251,26 @@ export function getNextNodeId(
 /* --- Results wall: derived copy from Q1 + Q2 (Product deck §5) --- */
 
 const q2PatternHeadlines: Record<string, { title: string; body: string }> = {
+  social_anxiety: {
+    title: "Anticipation anxiety loop",
+    body: "Before an event, your mind starts rehearsing what could go wrong. MindMirror would help you recognise this earlier and prepare before the anxiety becomes the plan.",
+  },
+  business_doubt: {
+    title: "Founder doubt loop",
+    body: "When the next move matters, your thinking can turn into self-questioning. MindMirror would show when doubt is replacing action so you can choose the next step sooner.",
+  },
+  performance_pressure: {
+    title: "Pressure-before-performance loop",
+    body: "Your thoughts tighten before the moment arrives. MindMirror would help you notice the pattern before training, competition, or performance so you can reset earlier.",
+  },
+  relationship_reactivity: {
+    title: "Relationship reaction loop",
+    body: "The same emotional script can come back in different conversations. MindMirror would help you see the trigger, the story you tell yourself, and the response you usually repeat.",
+  },
+  habit_relapse: {
+    title: "Identity reset loop",
+    body: "A small trigger can become a full reset: one drink, one scroll, one missed routine, then the old story returns. MindMirror would help you prepare before that moment.",
+  },
   overthinking: {
     title: "Clarity seeking loop",
     body: "You keep trying to think your way into certainty before you act. The more you think, the less sure you feel.",
@@ -268,21 +294,29 @@ const q2PatternHeadlines: Record<string, { title: string; body: string }> = {
 };
 
 const q1RoleStats: Record<string, { label: string; value: string }> = {
+  anxiety_social: {
+    label: "Anxiety context",
+    value: "Your mirror should help you prepare before social plans, conversations, or situations where your mind starts predicting danger.",
+  },
   founder_entrepreneur: {
-    label: "Founder's loop",
-    value: "You treat thinking as a form of working. More analysis = more progress. Until it doesn't.",
+    label: "Founder context",
+    value: "Your mirror should help you separate useful planning from avoidance, doubt, and decision loops that slow momentum.",
   },
-  professional: {
-    label: "Perfectionist loop",
-    value: "You optimize decisions but delay action. The standard keeps rising. Execution gets pushed back.",
+  athlete_performer: {
+    label: "Performance context",
+    value: "Your mirror should help you spot the thoughts that appear before training, competition, discipline dips, or pressure moments.",
   },
-  creative: {
-    label: "Inspiration trap",
-    value: "You wait for the right feeling or idea before starting. But momentum, not perfection, creates the work.",
+  relationships: {
+    label: "Relationship context",
+    value: "Your mirror should help you notice repeated stories, reactions, and fears before the next conversation happens.",
   },
-  student: {
-    label: "Understanding before action",
-    value: "You need to fully grasp something before trying it. But sometimes trying teaches understanding.",
+  habits_identity: {
+    label: "Identity context",
+    value: "Your mirror should help you recognise the thoughts that show up before you break a promise to yourself.",
+  },
+  self_awareness: {
+    label: "Self-awareness context",
+    value: "Your mirror should help you turn scattered reflections into a pattern you can actually use.",
   },
   other: {
     label: "Your pattern loop",

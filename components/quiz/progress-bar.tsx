@@ -14,7 +14,7 @@ export function QuizProgressBar({ current, total, className }: Props) {
 
   return (
     <div className={cn("w-full", className)}>
-      <div className="mb-3 flex items-center justify-between text-xs font-medium text-muted-foreground">
+      <div className="mb-3 flex items-center justify-between text-xs font-medium text-[#60706d]">
         <span>
           Question {Math.min(current, safeTotal)} of {safeTotal}
         </span>
@@ -22,9 +22,9 @@ export function QuizProgressBar({ current, total, className }: Props) {
           about 60 sec
         </span>
       </div>
-      <div className="h-2.5 w-full overflow-hidden rounded-full border border-border bg-muted">
+      <div className="h-2.5 w-full overflow-hidden rounded-full border border-[#d6e6e1] bg-white/80">
         <div
-          className="h-full rounded-full bg-primary shadow-[0_0_18px_rgb(99_102_241/0.7)] transition-[width] duration-300 ease-out"
+          className="h-full rounded-full bg-[#172120] shadow-[0_0_18px_rgb(23_33_32/0.24)] transition-[width] duration-300 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>

@@ -70,7 +70,7 @@ export function QuizExperience() {
     const theater = QUIZ_NODES.theater;
     if (theater?.kind === "theater") {
       return (
-        <div className="mx-auto w-full max-w-xl px-4 py-8 sm:py-14">
+        <div className="mx-auto w-full max-w-xl px-4 py-8 text-[#172120] sm:py-14">
           <div className="mb-4 flex items-center">
             {canBack ? (
               <Button type="button" variant="ghost" size="icon" onClick={goBack} aria-label="Back">
@@ -98,10 +98,17 @@ export function QuizExperience() {
   }
 
   return (
-    <div className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-xl flex-col justify-center px-4 py-8 sm:py-14">
+    <div className="mx-auto flex min-h-[calc(100svh-3.5rem)] w-full max-w-xl flex-col justify-center px-4 py-8 text-[#172120] sm:py-14">
       <div className="mb-5 flex items-center justify-between gap-2">
         {canBack ? (
-          <Button type="button" variant="ghost" size="icon" onClick={goBack} aria-label="Back">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="text-[#60706d] hover:bg-white/70 hover:text-[#172120]"
+                onClick={goBack}
+                aria-label="Back"
+              >
             <ChevronLeft className="size-4" />
           </Button>
         ) : (

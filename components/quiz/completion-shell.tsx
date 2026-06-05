@@ -20,6 +20,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuizStore } from "@/stores/quiz-store";
 import { PricingWall } from "./pricing-wall";
 
+const triggerCopy: Record<string, { label: string; value: string }> = {
+  social_event: {
+    label: "Next trigger",
+    value: "Before a social event or night out, MindMirror would remind you what this loop usually says and how you want to respond.",
+  },
+  work_business: {
+    label: "Next trigger",
+    value: "Before a work or business decision, MindMirror would show whether you are planning clearly or repeating a doubt loop.",
+  },
+  performance: {
+    label: "Next trigger",
+    value: "Before training, sport, or performance, MindMirror would help you recognise the pressure script before it takes over.",
+  },
+  relationship_talk: {
+    label: "Next trigger",
+    value: "Before a relationship conversation, MindMirror would help you see the old story before you react from it.",
+  },
+  habit_test: {
+    label: "Next trigger",
+    value: "Before a habit test, MindMirror would remind you what usually pulls you back into the old identity.",
+  },
+  not_sure: {
+    label: "Next trigger",
+    value: "As you add reflections, MindMirror would learn where this loop appears and help you prepare before it repeats.",
+  },
+};
+
+const goalCopy: Record<string, string> = {
+  prepare: "Prepare before the loop starts",
+  notice: "Notice it while it is happening",
+  choose: "Choose your response instead of reacting",
+  calm: "Reduce anxiety and mental noise",
+  follow_through: "Follow through on your identity",
+};
+
 export function CompletionShell() {
   const tFaq = useTranslations("faq");
   const locale = useLocale();
@@ -48,8 +83,12 @@ export function CompletionShell() {
   const name = firstName.trim() || "there";
   const struggle = String(answers.q2_struggle ?? "");
   const role = String(answers.q1_role ?? "");
+  const upcoming = String(answers.q5_awareness ?? "");
+  const goal = String(answers.q4_goal ?? "");
   const pattern = getPatternForStruggle(struggle);
   const insight = getInsightForRole(role);
+  const trigger = triggerCopy[upcoming] ?? triggerCopy.not_sure;
+  const goalLabel = goalCopy[goal] ?? "Use the pattern before it repeats";
   const catalog = getCatalog();
   const primaryPlan =
     catalog.plans.find((plan) => plan.id === "mindmirror-monthly") ??
@@ -62,60 +101,60 @@ export function CompletionShell() {
   const primaryCheckout = `/checkout/email?planId=${encodeURIComponent(primaryPlanId)}&session=quiz&qz=${encodeURIComponent(sessionId)}`;
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-10 px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6">
+    <div className="mx-auto w-full max-w-5xl space-y-10 px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] text-[#172120] sm:px-6">
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-sm font-medium text-primary">Your sample profile</p>
+        <p className="text-sm font-medium text-[#42615d]">Your sample mirror</p>
         <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight sm:text-5xl">
-          {name}, here&apos;s what your mind keeps doing.
+          {name}, here&apos;s the loop MindMirror would help you prepare for.
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-          This is a preview of the kind of pattern dashboard MindMirror is being built to create from real entries over time.
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#60706d] sm:text-base">
+          This is a sample of how AI journaling could turn recurring thoughts into self-awareness you can use before the next real-life trigger.
         </p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <Card className="overflow-hidden border-primary/25 bg-card/80 shadow-2xl">
-          <div className="h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+        <Card className="overflow-hidden rounded-[2rem] border-[#d6e6e1] bg-white/88 shadow-[0_28px_90px_rgb(51_84_79/0.16)] backdrop-blur">
+          <div className="h-px bg-gradient-to-r from-transparent via-[#7aa39c] to-transparent" />
           <CardHeader className="pb-4">
-            <div className="mb-2 flex items-center gap-2 text-sm text-primary">
+            <div className="mb-2 flex items-center gap-2 text-sm text-[#42615d]">
               <BrainCircuit className="size-4" aria-hidden />
               Pattern detected
             </div>
             <CardTitle className="text-2xl leading-tight sm:text-3xl">{pattern.title}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5 text-sm text-muted-foreground">
+          <CardContent className="space-y-5 text-sm text-[#60706d]">
             <p className="text-base leading-7">{pattern.body}</p>
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-border bg-background/80 p-4">
-                <p className="text-xs text-muted-foreground">Signal</p>
-                <p className="mt-2 font-medium text-foreground">repeated thought loop</p>
+              <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
+                <p className="text-xs text-[#81908d]">Signal</p>
+                <p className="mt-2 font-medium text-[#172120]">recurring thought loop</p>
               </div>
-              <div className="rounded-lg border border-border bg-background/80 p-4">
-                <p className="text-xs text-muted-foreground">Area</p>
-                <p className="mt-2 font-medium text-foreground">decisions and momentum</p>
+              <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
+                <p className="text-xs text-[#81908d]">Use it for</p>
+                <p className="mt-2 font-medium text-[#172120]">{goalLabel}</p>
               </div>
-              <div className="rounded-lg border border-border bg-background/80 p-4">
-                <p className="text-xs text-muted-foreground">Next</p>
-                <p className="mt-2 font-medium text-foreground">watch it over time</p>
+              <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
+                <p className="text-xs text-[#81908d]">Next</p>
+                <p className="mt-2 font-medium text-[#172120]">prepare before it repeats</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card/70">
+        <Card className="rounded-[2rem] border-[#d6e6e1] bg-white/78 shadow-sm">
           <CardHeader>
-            <div className="mb-2 flex items-center gap-2 text-sm text-primary">
+            <div className="mb-2 flex items-center gap-2 text-sm text-[#42615d]">
               <Waypoints className="size-4" aria-hidden />
-              Role insight
+              {trigger.label}
             </div>
             <CardTitle className="text-xl">{insight.label}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm leading-7 text-muted-foreground">{insight.value}</p>
-            <div className="rounded-lg border border-border bg-background/80 p-4">
-              <p className="text-xs text-muted-foreground">Dashboard direction</p>
-              <p className="mt-2 text-sm font-medium text-foreground">
-                Voice entries, habits, goals, and patterns in one place.
+            <p className="text-sm leading-7 text-[#60706d]">{insight.value}</p>
+            <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
+              <p className="text-xs text-[#81908d]">Preparation direction</p>
+              <p className="mt-2 text-sm font-medium leading-6 text-[#172120]">
+                {trigger.value}
               </p>
             </div>
           </CardContent>
@@ -123,48 +162,52 @@ export function CompletionShell() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="border-border/80 bg-background/80">
+        <Card className="rounded-2xl border-[#d6e6e1] bg-white/78">
           <CardContent className="pt-6">
-            <Activity className="size-5 text-emerald-300" aria-hidden />
-            <p className="mt-3 text-sm font-medium text-foreground">Built around real entries</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              The full product direction starts with voice and expands from there.
+            <Activity className="size-5 text-[#42615d]" aria-hidden />
+            <p className="mt-3 text-sm font-medium text-[#172120]">Built around real entries</p>
+            <p className="mt-2 text-sm leading-6 text-[#60706d]">
+              Speak, type, or upload reflections. The value comes from what repeats over time.
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/80 bg-background/80">
+        <Card className="rounded-2xl border-[#d6e6e1] bg-white/78">
           <CardContent className="pt-6">
-            <CheckCircle2 className="size-5 text-primary" aria-hidden />
-            <p className="mt-3 text-sm font-medium text-foreground">Waitlist-only checkout</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              You are testing early access demand, not buying a live app today.
+            <CheckCircle2 className="size-5 text-[#42615d]" aria-hidden />
+            <p className="mt-3 text-sm font-medium text-[#172120]">Made for preparation</p>
+            <p className="mt-2 text-sm leading-6 text-[#60706d]">
+              The goal is to notice the pattern before the next trigger, not only reflect after.
             </p>
           </CardContent>
         </Card>
-        <Card className="border-border/80 bg-background/80">
+        <Card className="rounded-2xl border-[#d6e6e1] bg-white/78">
           <CardContent className="pt-6">
-            <LockKeyhole className="size-5 text-amber-200" aria-hidden />
-            <p className="mt-3 text-sm font-medium text-foreground">Data stays yours</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            <LockKeyhole className="size-5 text-[#42615d]" aria-hidden />
+            <p className="mt-3 text-sm font-medium text-[#172120]">Data stays yours</p>
+            <p className="mt-2 text-sm leading-6 text-[#60706d]">
               Privacy, export, and ownership stay core to the product direction.
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="rounded-lg border border-border bg-card/70 p-5 text-center shadow-2xl sm:p-6">
-        <h2 className="text-xl font-semibold text-foreground">Join the early-access waitlist</h2>
-        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+      <div className="rounded-[2rem] border border-[#d6e6e1] bg-white/88 p-5 text-center shadow-[0_28px_90px_rgb(51_84_79/0.14)] sm:p-6">
+        <h2 className="text-xl font-semibold text-[#172120]">Join the early-access waitlist</h2>
+        <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#60706d]">
           If this pattern feels useful, reserve early access. This checkout is refundable and does not unlock a live app today.
         </p>
         <div className="mt-5 flex flex-col items-stretch gap-3 sm:items-center">
-          <Button asChild size="lg" className="w-full max-w-md self-center">
+          <Button
+            asChild
+            size="lg"
+            className="w-full max-w-md self-center rounded-full bg-[#172120] text-white hover:bg-[#263533]"
+          >
             <Link href={primaryCheckout}>
               Join early access - refundable {primaryPlanPrice}
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-xs text-[#74827f]">
             Early-access demand test. Waitlist only. Your data is yours.
           </p>
         </div>
@@ -174,12 +217,12 @@ export function CompletionShell() {
         <h2 className="text-center text-lg font-semibold">What people want MindMirror to solve</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {QUIZ_TESTIMONIALS.map((x) => (
-            <Card key={x.name} className="border-border/80 bg-background/80">
+            <Card key={x.name} className="rounded-2xl border-[#d6e6e1] bg-white/78">
               <CardContent className="pt-5 text-sm">
-                <p className="text-muted-foreground">{x.quote}</p>
-                <p className="mt-3 font-medium text-foreground">
+                <p className="text-[#60706d]">{x.quote}</p>
+                <p className="mt-3 font-medium text-[#172120]">
                   {x.name}
-                  <span className="block text-xs font-normal text-muted-foreground">{x.title}</span>
+                  <span className="block text-xs font-normal text-[#74827f]">{x.title}</span>
                 </p>
               </CardContent>
             </Card>
@@ -194,15 +237,15 @@ export function CompletionShell() {
             const qk = `q${n}` as "q1" | "q2" | "q3" | "q4" | "q5";
             const ak = `a${n}` as "a1" | "a2" | "a3" | "a4" | "a5";
             return (
-              <li key={n} className="rounded-lg border border-border/80 bg-card/50">
+              <li key={n} className="rounded-2xl border border-[#d6e6e1] bg-white/78">
                 <details className="group">
-                  <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-foreground">
+                  <summary className="cursor-pointer list-none px-4 py-3 text-sm font-medium text-[#172120]">
                     <span className="flex w-full items-center justify-between gap-2">
                       {tFaq(qk)}
-                      <span className="text-muted-foreground transition group-open:rotate-90">▸</span>
+                      <span className="text-[#81908d] transition group-open:rotate-90">▸</span>
                     </span>
                   </summary>
-                  <div className="border-t border-border/60 px-4 pb-3 pt-0 text-sm text-muted-foreground">
+                  <div className="border-t border-[#dfe9e7] px-4 pb-3 pt-3 text-sm text-[#60706d]">
                     {tFaq(ak)}
                   </div>
                 </details>

@@ -13,12 +13,13 @@ export function Navbar() {
   const pathname = usePathname();
   const isQuizRoute = pathname === "/quiz";
   const isMarketingHome = pathname === "/";
+  const isLightFunnel = isMarketingHome || isQuizRoute;
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 border-b backdrop-blur-md",
-        isMarketingHome
+        isLightFunnel
           ? "border-[#dce8e5] bg-[#eef7f4]/90 text-[#172120]"
           : "border-border bg-background/80",
       )}
@@ -40,7 +41,7 @@ export function Navbar() {
                   size="sm"
                   className={cn(
                     "shrink-0 rounded-full px-3 sm:px-4",
-                    isMarketingHome && "bg-[#172120] text-white hover:bg-[#263533]",
+                    isLightFunnel && "bg-[#172120] text-white hover:bg-[#263533]",
                   )}
                 >
                   <Link href={item.href}>{t(item.labelKey)}</Link>
@@ -53,7 +54,7 @@ export function Navbar() {
                 href={item.href}
                 className={cn(
                   "hidden rounded-md px-2 py-1.5 text-sm transition-colors md:inline-flex",
-                  isMarketingHome
+                  isLightFunnel
                     ? "text-[#60706d] hover:text-[#172120]"
                     : "text-muted-foreground hover:text-foreground",
                 )}
@@ -63,7 +64,7 @@ export function Navbar() {
             );
           })}
           {isQuizRoute ? (
-            <span className="text-xs font-medium text-muted-foreground">60-sec quiz</span>
+            <span className="text-xs font-medium text-[#60706d]">60-sec quiz</span>
           ) : (
             <NavAuth isMarketingHome={isMarketingHome} />
           )}
