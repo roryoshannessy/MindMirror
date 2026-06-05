@@ -21,6 +21,150 @@ import { useQuizStore } from "@/stores/quiz-store";
 import { PricingWall } from "./pricing-wall";
 
 const triggerCopy: Record<string, { label: string; value: string }> = {
+  anxiety_social_event: {
+    label: "Next trigger",
+    value: "Before a social event, MindMirror would remind you what your anxiety usually predicts and what response you already chose.",
+  },
+  anxiety_meeting: {
+    label: "Next trigger",
+    value: "Before a meeting or moment where you are being seen, MindMirror would show the anxious script before it takes over.",
+  },
+  anxiety_conversation: {
+    label: "Next trigger",
+    value: "Before a difficult conversation, MindMirror would help you separate the old fear from the actual situation.",
+  },
+  anxiety_travel: {
+    label: "Next trigger",
+    value: "Before plans or travel disrupt your routine, MindMirror would help you prepare for the thoughts that usually spike.",
+  },
+  anxiety_evening: {
+    label: "Next trigger",
+    value: "Before an evening where your mind may spiral, MindMirror would remind you what usually helps you settle.",
+  },
+  anxiety_not_sure: {
+    label: "Next trigger",
+    value: "As you add reflections, MindMirror would learn where anxiety repeats and help you prepare earlier.",
+  },
+  founder_launch: {
+    label: "Next trigger",
+    value: "Before launching or showing the product, MindMirror would show whether you are acting from signal or doubt.",
+  },
+  founder_ads: {
+    label: "Next trigger",
+    value: "Before ads or funnel tests, MindMirror would help you catch the urge to overthink instead of learn from data.",
+  },
+  founder_customer: {
+    label: "Next trigger",
+    value: "Before user conversations, MindMirror would remind you what usually makes you avoid direct feedback.",
+  },
+  founder_money: {
+    label: "Next trigger",
+    value: "Before pricing or money pressure, MindMirror would help you separate practical planning from panic.",
+  },
+  founder_schedule: {
+    label: "Next trigger",
+    value: "Before your routine gets squeezed, MindMirror would remind you which basics protect your momentum.",
+  },
+  founder_not_sure: {
+    label: "Next trigger",
+    value: "As you build, MindMirror would learn which founder moments create the same thinking loop.",
+  },
+  performance_training: {
+    label: "Next trigger",
+    value: "Before training, MindMirror would remind you what usually changes your self-talk or discipline.",
+  },
+  performance_competition: {
+    label: "Next trigger",
+    value: "Before competition or performance, MindMirror would help you prepare for the pressure script.",
+  },
+  performance_feedback: {
+    label: "Next trigger",
+    value: "Before feedback lands, MindMirror would help you hear the useful part without turning it into identity.",
+  },
+  performance_recovery: {
+    label: "Next trigger",
+    value: "Before a recovery day, MindMirror would help you protect consistency without forcing it.",
+  },
+  performance_progress: {
+    label: "Next trigger",
+    value: "Before checking progress, MindMirror would remind you how comparison usually changes your mindset.",
+  },
+  performance_not_sure: {
+    label: "Next trigger",
+    value: "As you reflect, MindMirror would learn which performance moments repeat the same mental pattern.",
+  },
+  relationship_date: {
+    label: "Next trigger",
+    value: "Before a date, message, or dating uncertainty, MindMirror would show the story you usually bring into it.",
+  },
+  relationship_partner_talk: {
+    label: "Next trigger",
+    value: "Before a partner conversation, MindMirror would help you pause before the old reaction takes over.",
+  },
+  relationship_family: {
+    label: "Next trigger",
+    value: "Before a family interaction, MindMirror would remind you which triggers pull you into an older version of yourself.",
+  },
+  relationship_friend: {
+    label: "Next trigger",
+    value: "Before a friendship conversation, MindMirror would help you name what you need instead of replaying it later.",
+  },
+  relationship_boundary: {
+    label: "Next trigger",
+    value: "Before holding a boundary, MindMirror would remind you what guilt or fear usually says.",
+  },
+  relationship_not_sure: {
+    label: "Next trigger",
+    value: "As you add reflections, MindMirror would learn which relationship patterns repeat most.",
+  },
+  habit_night_out: {
+    label: "Next trigger",
+    value: "Before a night out or weekend, MindMirror would remind you what usually pulls you toward alcohol, vaping, or old habits.",
+  },
+  habit_stress_day: {
+    label: "Next trigger",
+    value: "Before a stressful workday, MindMirror would help you spot the release story before the habit wins.",
+  },
+  habit_boredom: {
+    label: "Next trigger",
+    value: "Before boredom becomes the trigger, MindMirror would remind you what you chose instead.",
+  },
+  habit_morning: {
+    label: "Next trigger",
+    value: "Before the morning routine drops, MindMirror would help you protect the smallest useful version of it.",
+  },
+  habit_late_night: {
+    label: "Next trigger",
+    value: "Before a late night where old habits return, MindMirror would show the pattern early enough to choose.",
+  },
+  habit_not_sure: {
+    label: "Next trigger",
+    value: "As you add reflections, MindMirror would learn which habit tests repeat and help you prepare before them.",
+  },
+  self_work: {
+    label: "Next trigger",
+    value: "Before work or decisions, MindMirror would show which thoughts repeat and what they usually cost.",
+  },
+  self_social: {
+    label: "Next trigger",
+    value: "Before social moments, MindMirror would help you recognise the pattern before it shapes your behaviour.",
+  },
+  self_relationships: {
+    label: "Next trigger",
+    value: "Before relationship moments, MindMirror would help you see the repeated story sooner.",
+  },
+  self_health: {
+    label: "Next trigger",
+    value: "Before health or energy dips, MindMirror would show what tends to pull you off track.",
+  },
+  self_emotions: {
+    label: "Next trigger",
+    value: "Before mood or anxiety patterns build, MindMirror would help you see what is returning.",
+  },
+  self_not_sure: {
+    label: "Next trigger",
+    value: "As you add reflections, MindMirror would learn where your recurring thoughts show up most.",
+  },
   social_event: {
     label: "Next trigger",
     value: "Before a social event or night out, MindMirror would remind you what this loop usually says and how you want to respond.",
@@ -48,12 +192,57 @@ const triggerCopy: Record<string, { label: string; value: string }> = {
 };
 
 const goalCopy: Record<string, string> = {
+  anxiety_prepare: "Prepare before anxiety takes over",
+  anxiety_reframe: "Question what anxiety exaggerates",
+  anxiety_body_reset: "Calm your body before the spiral",
+  anxiety_stay: "Stay present instead of escaping",
+  anxiety_aftercare: "Learn from the moment afterwards",
+  founder_decide: "Catch decision avoidance",
+  founder_ship: "Ship before over-polishing",
+  founder_sales: "Prepare before asking people to buy",
+  founder_energy: "Protect action when energy dips",
+  founder_confidence: "Return to what you already decided",
+  performance_reset: "Reset self-talk before pressure",
+  performance_prepare: "Prepare before training or competition",
+  performance_recover: "Recover faster after mistakes",
+  performance_consistency: "Keep consistency when motivation dips",
+  performance_identity: "Remember the athlete you are becoming",
+  relationship_pause: "Pause before reacting",
+  relationship_story: "Spot the old relationship story",
+  relationship_need: "Name what you actually need",
+  relationship_boundaries: "Hold boundaries without guilt",
+  relationship_repair: "Repair faster after the moment",
+  habit_precommit: "Pre-commit before the trigger arrives",
+  habit_identity: "Remember the identity you are choosing",
+  habit_urge: "Notice the urge before acting on it",
+  habit_social_script: "Handle social pressure clearly",
+  habit_recover: "Recover after one slip without spiralling",
+  self_name_pattern: "Name the pattern you repeat",
+  self_find_trigger: "Find what triggers certain thoughts",
+  self_prepare: "Prepare before the pattern returns",
+  self_choose: "Choose better in the moment",
+  self_track_time: "See how your thoughts change over time",
   prepare: "Prepare before the loop starts",
   notice: "Notice it while it is happening",
   choose: "Choose your response instead of reacting",
   calm: "Reduce anxiety and mental noise",
   follow_through: "Follow through on your identity",
 };
+
+function getFirstAnswer(
+  answers: Record<string, string | string[]>,
+  keys: string[],
+): string {
+  for (const key of keys) {
+    const value = answers[key];
+    if (Array.isArray(value)) {
+      if (value[0]) return value[0];
+      continue;
+    }
+    if (value) return value;
+  }
+  return "";
+}
 
 export function CompletionShell() {
   const tFaq = useTranslations("faq");
@@ -81,10 +270,34 @@ export function CompletionShell() {
   }, [sessionId, locale]);
 
   const name = firstName.trim() || "there";
-  const struggle = String(answers.q2_struggle ?? "");
+  const struggle = getFirstAnswer(answers, [
+    "q2_anxiety",
+    "q2_founder",
+    "q2_performance",
+    "q2_relationships",
+    "q2_habits",
+    "q2_self",
+    "q2_struggle",
+  ]);
   const role = String(answers.q1_role ?? "");
-  const upcoming = String(answers.q5_awareness ?? "");
-  const goal = String(answers.q4_goal ?? "");
+  const upcoming = getFirstAnswer(answers, [
+    "q5_anxiety",
+    "q5_founder",
+    "q5_performance",
+    "q5_relationships",
+    "q5_habits",
+    "q5_self",
+    "q5_awareness",
+  ]);
+  const goal = getFirstAnswer(answers, [
+    "q4_anxiety",
+    "q4_founder",
+    "q4_performance",
+    "q4_relationships",
+    "q4_habits",
+    "q4_self",
+    "q4_goal",
+  ]);
   const pattern = getPatternForStruggle(struggle);
   const insight = getInsightForRole(role);
   const trigger = triggerCopy[upcoming] ?? triggerCopy.not_sure;

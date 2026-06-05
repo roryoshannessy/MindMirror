@@ -80,7 +80,8 @@ export const useQuizStore = create<QuizState & QuizActions>()(
 
       ensureFreshSession: () => {
         const s = get();
-        if (isExpired(s.createdAt)) {
+        const hasInvalidNode = s.nodeStack.some((id) => !QUIZ_NODES[id]);
+        if (isExpired(s.createdAt) || hasInvalidNode) {
           set(newInitialState());
         }
       },
