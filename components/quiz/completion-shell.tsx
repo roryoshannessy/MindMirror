@@ -67,7 +67,7 @@ const triggerCopy: Record<string, { label: string; value: string }> = {
   },
   founder_not_sure: {
     label: "Next trigger",
-    value: "As you build, MindMirror would learn which founder moments create the same thinking loop.",
+    value: "As you build, MindMirror would learn which founder moments create the same recurring thoughts.",
   },
   performance_training: {
     label: "Next trigger",
@@ -167,11 +167,11 @@ const triggerCopy: Record<string, { label: string; value: string }> = {
   },
   social_event: {
     label: "Next trigger",
-    value: "Before a social event or night out, MindMirror would remind you what this loop usually says and how you want to respond.",
+    value: "Before a social event or night out, MindMirror would remind you what this recurring thought usually says and how you want to respond.",
   },
   work_business: {
     label: "Next trigger",
-    value: "Before a work or business decision, MindMirror would show whether you are planning clearly or repeating a doubt loop.",
+    value: "Before a work or business decision, MindMirror would show whether you are planning clearly or repeating a doubt pattern.",
   },
   performance: {
     label: "Next trigger",
@@ -187,7 +187,7 @@ const triggerCopy: Record<string, { label: string; value: string }> = {
   },
   not_sure: {
     label: "Next trigger",
-    value: "As you add reflections, MindMirror would learn where this loop appears and help you prepare before it repeats.",
+    value: "As you add reflections, MindMirror would learn where this thought pattern appears and help you notice it sooner.",
   },
 };
 
@@ -222,7 +222,7 @@ const goalCopy: Record<string, string> = {
   self_prepare: "Prepare before the pattern returns",
   self_choose: "Choose better in the moment",
   self_track_time: "See how your thoughts change over time",
-  prepare: "Prepare before the loop starts",
+  prepare: "Notice the thought before it takes over",
   notice: "Notice it while it is happening",
   choose: "Choose your response instead of reacting",
   calm: "Reduce anxiety and mental noise",
@@ -301,7 +301,7 @@ export function CompletionShell() {
   const pattern = getPatternForStruggle(struggle);
   const insight = getInsightForRole(role);
   const trigger = triggerCopy[upcoming] ?? triggerCopy.not_sure;
-  const goalLabel = goalCopy[goal] ?? "Use the pattern before it repeats";
+  const goalLabel = goalCopy[goal] ?? "Understand the pattern before it repeats";
   const catalog = getCatalog();
   const primaryPlan =
     catalog.plans.find((plan) => plan.id === "mindmirror-monthly") ??
@@ -318,10 +318,10 @@ export function CompletionShell() {
       <div className="mx-auto max-w-3xl text-center">
         <p className="text-sm font-medium text-[#42615d]">Your sample mirror</p>
         <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight sm:text-5xl">
-          {name}, here&apos;s the loop MindMirror would help you prepare for.
+          {name}, here&apos;s the thought pattern MindMirror would help you recognise.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#60706d] sm:text-base">
-          This is a sample of how AI journaling could turn recurring thoughts into self-awareness you can use before the next real-life trigger.
+          This is a sample of how AI journaling could turn recurring thoughts into practical self-awareness over time.
         </p>
       </div>
 
@@ -331,7 +331,7 @@ export function CompletionShell() {
           <CardHeader className="pb-4">
             <div className="mb-2 flex items-center gap-2 text-sm text-[#42615d]">
               <BrainCircuit className="size-4" aria-hidden />
-              Pattern detected
+              Thought pattern detected
             </div>
             <CardTitle className="text-2xl leading-tight sm:text-3xl">{pattern.title}</CardTitle>
           </CardHeader>
@@ -340,7 +340,7 @@ export function CompletionShell() {
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
                 <p className="text-xs text-[#81908d]">Signal</p>
-                <p className="mt-2 font-medium text-[#172120]">recurring thought loop</p>
+                <p className="mt-2 font-medium text-[#172120]">recurring thought pattern</p>
               </div>
               <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
                 <p className="text-xs text-[#81908d]">Use it for</p>
@@ -348,7 +348,7 @@ export function CompletionShell() {
               </div>
               <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
                 <p className="text-xs text-[#81908d]">Next</p>
-                <p className="mt-2 font-medium text-[#172120]">prepare before it repeats</p>
+                <p className="mt-2 font-medium text-[#172120]">notice it sooner next time</p>
               </div>
             </div>
           </CardContent>
@@ -387,9 +387,9 @@ export function CompletionShell() {
         <Card className="rounded-2xl border-[#d6e6e1] bg-white/78">
           <CardContent className="pt-6">
             <CheckCircle2 className="size-5 text-[#42615d]" aria-hidden />
-            <p className="mt-3 text-sm font-medium text-[#172120]">Made for preparation</p>
+            <p className="mt-3 text-sm font-medium text-[#172120]">Made for self-awareness</p>
             <p className="mt-2 text-sm leading-6 text-[#60706d]">
-              The goal is to notice the pattern before the next trigger, not only reflect after.
+              The goal is to understand the thought before it quietly runs the next moment.
             </p>
           </CardContent>
         </Card>
@@ -407,7 +407,7 @@ export function CompletionShell() {
       <div className="rounded-[2rem] border border-[#d6e6e1] bg-white/88 p-5 text-center shadow-[0_28px_90px_rgb(51_84_79/0.14)] sm:p-6">
         <h2 className="text-xl font-semibold text-[#172120]">Join the early-access waitlist</h2>
         <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#60706d]">
-          If this pattern feels useful, reserve early access. This checkout is refundable and does not unlock a live app today.
+          If this self-awareness feels useful, reserve early access. This checkout is refundable and does not unlock a live app today.
         </p>
         <div className="mt-5 flex flex-col items-stretch gap-3 sm:items-center">
           <Button

@@ -119,8 +119,8 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   q1_role: {
     id: "q1_role",
     kind: "question_single",
-    title: "What recurring thought pattern is affecting your life most right now?",
-    subtitle: "Pick the area where you wish you could see the pattern before it repeats.",
+    title: "Where would more self-awareness help you most right now?",
+    subtitle: "MindMirror helps you recognise recurring thoughts, see when they show up, and understand what they make you do.",
     options: [
       { value: "anxiety_social", label: "Anxiety, social events, or overthinking" },
       { value: "founder_entrepreneur", label: "Building a business or side project" },
@@ -164,8 +164,8 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   q2_founder: {
     id: "q2_founder",
     kind: "question_single",
-    title: "Where does the founder loop hit hardest?",
-    subtitle: "MindMirror should catch the thinking pattern that slows action.",
+    title: "Where do your founder thoughts repeat most?",
+    subtitle: "MindMirror should help you recognise the thought pattern that slows action.",
     options: [
       { value: "launch_doubt", label: "Before launching or showing people the product" },
       { value: "comparison_spiral", label: "When I compare myself to competitors" },
@@ -179,7 +179,7 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   q3_founder: {
     id: "q3_founder",
     kind: "question_single",
-    title: "What do you tend to do when that founder loop appears?",
+    title: "What do you tend to do when that founder thought shows up?",
     subtitle: "This tells the sample result what behaviour the thought is attached to.",
     options: [
       { value: "research_more", label: "I research more instead of shipping" },
@@ -254,7 +254,7 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
   q2_habits: {
     id: "q2_habits",
     kind: "question_single",
-    title: "Which habit loop do you most want to catch before it happens?",
+    title: "Which habit pattern do you most want to catch before it happens?",
     subtitle: "This path stays focused on discipline, identity, alcohol, vaping, and relapse patterns.",
     options: [
       { value: "alcohol_social", label: "Alcohol around social events or weekends" },
@@ -316,8 +316,8 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     kind: "interstitial",
     progressStep: false,
     variant: "stat",
-    headline: "Journaling records what happened. MindMirror is being built to prepare you for what repeats.",
-    body: "The useful moment is not just writing after the event. It is recognising: \"I have felt this before, in this exact type of situation.\"",
+    headline: "Journaling records what happened. MindMirror helps you recognise what keeps repeating.",
+    body: "The useful moment is realising: \"I have had this same thought before, in this same type of situation.\" That is self-awareness you can actually use.",
     ctaLabel: "Continue",
     next: { rules: goalBranchRules, fallback: "q4_self" },
   },
@@ -500,8 +500,8 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     kind: "interstitial",
     progressStep: false,
     variant: "testimonial",
-    headline: "\"I do not need another diary. I need something that tells me when I am about to repeat myself.\"",
-    body: "That is the point of MindMirror: voice-first reflection, recurring thought detection, and preparation for the next real-life trigger.",
+    headline: "\"I do not need another diary. I need something that shows me the thoughts I keep repeating.\"",
+    body: "That is the point of MindMirror: voice-first reflection, self-awareness, and thought pattern recognition over time.",
     ctaLabel: "See your sample profile",
     next: { fallback: "gate_name" },
   },
@@ -528,9 +528,9 @@ export const QUIZ_NODES: Record<string, QuizNode> = {
     progressStep: false,
     steps: [
       { id: "s1", text: "Reading your real-life trigger...", durationMs: stepDuration },
-      { id: "s2", text: "Finding the recurring thought loop...", durationMs: stepDuration },
-      { id: "s3", text: "Preparing your next-moment mirror...", durationMs: stepDuration },
-      { id: "s4", text: "Your sample pattern is ready.", durationMs: stepDuration },
+      { id: "s2", text: "Finding the recurring thought pattern...", durationMs: stepDuration },
+      { id: "s3", text: "Building your self-awareness mirror...", durationMs: stepDuration },
+      { id: "s4", text: "Your sample thought pattern is ready.", durationMs: stepDuration },
     ],
   },
 };
@@ -564,187 +564,187 @@ export function getNextNodeId(
 
 const q2PatternHeadlines: Record<string, { title: string; body: string }> = {
   before_social_plans: {
-    title: "Pre-event anxiety loop",
+    title: "Anxious thoughts before plans",
     body: "Before social plans, your mind starts predicting danger before the event has even happened. MindMirror would help you prepare while the pattern is still small.",
   },
   fear_of_judgement: {
-    title: "Judgement prediction loop",
+    title: "Assuming people are judging you",
     body: "Your mind starts acting like other people's opinions are already confirmed. MindMirror would help you separate the prediction from the evidence.",
   },
   uncertainty_spiral: {
-    title: "Uncertainty spiral",
+    title: "Overthinking uncertainty",
     body: "When you cannot know the outcome, your mind keeps rehearsing possibilities. MindMirror would help you spot the spiral before it becomes the plan.",
   },
   conflict_avoidance: {
-    title: "Avoidance-before-conversation loop",
+    title: "Avoiding hard conversations",
     body: "Difficult conversations start costing energy before they happen. MindMirror would help you name the fear and prepare your response.",
   },
   night_overthinking: {
-    title: "Night replay loop",
+    title: "Replaying thoughts at night",
     body: "At night, your mind starts replaying and predicting while your body needs to rest. MindMirror would help you recognise the familiar script earlier.",
   },
   body_alarm: {
-    title: "Body alarm loop",
+    title: "Physical anxiety becoming fear",
     body: "Physical anxiety becomes proof that something is wrong. MindMirror would help you remember when this sensation has appeared before and what helped.",
   },
   launch_doubt: {
-    title: "Launch doubt loop",
+    title: "Doubt before showing your work",
     body: "The closer you get to showing the product, the louder the doubt becomes. MindMirror would help you tell the difference between useful feedback and avoidance.",
   },
   comparison_spiral: {
-    title: "Competitor comparison loop",
+    title: "Comparing yourself to competitors",
     body: "Looking at competitors can turn from research into self-attack. MindMirror would help you notice when comparison stops helping you build.",
   },
   decision_delay: {
-    title: "Decision delay loop",
+    title: "Delaying decisions",
     body: "The decision keeps moving because certainty feels safer than action. MindMirror would help you see when thinking has replaced choosing.",
   },
   money_pressure: {
-    title: "Money pressure loop",
+    title: "Money pressure changing your thoughts",
     body: "When money feels real, your thoughts can swing between urgency and avoidance. MindMirror would help you ground the next practical step.",
   },
   energy_crash: {
-    title: "Momentum crash loop",
+    title: "Losing momentum after a hard day",
     body: "A hard day can start to feel like proof that the whole mission is slipping. MindMirror would help you protect the smallest next action.",
   },
   imposter_loop: {
-    title: "Capability doubt loop",
+    title: "Questioning whether you are capable",
     body: "Your mind starts questioning whether you are the person who can build this. MindMirror would help you return to evidence instead of identity panic.",
   },
   before_training: {
-    title: "Training resistance loop",
+    title: "Negotiating with yourself before training",
     body: "The thought arrives before the session and tries to negotiate the standard down. MindMirror would help you prepare before motivation dips.",
   },
   before_competition: {
-    title: "Pre-performance pressure loop",
+    title: "Pressure before performance",
     body: "The moment starts before the moment. MindMirror would help you catch the pressure script before it changes how you perform.",
   },
   after_mistake: {
-    title: "Mistake amplification loop",
+    title: "Turning one mistake into a bigger story",
     body: "One mistake starts speaking for your whole identity. MindMirror would help you recover faster and keep the next action clean.",
   },
   discipline_gap: {
-    title: "Discipline gap loop",
+    title: "Discipline dropping when nobody is watching",
     body: "The pattern appears outside the session, when nobody is watching. MindMirror would help you see the thought that weakens consistency.",
   },
   body_comparison: {
-    title: "Comparison pressure loop",
+    title: "Comparison changing your self-talk",
     body: "Stats, body, or progress checks start shaping your self-talk. MindMirror would help you notice when comparison steals focus.",
   },
   coach_feedback: {
-    title: "Feedback identity loop",
+    title: "Taking feedback personally",
     body: "Feedback can start feeling like a verdict. MindMirror would help you separate the useful signal from the personal story.",
   },
   dating_anxiety: {
-    title: "Dating uncertainty loop",
+    title: "Making a story from dating uncertainty",
     body: "A message, delay, or small cue starts becoming a whole story. MindMirror would help you see the story before reacting to it.",
   },
   same_argument: {
-    title: "Same argument loop",
+    title: "Repeating the same argument",
     body: "Different moments keep becoming the same conversation. MindMirror would help you notice the pattern before it repeats again.",
   },
   family_trigger: {
-    title: "Family trigger loop",
+    title: "Old reactions around family",
     body: "Family moments can pull you into an older version of yourself quickly. MindMirror would help you prepare before that role takes over.",
   },
   people_pleasing: {
-    title: "People-pleasing loop",
+    title: "People-pleasing instead of saying what you need",
     body: "You trade honesty for short-term peace, then carry the cost later. MindMirror would help you notice where your needs disappear.",
   },
   jealousy_story: {
-    title: "Insecurity story loop",
+    title: "Filling gaps with an insecurity story",
     body: "Your mind fills in gaps with a painful story. MindMirror would help you separate the trigger from the conclusion.",
   },
   shutdown: {
-    title: "Shutdown loop",
+    title: "Shutting down when emotion rises",
     body: "When emotion rises, silence starts to feel safer than expression. MindMirror would help you notice the moment before you close off.",
   },
   alcohol_social: {
-    title: "Social alcohol loop",
+    title: "Justifying alcohol before social events",
     body: "Before a night out or weekend, your mind starts justifying the old pattern. MindMirror would help you prepare before the social pressure arrives.",
   },
   vaping_stress: {
-    title: "Stress-vape loop",
+    title: "Reaching for vaping when stress hits",
     body: "Stress or boredom creates a quick-release story. MindMirror would help you catch the thought before the automatic reach.",
   },
   scrolling_escape: {
-    title: "Dopamine escape loop",
+    title: "Escaping uncomfortable thoughts by scrolling",
     body: "A small uncomfortable feeling becomes a reason to disappear into scrolling. MindMirror would help you notice the escape before it takes the evening.",
   },
   morning_routine_drop: {
-    title: "Morning reset loop",
+    title: "Dropping your routine after one bad morning",
     body: "One messy morning starts to feel like the whole routine is gone. MindMirror would help you restart from the smallest version.",
   },
   sleep_break: {
-    title: "Late-night drift loop",
+    title: "Letting old habits back in at night",
     body: "The day is over, but the old habit gets another chance. MindMirror would help you see the thought that makes late nights feel harmless.",
   },
   identity_slip: {
-    title: "Back-to-square-one loop",
+    title: "Thinking one slip means you are back to square one",
     body: "One slip starts telling you the old identity is back. MindMirror would help you recover without turning one moment into a full reset.",
   },
   recurring_mood: {
-    title: "Mood pattern loop",
+    title: "Mood changes that keep repeating",
     body: "Your mood shifts can feel random until you see what keeps preceding them. MindMirror would help connect those moments over time.",
   },
   same_thoughts: {
-    title: "Repeated thought loop",
+    title: "The same thought keeps coming back",
     body: "The thought keeps returning because something underneath still wants attention. MindMirror would help you see when and why it comes back.",
   },
   hidden_triggers: {
-    title: "Hidden trigger loop",
+    title: "Triggers you only notice afterwards",
     body: "The trigger happens before you notice the reaction. MindMirror would help you build a clearer map of what sets the pattern off.",
   },
   decision_patterns: {
-    title: "Decision pattern loop",
+    title: "How you make or avoid decisions",
     body: "The same decision style shows up in different parts of life. MindMirror would help you see how you choose, delay, or avoid.",
   },
   energy_patterns: {
-    title: "Energy pattern loop",
+    title: "Energy patterns over time",
     body: "Energy and motivation are not random. MindMirror would help you notice what supports them and what quietly drains them.",
   },
   values_gap: {
-    title: "Values gap loop",
+    title: "The gap between your values and actions",
     body: "The gap between who you want to be and what you do keeps creating friction. MindMirror would help you see where the drift begins.",
   },
   social_anxiety: {
-    title: "Anticipation anxiety loop",
+    title: "Anxious thoughts before things happen",
     body: "Before an event, your mind starts rehearsing what could go wrong. MindMirror would help you recognise this earlier and prepare before the anxiety becomes the plan.",
   },
   business_doubt: {
-    title: "Founder doubt loop",
+    title: "Doubt replacing action",
     body: "When the next move matters, your thinking can turn into self-questioning. MindMirror would show when doubt is replacing action so you can choose the next step sooner.",
   },
   performance_pressure: {
-    title: "Pressure-before-performance loop",
+    title: "Pressure changing your thoughts",
     body: "Your thoughts tighten before the moment arrives. MindMirror would help you notice the pattern before training, competition, or performance so you can reset earlier.",
   },
   relationship_reactivity: {
-    title: "Relationship reaction loop",
+    title: "Repeating the same relationship reaction",
     body: "The same emotional script can come back in different conversations. MindMirror would help you see the trigger, the story you tell yourself, and the response you usually repeat.",
   },
   habit_relapse: {
-    title: "Identity reset loop",
+    title: "One habit slip changing how you see yourself",
     body: "A small trigger can become a full reset: one drink, one scroll, one missed routine, then the old story returns. MindMirror would help you prepare before that moment.",
   },
   overthinking: {
-    title: "Clarity seeking loop",
-    body: "You keep trying to think your way into certainty before you act. The more you think, the less sure you feel.",
+    title: "Trying to think your way into certainty",
+    body: "You keep trying to feel completely sure before you act. MindMirror would help you recognise when more thinking is no longer creating more self-awareness.",
   },
   no_clarity: {
-    title: "Decision paralysis",
+    title: "Waiting until everything feels clear",
     body: "You can't move forward until everything makes sense. But understanding often comes from action, not reflection.",
   },
   stuck: {
-    title: "Repetition without resolution",
-    body: "You keep returning to the same thought, decision, or worry. The loop feels familiar—and that feels safe.",
+    title: "Returning to the same unresolved thought",
+    body: "You keep returning to the same thought, decision, or worry. The pattern feels familiar, and familiar can start to feel safe.",
   },
   stress: {
-    title: "Overwhelm cycling",
+    title: "Overwhelm that keeps coming back",
     body: "You spiral between overwhelm and the stories you tell yourself about why you're overwhelmed. The pattern repeats weekly.",
   },
   patterns: {
-    title: "Meta-awareness trap",
+    title: "Seeing the pattern but not changing it",
     body: "You can see your patterns, but seeing them hasn't changed them. Awareness without action starts to feel pointless.",
   },
 };
@@ -756,7 +756,7 @@ const q1RoleStats: Record<string, { label: string; value: string }> = {
   },
   founder_entrepreneur: {
     label: "Founder context",
-    value: "Your mirror should help you separate useful planning from avoidance, doubt, and decision loops that slow momentum.",
+    value: "Your mirror should help you separate useful planning from avoidance, doubt, and recurring thoughts that slow momentum.",
   },
   athlete_performer: {
     label: "Performance context",
@@ -775,7 +775,7 @@ const q1RoleStats: Record<string, { label: string; value: string }> = {
     value: "Your mirror should help you turn scattered reflections into a pattern you can actually use.",
   },
   other: {
-    label: "Your pattern loop",
+    label: "Your thought pattern",
     value: "Most people get stuck on the same type of thought. This quiz starts to reveal what yours is.",
   },
 };

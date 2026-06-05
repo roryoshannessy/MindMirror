@@ -17,7 +17,7 @@
   },
   "hero": {
     "headline": "See the pattern your mind keeps repeating.",
-    "subheadline": "AI journaling that helps you spot recurring thoughts, understand when they show up, and prepare before the next trigger.",
+    "subheadline": "AI journaling for self-awareness: spot recurring thoughts, understand when they show up, and notice the pattern sooner next time.",
     "cta_primary": "Start the 60-second quiz",
     "cta_secondary": "Try the first mirror",
     "social_proof": "Quiz first. See a sample pattern before checkout. Early access is clearly labelled before payment."
@@ -33,7 +33,7 @@
     },
     "f3": {
       "title": "Pattern detection",
-      "body": "MindMirror looks for topics, emotions, repeated phrases, and trigger situations so reflection becomes useful before the loop repeats."
+      "body": "MindMirror looks for topics, emotions, repeated phrases, and trigger situations so reflection becomes useful before the thought pattern repeats."
     },
     "f4": {
       "title": "Honest pattern insight",
@@ -52,8 +52,8 @@
     "stat1": "60-second quiz",
     "stat2": "Sample pattern result",
     "stat3": "Checkout intent test",
-    "quote1": "Most journaling tools help you record thoughts. MindMirror is built to show what keeps repeating and where it shows up.",
-    "quote2": "The quiz turns vague overthinking into a named pattern you can use before the next trigger.",
+    "quote1": "Most journaling tools help you record thoughts. MindMirror is built to show which thoughts keep repeating and where they show up.",
+    "quote2": "The quiz turns vague overthinking into a simple self-awareness profile.",
     "quote3": "The funnel is intentionally simple: understand the promise, preview the result, then decide."
   },
   "pricing": {
@@ -96,7 +96,7 @@
   },
   "faq": {
     "q1": "Is this just another journaling app?",
-    "a1": "No. Most journaling apps store your thoughts. MindMirror analyzes reflections for repeated topics, emotions, phrases, and decision loops. It's the difference between a diary and a mirror.",
+    "a1": "No. Most journaling apps store your thoughts. MindMirror analyzes reflections for repeated topics, emotions, phrases, and situations. It's the difference between a diary and a mirror.",
     "q2": "How does the pattern detection work?",
     "a2": "The intended product analyzes entries for topics, emotions, repeated phrases, goals, and trigger situations. Over time, it should show what keeps coming up and help you prepare before it repeats.",
     "q3": "Do I have to write or type anything?",
@@ -168,17 +168,17 @@
     "welcome_title": "Your account",
     "welcome_body": "You’re signed in. Billing and settings will live here in upcoming milestones.",
     "welcome_purchase_title": "You’re all set",
-    "welcome_purchase_body": "Your purchase is recorded. You can try the early MindMirror loop now while the full paid product is still being shaped.",
+    "welcome_purchase_body": "Your purchase is recorded. You can try the early MindMirror reflection now while the full paid product is still being shaped.",
     "billing_title": "Billing",
     "billing_already_subscribed": "This email already has an active subscription. Use the Stripe customer portal link from your latest receipt, or email support@getmindmirror.com if you need help."
   },
   "how_it_works": {
     "title": "How it works",
-    "subtitle": "The first test is simple: can the promise of spotting recurring thoughts and preparing for triggers make people want early access?",
+    "subtitle": "The first test is simple: can the promise of better self-awareness and recurring thought recognition make people want early access?",
     "step1_title": "Take the quiz",
     "step1_body": "Answer a few questions about where recurring thoughts show up: anxiety, business, sport, relationships, habits, or self-awareness.",
     "step2_title": "Preview your pattern",
-    "step2_body": "See a sample MindMirror result with a possible loop, where it may appear next, and how the product would help you prepare.",
+    "step2_body": "See a sample MindMirror result with a possible thought pattern, where it may appear next, and what it could help you notice.",
     "step3_title": "Choose early access",
     "step3_body": "If the result feels useful, continue to the early-access checkout. The product status is shown clearly before payment."
   },
@@ -191,9 +191,9 @@
   "errors": {},
   "meta": {
     "title": "MindMirror",
-    "description": "A voice-first AI journaling product designed to detect recurring thoughts over time and help you prepare before they repeat.",
+    "description": "A voice-first AI journaling product designed to build self-awareness by detecting recurring thoughts over time.",
     "home_title": "See the pattern your mind keeps repeating",
-    "home_description": "Take the 60-second MindMirror quiz, preview a recurring-thought pattern, and decide whether early access is worth paying for.",
+    "home_description": "Take the 60-second MindMirror quiz, preview a recurring thought pattern, and decide whether early access is worth paying for.",
     "pricing_title": "Pricing",
     "pricing_description": "Early-access plans for the MindMirror waitlist. The live app is still being built.",
     "terms_title": "Terms of Service",
