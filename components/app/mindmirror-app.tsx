@@ -101,11 +101,16 @@ function BrainMirrorMascot({ active, compact = false }: { active: boolean; compa
           className="mm-brain-body"
           d="M71 93c-18-2-31-16-31-34 0-21 17-37 38-36 8-14 24-22 41-18 14 3 24 13 29 26 19 1 34 17 34 36 0 17-11 31-27 36 2 17-9 33-26 37-13 4-26-1-34-11-13 7-30 5-41-6-13-13-13-33 0-46 5-5 10-8 17-10z"
         />
+        <circle className="mm-brain-eye left" cx="91" cy="93" r="4" />
+        <circle className="mm-brain-eye right" cx="124" cy="93" r="4" />
         <path className="mm-brain-line" d="M75 54c14 1 22 9 23 22" />
         <path className="mm-brain-line" d="M121 45c-10 7-14 17-11 30" />
         <path className="mm-brain-line" d="M139 75c-13 0-22 6-27 18" />
         <path className="mm-brain-line" d="M78 96c9-7 21-8 34-3" />
         <path className="mm-brain-line" d="M111 105c3 13 11 21 24 24" />
+        <path className="mm-neural-pulse one" d="M62 34c-10-8-20-10-31-4" />
+        <path className="mm-neural-pulse two" d="M158 36c12-8 24-8 36 0" />
+        <path className="mm-neural-pulse three" d="M107 12c1-12 7-21 18-27" />
         <path className="mm-brain-arm left" d="M65 123c-18 14-29 27-34 41" />
         <path className="mm-brain-arm right" d="M149 122c18 10 30 18 41 28" />
         <path className="mm-brain-leg left" d="M87 137v39" />
@@ -211,11 +216,11 @@ export function MindMirrorApp() {
   const thoughtChips =
     latestEntry?.analysis.signals.slice(0, 3).filter(Boolean) ??
     (cleanText.length > 0 ? cleanText.split(/\s+/).filter((word) => word.length > 4).slice(0, 3) : []);
-  const mirrorChips = thoughtChips.length > 0 ? thoughtChips : ["thought", "loop", "mirror"];
+  const mirrorChips = thoughtChips.length > 0 ? thoughtChips : ["thought", "pattern", "mirror"];
   const unlockSteps = [
     {
       count: 1,
-      description: "Single-entry loop, cost, question, and next action.",
+      description: "Single-entry thought pattern, cost, question, and next action.",
       label: "First mirror",
       unlocked: entries.length >= 1,
     },
@@ -356,8 +361,8 @@ export function MindMirrorApp() {
                 </h1>
               </div>
               <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-                Start with one thought. MindMirror saves it first, then shows the loop it can
-                actually see.
+                Start with one thought. MindMirror saves it first, then shows the pattern it can
+                actually recognise.
               </p>
             </div>
             <div className="relative flex min-h-56 w-full items-end justify-center rounded-lg border border-white/10 bg-background/80 p-4 sm:w-[21rem]">
@@ -500,7 +505,7 @@ export function MindMirrorApp() {
           {savedEntryId ? (
             <div className="mt-4 flex items-start gap-2 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-2 text-sm leading-6 text-foreground">
               <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden />
-              <p>Saved. MindMirror is looking for the loop.</p>
+              <p>Saved. MindMirror is looking for the thought pattern.</p>
             </div>
           ) : null}
           {error ? (
@@ -519,7 +524,7 @@ export function MindMirrorApp() {
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isRevealingMirror
-                  ? "Comparing words, emotion, and possible loop."
+                  ? "Comparing words, emotion, and possible thought pattern."
                   : latestEntry
                     ? "Latest read from your saved reflection."
                     : "Waiting for a reflection."}
@@ -555,7 +560,7 @@ export function MindMirrorApp() {
                     Analysing
                   </p>
                   <p className="mt-2 text-2xl font-semibold tracking-tight text-foreground">
-                    Finding what this thought is doing.
+                    Finding what this thought keeps doing.
                   </p>
                 </div>
               </div>
@@ -564,7 +569,7 @@ export function MindMirrorApp() {
                   Saving raw thought
                 </div>
                 <div className="rounded-lg border border-border bg-background/60 p-3">
-                  Naming possible loop
+                  Naming possible pattern
                 </div>
                 <div className="rounded-lg border border-border bg-background/60 p-3">
                   Choosing next question
@@ -575,7 +580,7 @@ export function MindMirrorApp() {
             <div className="mm-reveal">
               <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  Possible loop
+                  Possible thought pattern
                 </p>
                 <p className="mt-2 text-xl font-semibold leading-8 text-foreground">
                   {latestEntry.analysis.patternLabel}
@@ -634,7 +639,7 @@ export function MindMirrorApp() {
             <div className="rounded-lg border border-dashed border-border bg-background/55 p-5">
               <p className="text-sm font-medium text-foreground">Start ordinary.</p>
               <div className="mt-3 grid gap-2 text-sm leading-6 text-muted-foreground sm:grid-cols-3">
-                <p>A loop you keep replaying.</p>
+                <p>A thought you keep replaying.</p>
                 <p>A decision you are avoiding.</p>
                 <p>A feeling that keeps returning.</p>
               </div>
@@ -742,11 +747,11 @@ export function MindMirrorApp() {
         </section>
 
         <section className="rounded-lg border border-border bg-card/70 p-4">
-          <h2 className="text-sm font-semibold text-foreground">Repeated hints</h2>
+          <h2 className="text-sm font-semibold text-foreground">Repeated thoughts</h2>
           <div className="mt-3 space-y-2">
             {!earlySignalsUnlocked ? (
               <p className="text-sm leading-6 text-muted-foreground">
-                Unlocks after 3 reflections. Until then, each entry gets a single mirror.
+                Unlocks after 3 reflections. Until then, each entry gets one useful mirror.
               </p>
             ) : dashboard.patterns.length === 0 ? (
               <p className="text-sm leading-6 text-muted-foreground">More entries will sharpen this.</p>

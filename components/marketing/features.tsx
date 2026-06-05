@@ -8,7 +8,6 @@ import {
   Sparkles,
   Waypoints,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const featureKeys = ["f1", "f2", "f3", "f4", "f5", "f6"] as const;
 
@@ -20,15 +19,6 @@ const icons = {
   f5: ChartNoAxesColumnIncreasing,
   f6: LockKeyhole,
 };
-
-const cardStyles = {
-  f1: "lg:col-span-2",
-  f2: "",
-  f3: "",
-  f4: "lg:row-span-2",
-  f5: "lg:col-span-2",
-  f6: "",
-} as const;
 
 export async function Features() {
   const t = await getTranslations("features");
@@ -49,22 +39,19 @@ export async function Features() {
             Less diary. More mirror.
           </h2>
           <p className="mt-5 text-base leading-7 text-[#60706d]">
-            The first product loop is simple: capture what is on your mind, show the possible pattern, then ask the next useful question.
+            The first product experience is simple: capture what is on your mind, recognise the possible pattern, then ask the next useful question.
           </p>
           <div className="mt-7 rounded-2xl border border-[#dfe9e7] bg-white/80 p-4 text-sm leading-6 text-[#60706d] shadow-sm">
             MindMirror gets sharper as it has more evidence. One reflection is a first read; ten reflections begin a clearer map.
           </div>
         </div>
-        <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featureKeys.map((key) => {
             const Icon = icons[key];
             return (
               <div
                 key={key}
-                className={cn(
-                  "group relative overflow-hidden rounded-2xl border border-[#dfe9e7] bg-white p-6 shadow-sm transition-colors hover:border-[#b9d0cc]",
-                  cardStyles[key],
-                )}
+                className="group relative flex min-h-[15rem] flex-col overflow-hidden rounded-2xl border border-[#dfe9e7] bg-white p-6 shadow-sm transition-colors hover:border-[#b9d0cc]"
               >
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7aa39c] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 <div className="flex size-10 items-center justify-center rounded-xl border border-[#dfe9e7] bg-[#f8fbfa]">

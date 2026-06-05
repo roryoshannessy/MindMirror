@@ -1,5 +1,13 @@
 import { getTranslations } from "next-intl/server";
-import { ArrowRight, Check, Mic2, Sparkles, Waves } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  LineChart,
+  Mic2,
+  Search,
+  Sparkles,
+  WandSparkles,
+} from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -11,10 +19,15 @@ function BrainMirrorMascot() {
           className="mm-brain-body"
           d="M78 62c8-24 40-27 55-9 24-10 52 7 50 35 17 8 24 29 10 45 8 27-18 49-43 38-14 21-49 18-57-6-27 3-45-24-35-47-19-16-13-48 20-56Z"
         />
+        <circle className="mm-brain-eye left" cx="94" cy="104" r="4" />
+        <circle className="mm-brain-eye right" cx="128" cy="104" r="4" />
         <path className="mm-brain-line" d="M88 82c13-16 35-11 40 7" />
         <path className="mm-brain-line" d="M74 116c19-11 39-6 51 11" />
         <path className="mm-brain-line" d="M133 91c-4 16 3 31 18 39" />
         <path className="mm-brain-line" d="M96 151c16 4 31-1 41-15" />
+        <path className="mm-neural-pulse one" d="M66 60c-10-10-20-12-31-7" />
+        <path className="mm-neural-pulse two" d="M159 62c12-9 25-10 38-1" />
+        <path className="mm-neural-pulse three" d="M104 38c0-14 6-24 17-30" />
         <path className="mm-brain-arm" d="M68 145c-18 4-29 13-35 25" />
         <path className="mm-brain-arm right" d="M160 136c13 1 23 8 31 20" />
         <path className="mm-brain-leg" d="M88 171v27" />
@@ -32,12 +45,33 @@ function BrainMirrorMascot() {
 export async function Hero() {
   const t = await getTranslations("hero");
 
-  const proofPoints = ["Quiz first", "Sample result", "Checkout only after the promise lands"] as const;
+  const proofPoints = ["Voice-first", "Pattern recognition", "Self-awareness over time"] as const;
 
-  const signals = [
-    ["Possible loop", "Clarity seeking"],
-    ["Cost", "Planning replaces action"],
-    ["Next", "Pick one visible step"],
+  const demoSteps = [
+    {
+      Icon: Mic2,
+      label: "1. Record",
+      title: "Voice journal",
+      body: "I keep getting anxious before social plans, then I cancel or drink to feel normal.",
+    },
+    {
+      Icon: WandSparkles,
+      label: "2. Analyse",
+      title: "Transcription + AI read",
+      body: "MindMirror identifies the trigger, emotional tone, repeated phrases, and likely behaviour.",
+    },
+    {
+      Icon: Search,
+      label: "3. Recognise",
+      title: "Recurring thought pattern",
+      body: "This thought has appeared 14 times in the last 90 days, usually before weekends.",
+    },
+    {
+      Icon: LineChart,
+      label: "4. Surface",
+      title: "Trends + next action",
+      body: "You handled similar stress 3 weeks ago. Relationships are your most discussed topic this month.",
+    },
   ] as const;
 
   return (
@@ -126,48 +160,63 @@ export async function Hero() {
                 <div className="flex items-center justify-between border-b border-[#edf3f2] pb-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-[#172120]">
                     <span className="size-2 rounded-full bg-[#406c64]" aria-hidden />
-                    MindMirror result
+                    MindMirror product demo
                   </div>
                   <div className="flex items-center gap-2 text-xs text-[#74827f]">
                     <Mic2 className="size-3.5" aria-hidden />
-                    sample
+                    auto-preview
                   </div>
                 </div>
 
                 <div className="pt-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-                    Pattern preview
-                  </p>
-                  <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#172120] sm:text-4xl">
-                    Clarity seeking loop
-                  </h2>
-                  <p className="mt-3 text-base leading-7 text-[#60706d]">
-                    You may be waiting to feel certain before taking the next step.
-                  </p>
+                  <div className="rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
+                        Live workflow preview
+                      </p>
+                      <div className="mm-voice-bars text-[#42615d]" aria-hidden>
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                    </div>
+                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e2eeeb]">
+                      <div className="mm-demo-progress h-full rounded-full bg-[#172120]" />
+                    </div>
+                  </div>
 
-                  <div className="mt-6 grid gap-3">
-                    {signals.map(([label, value]) => (
+                  <div className="mt-4 grid gap-3">
+                    {demoSteps.map(({ Icon, label, title, body }, index) => (
                       <div
                         key={label}
-                        className="flex items-start justify-between gap-5 rounded-2xl border border-[#edf3f2] bg-[#f8fbfa] p-4"
+                        className="mm-demo-step rounded-2xl border border-[#edf3f2] bg-white p-4 shadow-sm"
+                        style={{ animationDelay: `${index * 850}ms` }}
                       >
-                        <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#81908d]">
-                          {label}
-                        </p>
-                        <p className="max-w-[14rem] text-right text-sm font-medium leading-5 text-[#172120]">
-                          {value}
-                        </p>
+                        <div className="flex items-start gap-3">
+                          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#dfe9e7] bg-[#f8fbfa] text-[#42615d]">
+                            <Icon className="size-5" aria-hidden />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#81908d]">
+                              {label}
+                            </p>
+                            <h2 className="mt-1 text-base font-semibold text-[#172120]">{title}</h2>
+                            <p className="mt-1 text-sm leading-6 text-[#60706d]">{body}</p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   <div className="mt-5 rounded-2xl border border-[#dbeae6] bg-[#eef7f4] p-4">
-                    <div className="flex items-center gap-2 text-sm font-medium text-[#365c56]">
-                      <Waves className="size-4" aria-hidden />
-                      60-second funnel test
-                    </div>
+                    <p className="text-sm font-semibold text-[#365c56]">
+                      The value compounds with every reflection.
+                    </p>
                     <p className="mt-2 text-sm leading-6 text-[#60706d]">
-                      The quiz gives a sample result first. Checkout comes after the value is clear.
+                      One entry gives a first mirror. Ten entries start revealing patterns across
+                      topics, confidence, relationships, stress, and habits.
                     </p>
                   </div>
                 </div>

@@ -112,7 +112,9 @@
   .mm-brain-mirror {
     height: 13rem;
     width: 13rem;
-    animation: mm-character-breathe 6s ease-in-out infinite;
+    animation:
+      mm-character-breathe 6s ease-in-out infinite,
+      mm-character-drift 9s ease-in-out infinite;
     filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.46));
     transform-origin: center bottom;
   }
@@ -141,6 +143,33 @@
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 7;
+  }
+
+  .mm-brain-eye {
+    fill: #0a0a0a;
+    transform-origin: center;
+    animation: mm-eye-look 4.8s ease-in-out infinite;
+  }
+
+  .mm-brain-eye.right {
+    animation-delay: 120ms;
+  }
+
+  .mm-neural-pulse {
+    fill: none;
+    stroke: rgb(122 163 156 / 0.8);
+    stroke-dasharray: 6 10;
+    stroke-linecap: round;
+    stroke-width: 4;
+    animation: mm-neural-pulse 2.8s ease-in-out infinite;
+  }
+
+  .mm-neural-pulse.two {
+    animation-delay: 500ms;
+  }
+
+  .mm-neural-pulse.three {
+    animation-delay: 1s;
   }
 
   .mm-brain-arm.right,
@@ -195,7 +224,7 @@
 
   .mm-voice-bars span {
     animation: mm-voice-bar 900ms ease-in-out infinite;
-    background: var(--foreground);
+    background: currentColor;
     border-radius: 9999px;
     display: block;
     height: 0.45rem;
@@ -218,6 +247,15 @@
   .mm-voice-bars span:nth-child(5) {
     animation-delay: 360ms;
   }
+
+  .mm-demo-step {
+    animation: mm-demo-step 4.6s ease-in-out infinite;
+  }
+
+  .mm-demo-progress {
+    animation: mm-demo-progress 4.6s ease-in-out infinite;
+    transform-origin: left center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -226,11 +264,15 @@
   .mm-scan,
   .mm-mira-bot,
   .mm-brain-mirror,
+  .mm-brain-eye,
+  .mm-neural-pulse,
   .mm-brain-mirror.is-active .mm-brain-arm.right,
   .mm-brain-mirror.is-active .mm-mascot-mirror,
   .mm-brain-mirror.is-active .mm-mascot-handle,
   .mm-brain-mirror.is-active .mm-mascot-shine,
   .mm-thought-chip,
+  .mm-demo-step,
+  .mm-demo-progress,
   .mm-reveal,
   .mm-voice-bars span {
     animation: none;
@@ -290,6 +332,55 @@
   }
 }
 
+@keyframes mm-character-drift {
+  0%,
+  100% {
+    filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.42));
+  }
+  50% {
+    filter: drop-shadow(0 34px 70px rgb(45 92 84 / 0.55));
+  }
+}
+
+@keyframes mm-eye-look {
+  0%,
+  18%,
+  100% {
+    transform: translateX(0) scaleY(1);
+  }
+  24% {
+    transform: translateX(2px) scaleY(1);
+  }
+  45% {
+    transform: translateX(-2px) scaleY(1);
+  }
+  52% {
+    transform: translateX(-2px) scaleY(0.16);
+  }
+  58% {
+    transform: translateX(-2px) scaleY(1);
+  }
+  76% {
+    transform: translateX(1px) scaleY(1);
+  }
+}
+
+@keyframes mm-neural-pulse {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 24;
+    transform: translateY(4px);
+  }
+  45% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: -24;
+    transform: translateY(-8px);
+  }
+}
+
 @keyframes mm-mirror-lift {
   0%,
   100% {
@@ -297,6 +388,38 @@
   }
   50% {
     transform: translateY(-8px) rotate(-4deg);
+  }
+}
+
+@keyframes mm-demo-step {
+  0%,
+  100% {
+    border-color: #edf3f2;
+    transform: translateY(0);
+  }
+  24% {
+    border-color: #9fbbb5;
+    box-shadow: 0 16px 40px rgb(64 108 100 / 0.14);
+    transform: translateY(-2px);
+  }
+  48% {
+    border-color: #edf3f2;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mm-demo-progress {
+  0% {
+    transform: scaleX(0.12);
+  }
+  35% {
+    transform: scaleX(0.42);
+  }
+  70% {
+    transform: scaleX(0.78);
+  }
+  100% {
+    transform: scaleX(1);
   }
 }
 
