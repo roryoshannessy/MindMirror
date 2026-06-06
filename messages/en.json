@@ -104,7 +104,9 @@
     "q4": "Can I cancel anytime?",
     "a4": "For the early-access demand test, checkout is waitlist-only and refundable where stated. Full subscription management will be handled when the live product ships.",
     "q5": "Is my data private?",
-    "a5": "Your entries are private and encrypted. We never sell or share your data. You can export and delete everything at any time."
+    "a5": "Your entries are private and encrypted. We never sell or share your data. You can export and delete everything at any time.",
+    "q6": "Does this replace therapy or counselling?",
+    "a6": "Absolutely not. This product is not a replacement for therapy, counselling, or professional mental health support. The goal is to help people reflect, understand their thoughts more clearly, and build self-awareness between real-world support. If you're struggling, we strongly encourage speaking with a qualified counsellor, therapist, doctor, or crisis support service."
   },
   "quiz": {},
   "checkout": {

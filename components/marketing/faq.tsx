@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
-const faqKeys = ["q1", "q2", "q3", "q4", "q5"] as const;
+const faqKeys = ["q1", "q2", "q3", "q4", "q5", "q6"] as const;
 
 export function Faq() {
   const t = useTranslations("faq");
