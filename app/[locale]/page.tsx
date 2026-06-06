@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Hero } from "@/components/marketing/hero";
 import { ProductWorkflow } from "@/components/marketing/product-workflow";
-import { SocialProof } from "@/components/marketing/social-proof";
 import { Features } from "@/components/marketing/features";
-import { HowItWorks } from "@/components/marketing/how-it-works";
 import { ProfessionalGuidance } from "@/components/marketing/professional-guidance";
 import { Faq } from "@/components/marketing/faq";
 import { CtaBanner } from "@/components/marketing/cta-banner";
@@ -26,11 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function Home() {
   return (
     <>
-      <Hero />
       <ProductWorkflow />
-      <SocialProof />
       <Features />
-      <HowItWorks />
       <ProfessionalGuidance />
       <Faq />
       <CtaBanner />

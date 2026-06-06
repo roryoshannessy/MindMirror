@@ -11,14 +11,14 @@ export type FooterLink = {
 
 export const siteConfig = {
   nav: [
-    { labelKey: "how_it_works", href: "/#how-it-works" },
+    { labelKey: "how_it_works", href: "/#product-workflow" },
     { labelKey: "pricing", href: "/pricing" },
     { labelKey: "quiz", href: "/quiz", variant: "cta" },
   ] satisfies NavLink[],
   footer: {
     product: [
       { labelKey: "pricing", href: "/pricing" },
-      { labelKey: "how_it_works", href: "/#how-it-works" },
+      { labelKey: "how_it_works", href: "/#product-workflow" },
       { labelKey: "quiz", href: "/quiz" },
     ] satisfies FooterLink[],
     legal: [
