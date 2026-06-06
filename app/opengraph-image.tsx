@@ -60,7 +60,7 @@ export default function Image() {
               width: 12,
               height: 12,
               borderRadius: "50%",
-              background: "#6366f1",
+              background: "#172120",
             }}
           />
           <span

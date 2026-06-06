@@ -47,7 +47,7 @@ export function TheaterScreen({ node, onComplete }: Props) {
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
-          className="h-5 w-5 rounded-md bg-primary shadow-[0_0_24px_rgb(99_102_241/0.75)]"
+          className="h-5 w-5 rounded-md bg-primary shadow-[0_0_24px_rgb(23_33_32/0.45)]"
           animate={{ scale: [1, 1.18, 1], opacity: [0.75, 1, 0.75] }}
           transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
         />
