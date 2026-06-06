@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ProductWorkflow } from "@/components/marketing/product-workflow";
-import { Features } from "@/components/marketing/features";
+import { ScenarioGrid } from "@/components/marketing/scenario-grid";
+import { DifferenceSection } from "@/components/marketing/difference-section";
+import { PricingPreview } from "@/components/marketing/pricing-preview";
+import { ProofSection } from "@/components/marketing/proof-section";
 import { ProfessionalGuidance } from "@/components/marketing/professional-guidance";
 import { Faq } from "@/components/marketing/faq";
 import { CtaBanner } from "@/components/marketing/cta-banner";
@@ -24,7 +27,10 @@ export default function Home() {
   return (
     <>
       <ProductWorkflow />
-      <Features />
+      <ScenarioGrid />
+      <DifferenceSection />
+      <ProofSection />
+      <PricingPreview />
       <ProfessionalGuidance />
       <Faq />
       <CtaBanner />

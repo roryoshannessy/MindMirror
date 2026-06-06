@@ -1,46 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
 import {
   ArrowRight,
   BrainCircuit,
   CheckCircle2,
-  Clock3,
   Loader2,
   Mic,
   Sparkles,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-
-const demoFrames = [
-  {
-    eyebrow: "Record",
-    title: "Hold to record a thought",
-    body: "The visitor sees the exact first action: press the mic and speak naturally.",
-  },
-  {
-    eyebrow: "Speak",
-    title: "Words appear while they talk",
-    body: "The demo shows live dictation, so it feels familiar and low-friction on mobile.",
-  },
-  {
-    eyebrow: "Transcribe",
-    title: "The voice note becomes a journal entry",
-    body: "MindMirror saves the messy thought first, before trying to interpret it.",
-  },
-  {
-    eyebrow: "Analyse",
-    title: "MindMirror looks for the pattern",
-    body: "The AI checks emotion, trigger, repeated language, and similar past entries.",
-  },
-  {
-    eyebrow: "Mirror",
-    title: "The user gets a useful next step",
-    body: "The result explains what keeps coming back and how to prepare for it next time.",
-  },
-] as const;
 
 const liveWords = [
   "I",
@@ -76,6 +45,8 @@ const analysisRows = [
   "Similar entries found: 14 in 90 days",
 ] as const;
 
+const steps = ["Record", "Speak", "Transcribe", "Analyse", "Mirror"] as const;
+
 function VoiceBars() {
   return (
     <div className="mm-voice-bars text-current" aria-hidden>
@@ -88,194 +59,117 @@ function VoiceBars() {
   );
 }
 
-function FrameShell({
-  active,
-  children,
-  direction = "right",
-}: {
-  active: boolean;
-  children: ReactNode;
-  direction?: "left" | "right";
-}) {
-  const inactiveTransform = direction === "right" ? "translate-x-8" : "-translate-x-8";
-
+function PhoneDemo() {
   return (
-    <div
-      className={`absolute inset-0 p-5 transition duration-500 ${
-        active ? "translate-x-0 opacity-100" : `${inactiveTransform} opacity-0`
-      }`}
-      aria-hidden={!active}
-    >
-      {children}
-    </div>
-  );
-}
-
-function PhoneDemo({ frame }: { frame: number }) {
-  return (
-    <div className="relative mx-auto w-full max-w-[25rem] rounded-[2.25rem] border border-[#d8e7e3] bg-[#101918] p-3 shadow-[0_32px_100px_rgb(23_33_32/0.24)]">
-      <div className="rounded-[1.75rem] bg-[#f7fbfa] p-4 text-[#172120]">
+    <div className="relative mx-auto w-full max-w-[22rem] rounded-[2.25rem] border border-[#d8e7e3] bg-[#f7fbfa] p-2.5 shadow-[0_32px_100px_rgb(51_84_79/0.2)] sm:max-w-[25rem] sm:p-3">
+      <div className="rounded-[1.75rem] bg-white p-3 text-[#172120] sm:p-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-[#60706d]">MindMirror</span>
-          <span className="rounded-full border border-[#dfe9e7] bg-white px-2.5 py-1 text-[0.68rem] font-medium text-[#60706d]">
-            {demoFrames[frame].eyebrow}
+          <span className="mm-flow-status rounded-full border border-[#dfe9e7] bg-[#f7fbfa] px-2.5 py-1 text-[0.68rem] font-medium text-[#60706d]">
+            live demo
           </span>
         </div>
 
-        <div className="relative mt-4 min-h-[31rem] overflow-hidden rounded-[1.3rem] border border-[#dfe9e7] bg-white shadow-inner">
-          <FrameShell active={frame === 0} direction="left">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-              Voice journal
-            </p>
-            <h3 className="mt-3 text-2xl font-semibold leading-tight">
-              What is taking up space in your mind?
-            </h3>
-            <p className="mt-3 text-sm leading-6 text-[#60706d]">
-              Before a night out, the user records what they are worried might happen.
-            </p>
-
-            <div className="mt-12 flex flex-col items-center">
-              <button
-                type="button"
-                className="mm-demo-press flex size-28 items-center justify-center rounded-full bg-[#172120] text-white shadow-[0_20px_52px_rgb(23_33_32/0.28)]"
-                aria-label="Demo microphone button"
-              >
-                <Mic className="size-10" aria-hidden />
-              </button>
-              <p className="mt-5 text-sm font-semibold text-[#172120]">Hold to record</p>
-              <p className="mt-2 text-center text-xs leading-5 text-[#81908d]">
-                No blank page. No perfect journaling. Just talk.
-              </p>
-            </div>
-          </FrameShell>
-
-          <FrameShell active={frame === 1}>
-            <div className="flex items-center justify-between">
+        <div className="relative mt-3 min-h-[24rem] overflow-hidden rounded-[1.3rem] border border-[#dfe9e7] bg-[#f7fbfa] p-3 shadow-inner sm:mt-4 sm:min-h-[31rem] sm:p-4">
+          <div className="flex items-center justify-between">
+            <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-                Recording
+                Voice journal
               </p>
+              <h3 className="mt-2 text-xl font-semibold leading-tight sm:text-2xl">
+                What is taking up space in your mind?
+              </h3>
+            </div>
+            <div className="mm-record-dot flex size-12 shrink-0 items-center justify-center rounded-full bg-[#172120] text-white">
+              <Mic className="size-5" aria-hidden />
+            </div>
+          </div>
+
+          <div className="mt-3 rounded-3xl border border-[#dfe9e7] bg-white p-3 sm:mt-5 sm:p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="mm-record-label text-xs font-semibold uppercase tracking-[0.14em] text-[#60706d]">
+                Recording
+              </span>
               <div className="rounded-full bg-[#172120] px-3 py-1.5 text-white">
                 <VoiceBars />
               </div>
             </div>
-
-            <div className="mt-6 min-h-56 rounded-3xl border border-[#dfe9e7] bg-[#f7fbfa] p-4">
-              <p className="text-lg font-semibold leading-8 text-[#172120]">
-                {liveWords.map((word, index) => (
-                  <span
-                    key={`${word}-${index}`}
-                    className="mm-live-word mr-1.5 inline-block"
-                    style={{ animationDelay: `${index * 90}ms` }}
-                  >
-                    {word}
-                  </span>
-                ))}
-              </p>
-            </div>
-
-            <div className="mt-5 flex items-center justify-between rounded-full border border-[#dfe9e7] bg-white p-2 pl-4">
-              <span className="text-sm font-medium text-[#60706d]">Tap when finished</span>
-              <span className="flex size-12 items-center justify-center rounded-full bg-[#172120] text-white">
-                <CheckCircle2 className="size-5" aria-hidden />
-              </span>
-            </div>
-          </FrameShell>
-
-          <FrameShell active={frame === 2}>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-              Transcript
+            <p className="min-h-24 text-base font-semibold leading-7 text-[#172120] sm:min-h-40 sm:text-lg sm:leading-8">
+              {liveWords.map((word, index) => (
+                <span
+                  key={`${word}-${index}`}
+                  className="mm-live-word mr-1.5 inline-block"
+                  style={{ animationDelay: `${index * 90 - 900}ms` }}
+                >
+                  {word}
+                </span>
+              ))}
             </p>
-            <h3 className="mt-3 text-2xl font-semibold leading-tight">Saved as an entry</h3>
-            <div className="mt-5 rounded-3xl border border-[#dfe9e7] bg-[#f7fbfa] p-5">
-              <p className="text-base leading-7 text-[#172120]">
-                I am going out tonight and I already feel anxious. I keep thinking I will be
-                awkward, then I end up drinking so I feel more normal.
-              </p>
+            <div className="mm-cursor mt-1 h-1 w-20 rounded-full bg-[#172120]" aria-hidden />
+          </div>
+
+          <div className="mm-flow-save mt-2 rounded-2xl border border-[#dfe9e7] bg-white p-3 sm:mt-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold">Transcript saved</p>
+                <p className="text-xs text-[#60706d]">The messy thought becomes an entry.</p>
+              </div>
+              <CheckCircle2 className="size-5 shrink-0 text-[#42615d]" aria-hidden />
             </div>
-            <div className="mt-5 grid grid-cols-3 gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               {["anxiety", "social event", "alcohol"].map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-[#dfe9e7] bg-white px-3 py-2 text-center text-xs font-medium text-[#60706d]"
+                  className="rounded-full border border-[#dfe9e7] bg-[#f7fbfa] px-3 py-1.5 text-xs font-medium text-[#60706d]"
                 >
                   {chip}
                 </span>
               ))}
             </div>
-            <div className="mt-5 rounded-2xl border border-[#dfe9e7] bg-white p-4 text-sm leading-6 text-[#60706d]">
-              MindMirror keeps the original thought, then starts looking for repeated language.
-            </div>
-          </FrameShell>
+          </div>
 
-          <FrameShell active={frame === 3}>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-              Analysing
-            </p>
-            <div className="mt-7 flex flex-col items-center text-center">
-              <div className="mm-demo-orbit relative flex size-32 items-center justify-center rounded-full bg-[#eef7f4] text-[#42615d]">
-                <BrainCircuit className="size-12" aria-hidden />
-              </div>
-              <h3 className="mt-6 text-2xl font-semibold">Finding what keeps repeating</h3>
-              <p className="mt-3 text-sm leading-6 text-[#60706d]">
-                It compares this entry with previous moments, emotions, and situations.
-              </p>
+          <div className="mm-flow-analysis mt-2 rounded-2xl border border-[#dfe9e7] bg-white p-3 sm:mt-3">
+            <div className="mb-3 flex items-center gap-2">
+              <BrainCircuit className="size-5 text-[#42615d]" aria-hidden />
+              <p className="text-sm font-semibold">Finding what keeps repeating</p>
             </div>
-            <div className="mt-6 grid gap-2">
-              {analysisRows.map((item) => (
+            <div className="grid gap-2">
+              {analysisRows.map((row) => (
                 <div
-                  key={item}
-                  className="mm-demo-scan flex items-center gap-3 rounded-2xl border border-[#dfe9e7] bg-white px-4 py-3 text-sm text-[#172120]"
+                  key={row}
+                  className="mm-flow-analysis-row flex items-center gap-2 rounded-xl border border-[#dfe9e7] bg-[#f7fbfa] px-3 py-2 text-xs text-[#60706d]"
                 >
-                  <Loader2 className="size-4 animate-spin text-[#42615d]" aria-hidden />
-                  {item}
+                  <Loader2 className="size-3.5 animate-spin text-[#42615d]" aria-hidden />
+                  {row}
                 </div>
               ))}
             </div>
-          </FrameShell>
+          </div>
 
-          <FrameShell active={frame === 4}>
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#81908d]">
-                Mirror ready
-              </p>
-              <CheckCircle2 className="size-5 text-[#42615d]" aria-hidden />
-            </div>
-            <div className="mt-4 rounded-2xl border border-[#dfe9e7] bg-[#eef7f4] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#81908d]">
-                Recurring thought
-              </p>
-              <h3 className="mt-2 text-xl font-semibold leading-tight">
-                “I need alcohol to feel normal socially.”
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-[#60706d]">
-                This pattern has appeared 14 times in the last 90 days, usually before weekends.
-              </p>
-            </div>
-            <div className="mt-3 grid gap-3">
-              <div className="rounded-2xl border border-[#dfe9e7] bg-white p-4">
+          <div className="mm-flow-result absolute inset-x-3 bottom-3 rounded-3xl border border-[#bddbd4] bg-[#eef7f4] p-3 shadow-[0_18px_50px_rgb(51_84_79/0.16)] sm:inset-x-4 sm:bottom-4 sm:p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#81908d]">
-                  What helped before
+                  Mirror ready
                 </p>
-                <p className="mt-2 text-sm leading-6 text-[#172120]">
-                  Three weeks ago, a walk and a clear exit plan helped you stay calm.
-                </p>
+                <h3 className="mt-2 text-lg font-semibold leading-tight">
+                  “I need alcohol to feel normal socially.”
+                </h3>
               </div>
-              <div className="grid gap-2">
-                {["Prepare for tonight", "Write the exit plan", "View similar entries"].map(
-                  (option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      className="flex items-center justify-between rounded-full border border-[#dfe9e7] bg-white px-4 py-3 text-left text-sm font-medium text-[#172120] transition hover:bg-[#f7fbfa]"
-                    >
-                      {option}
-                      <ArrowRight className="size-4 text-[#42615d]" aria-hidden />
-                    </button>
-                  ),
-                )}
-              </div>
+              <CheckCircle2 className="size-5 shrink-0 text-[#42615d]" aria-hidden />
             </div>
-          </FrameShell>
+            <p className="mt-3 text-sm leading-6 text-[#60706d]">
+              This has appeared 14 times in 90 days. Three weeks ago, a walk and clear exit plan
+              helped.
+            </p>
+            <button
+              type="button"
+              className="mt-3 flex w-full items-center justify-between rounded-full border border-[#d8e7e3] bg-white px-4 py-2.5 text-sm font-semibold text-[#172120]"
+            >
+              Prepare for tonight
+              <ArrowRight className="size-4 text-[#42615d]" aria-hidden />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -283,18 +177,6 @@ function PhoneDemo({ frame }: { frame: number }) {
 }
 
 export function ProductWorkflow() {
-  const [frame, setFrame] = useState(0);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setFrame((current) => (current + 1) % demoFrames.length);
-    }, 2800);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  const active = demoFrames[frame];
-  const progressWidth = useMemo(() => `${((frame + 1) / demoFrames.length) * 100}%`, [frame]);
-
   return (
     <section
       id="product-workflow"
@@ -340,66 +222,46 @@ export function ProductWorkflow() {
           </div>
 
           <div className="mt-7 overflow-hidden rounded-full bg-[#e2eeeb]">
-            <div
-              className="h-2 rounded-full bg-[#172120] transition-all duration-500"
-              style={{ width: progressWidth }}
-            />
+            <div className="mm-flow-progress h-2 rounded-full bg-[#172120]" />
           </div>
 
           <div className="mt-5 hidden gap-2 lg:grid">
-            {demoFrames.map((step, index) => (
-              <button
-                key={step.eyebrow}
-                type="button"
-                className={`rounded-2xl border px-4 py-3 text-left transition ${
-                  frame === index
-                    ? "border-[#9fbeb8] bg-[#eef7f4]"
-                    : "border-[#dfe9e7] bg-white hover:bg-[#f8fbfa]"
-                }`}
-                onClick={() => setFrame(index)}
+            {steps.map((step) => (
+              <div
+                key={step}
+                className="mm-flow-step rounded-2xl border border-[#dfe9e7] bg-white px-4 py-3 text-left"
               >
-                <span className="flex items-center justify-between gap-3">
-                  <span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#81908d]">
-                      {step.eyebrow}
-                    </span>
-                    <span className="mt-1 block text-sm font-semibold text-[#172120]">
-                      {step.title}
-                    </span>
-                  </span>
-                  {frame === index ? (
-                    <Clock3 className="size-4 shrink-0 text-[#42615d]" aria-hidden />
-                  ) : null}
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#81908d]">
+                  {step}
                 </span>
-              </button>
+                <span className="mt-1 block text-sm font-semibold text-[#172120]">
+                  {step === "Record" && "Hold the mic"}
+                  {step === "Speak" && "Words appear live"}
+                  {step === "Transcribe" && "Entry is saved"}
+                  {step === "Analyse" && "Pattern check runs"}
+                  {step === "Mirror" && "Useful next step"}
+                </span>
+              </div>
             ))}
           </div>
-
-          <p className="mt-5 hidden text-sm leading-6 text-[#60706d] lg:block">{active.body}</p>
         </div>
 
         <div className="relative">
           <div className="absolute inset-8 rounded-[3rem] bg-[#b9ddd4]/45 blur-3xl" aria-hidden />
           <div className="relative rounded-[2rem] border border-[#dfe9e7] bg-[#f7fbfa] p-4 shadow-[0_28px_90px_rgb(51_84_79/0.16)] sm:p-6">
-            <div className="mb-4 flex items-center justify-between rounded-2xl border border-[#dfe9e7] bg-white px-4 py-3">
+            <div className="mb-4 hidden items-center justify-between rounded-2xl border border-[#dfe9e7] bg-white px-4 py-3 sm:flex">
               <span className="text-sm font-semibold text-[#172120]">Live product demo</span>
-              <span className="text-xs font-medium text-[#60706d]">auto-playing</span>
+              <span className="text-xs font-medium text-[#60706d]">continuous flow</span>
             </div>
-            <PhoneDemo frame={frame} />
+            <PhoneDemo />
             <div className="mt-5 grid grid-cols-5 gap-2">
-              {demoFrames.map((item, index) => (
-                <button
-                  key={item.eyebrow}
-                  type="button"
-                  className={`rounded-full px-2 py-2 text-center text-[0.66rem] font-medium transition ${
-                    frame >= index
-                      ? "bg-[#172120] text-white"
-                      : "border border-[#dfe9e7] bg-white text-[#81908d]"
-                  }`}
-                  onClick={() => setFrame(index)}
+              {steps.map((item) => (
+                <span
+                  key={item}
+                  className="mm-flow-pill rounded-full border border-[#dfe9e7] bg-white px-2 py-2 text-center text-[0.66rem] font-medium text-[#81908d]"
                 >
-                  {item.eyebrow}
-                </button>
+                  {item}
+                </span>
               ))}
             </div>
           </div>
