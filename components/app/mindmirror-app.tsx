@@ -169,6 +169,20 @@ export function MindMirrorApp() {
     "I feel stuck because...",
     "The decision I keep avoiding is...",
   ];
+  const firstUseSteps = [
+    {
+      label: "Capture",
+      note: "Speak or type the thought.",
+    },
+    {
+      label: "Mirror",
+      note: "See the pattern underneath it.",
+    },
+    {
+      label: "Go deeper",
+      note: "Answer one better question.",
+    },
+  ];
 
   useEffect(() => {
     if (isLoadingAuth) return;
@@ -233,6 +247,13 @@ export function MindMirrorApp() {
     "Where does this show up outside this reflection?",
   );
   const latestFollowUp = latestEntry?.followUps.at(-1);
+  const activeStep = latestEntry
+    ? latestMirror
+      ? latestFollowUp
+        ? 3
+        : 2
+      : 1
+    : 0;
   const evidenceProgress = Math.min(entries.length, 10);
   const patternMapUnlocked = entries.length >= 10;
   const earlySignalsUnlocked = entries.length >= 3;
@@ -448,6 +469,42 @@ export function MindMirrorApp() {
   return (
     <main className="mx-auto grid w-full max-w-7xl gap-4 px-4 py-4 sm:px-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6">
       <section className="space-y-5">
+        <section className="rounded-lg border border-white/10 bg-card/80 p-3 sm:p-4">
+          <div className="grid gap-2 sm:grid-cols-3">
+            {firstUseSteps.map((step, index) => {
+              const stepNumber = index + 1;
+              const isActive = activeStep === index || (!latestEntry && index === 0);
+              const isDone = activeStep >= stepNumber;
+              return (
+                <div
+                  key={step.label}
+                  className={`rounded-lg border px-3 py-3 transition ${
+                    isActive
+                      ? "border-white/25 bg-white/[0.08]"
+                      : isDone
+                        ? "border-white/15 bg-white/[0.04]"
+                        : "border-border bg-background/55"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex size-6 items-center justify-center rounded-full text-xs font-medium ${
+                        isDone
+                          ? "bg-foreground text-background"
+                          : "border border-border text-muted-foreground"
+                      }`}
+                    >
+                      {isDone ? <CheckCircle2 className="size-3.5" aria-hidden /> : stepNumber}
+                    </span>
+                    <p className="text-sm font-medium text-foreground">{step.label}</p>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-muted-foreground">{step.note}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
         <div
           className={`overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4 sm:p-5 ${
             hasEntries ? "hidden sm:block" : ""
@@ -630,7 +687,7 @@ export function MindMirrorApp() {
             <div>
               <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <BrainCircuit className="size-5 text-foreground" aria-hidden />
-                Mirror
+                Your mirror
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {isRevealingMirror
@@ -856,7 +913,7 @@ export function MindMirrorApp() {
         <details className="group space-y-3 rounded-lg border border-border bg-card/45 p-4">
           <summary className="flex cursor-pointer list-none items-end justify-between gap-3">
             <div>
-              <h2 className="text-sm font-medium text-foreground">Entries</h2>
+              <h2 className="text-sm font-medium text-foreground">Reflection history</h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {hasEntries ? "Newest first" : "Your saved reflections collect here"}
               </p>
