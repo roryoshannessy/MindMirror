@@ -405,9 +405,10 @@ export function CompletionShell() {
       </div>
 
       <div className="rounded-[2rem] border border-[#d6e6e1] bg-white/88 p-5 text-center shadow-[0_28px_90px_rgb(51_84_79/0.14)] sm:p-6">
-        <h2 className="text-xl font-semibold text-[#172120]">Join the early-access waitlist</h2>
+        <h2 className="text-xl font-semibold text-[#172120]">Start early beta access</h2>
         <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-[#60706d]">
-          If this self-awareness feels useful, reserve early access. This checkout is refundable and does not unlock a live app today.
+          If this self-awareness feels useful, start beta access. You can try the current
+          reflection loop now while the full paid product is still being shaped.
         </p>
         <div className="mt-5 flex flex-col items-stretch gap-3 sm:items-center">
           <Button
@@ -416,12 +417,12 @@ export function CompletionShell() {
             className="w-full max-w-md self-center rounded-full bg-[#172120] text-white hover:bg-[#263533]"
           >
             <Link href={primaryCheckout}>
-              Join early access - refundable {primaryPlanPrice}
+              Start early beta - {primaryPlanPrice}
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </Button>
           <p className="text-center text-xs text-[#74827f]">
-            Early-access demand test. Waitlist only. Your data is yours.
+            Early beta. Current reflection loop available. Your data is yours.
           </p>
         </div>
       </div>
@@ -472,7 +473,7 @@ export function CompletionShell() {
         <PricingWall showHeading />
         <div className="flex justify-center">
           <Button asChild size="lg" variant="default" className="min-w-[12rem]">
-            <Link href={primaryCheckout}>Join early access</Link>
+            <Link href={primaryCheckout}>Start early beta</Link>
           </Button>
         </div>
       </div>

@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { getClientAuth } from "@/lib/firebase";
+import type { MindMirrorFollowUp, MindMirrorInsight } from "@/lib/ai/mindmirror";
 import type { ReflectionAnalysis, ReflectionSource } from "@/lib/app-patterns";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth-store";
@@ -24,7 +25,16 @@ type JournalEntry = {
   text: string;
   source: ReflectionSource;
   analysis: ReflectionAnalysis;
+  mindMirror?: MindMirrorInsight;
+  followUps: MindMirrorFollowUpThread[];
   createdAt: string;
+};
+
+type MindMirrorFollowUpThread = {
+  answer: string;
+  createdAt: string;
+  question: string;
+  response: MindMirrorFollowUp;
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
@@ -138,6 +148,8 @@ export function MindMirrorApp() {
   const [source, setSource] = useState<ReflectionSource>("text");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingMirror, setIsGeneratingMirror] = useState(false);
+  const [isAnsweringFollowUp, setIsAnsweringFollowUp] = useState(false);
   const [isRevealingMirror, setIsRevealingMirror] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [deletingEntryId, setDeletingEntryId] = useState<string | null>(null);
@@ -145,6 +157,8 @@ export function MindMirrorApp() {
   const [error, setError] = useState<string | null>(null);
   const [voiceDisclosureAccepted, setVoiceDisclosureAccepted] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognitionLike | null>(null);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
+  const [followUpAnswer, setFollowUpAnswer] = useState("");
 
   const cleanText = text.trim();
   const characterCount = cleanText.length;
@@ -206,10 +220,19 @@ export function MindMirrorApp() {
   }, [entries]);
 
   const latestEntry = dashboard.latest;
+  const latestMirror = latestEntry?.mindMirror;
+  const latestQuestions = latestMirror?.followUpQuestions ?? [];
+  const activeQuestionIndex =
+    latestQuestions.length > 0
+      ? Math.min(selectedQuestionIndex, latestQuestions.length - 1)
+      : 0;
   const latestQuestion = mirrorField(
-    latestEntry?.analysis.nextQuestion,
+    latestMirror?.followUpQuestions[activeQuestionIndex] ??
+      latestMirror?.followUpQuestions[0] ??
+      latestEntry?.analysis.nextQuestion,
     "Where does this show up outside this reflection?",
   );
+  const latestFollowUp = latestEntry?.followUps.at(-1);
   const evidenceProgress = Math.min(entries.length, 10);
   const patternMapUnlocked = entries.length >= 10;
   const earlySignalsUnlocked = entries.length >= 3;
@@ -262,10 +285,92 @@ export function MindMirrorApp() {
       setSource("text");
       setSavedEntryId(json.entry.id);
       setIsRevealingMirror(true);
+      setSelectedQuestionIndex(0);
+      setFollowUpAnswer("");
+      void generateMirror(json.entry.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not save entry.");
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function generateMirror(entryId: string) {
+    setIsGeneratingMirror(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/app/mirror", {
+        method: "POST",
+        cache: "no-store",
+        headers: {
+          "content-type": "application/json",
+          ...(await authHeaders()),
+        },
+        body: JSON.stringify({ entryId }),
+      });
+      const json = (await res.json()) as { mirror?: MindMirrorInsight; error?: string };
+      if (!res.ok || !json.mirror) throw new Error(json.error ?? "Could not generate mirror.");
+      setEntries((current) =>
+        current.map((entry) =>
+          entry.id === entryId ? { ...entry, mindMirror: json.mirror } : entry,
+        ),
+      );
+      setSelectedQuestionIndex(0);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not generate mirror.");
+    } finally {
+      setIsGeneratingMirror(false);
+      setIsRevealingMirror(false);
+    }
+  }
+
+  async function answerFollowUp() {
+    if (!latestEntry) return;
+    const answer = followUpAnswer.trim();
+    if (answer.length < 10) {
+      setError("Answer the follow-up with at least one honest sentence.");
+      return;
+    }
+
+    setIsAnsweringFollowUp(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/app/mirror", {
+        method: "PATCH",
+        cache: "no-store",
+        headers: {
+          "content-type": "application/json",
+          ...(await authHeaders()),
+        },
+        body: JSON.stringify({
+          answer,
+          entryId: latestEntry.id,
+          questionIndex: activeQuestionIndex,
+        }),
+      });
+      const json = (await res.json()) as {
+        error?: string;
+        followUp?: MindMirrorFollowUpThread;
+        mirror?: MindMirrorInsight;
+      };
+      if (!res.ok || !json.followUp) throw new Error(json.error ?? "Could not answer follow-up.");
+      const followUp = json.followUp;
+      setEntries((current) =>
+        current.map((entry) =>
+          entry.id === latestEntry.id
+            ? {
+                ...entry,
+                followUps: [...entry.followUps, followUp],
+                mindMirror: json.mirror ?? entry.mindMirror,
+              }
+            : entry,
+        ),
+      );
+      setFollowUpAnswer("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not answer follow-up.");
+    } finally {
+      setIsAnsweringFollowUp(false);
     }
   }
 
@@ -399,10 +504,11 @@ export function MindMirrorApp() {
             <div>
               <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <AudioLines className="size-5 text-foreground" aria-hidden />
-                Capture
+                Start voice reflection
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                What has been taking up space in your mind?
+                Speak the messy thought first. MindMirror saves it, then helps you question why it
+                keeps returning.
               </p>
             </div>
             <span className="hidden rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted-foreground sm:inline-flex">
@@ -508,6 +614,10 @@ export function MindMirrorApp() {
               <p>Saved. MindMirror is looking for the thought pattern.</p>
             </div>
           ) : null}
+          <p className="mt-4 text-xs leading-5 text-muted-foreground">
+            Private to your account. If AI analysis is enabled, your entry may be processed by an
+            AI provider only to generate your mirror and follow-up questions.
+          </p>
           {error ? (
             <p className="mt-4 rounded-lg border border-destructive/25 bg-destructive/10 px-3 py-2 text-sm text-destructive">
               {error}
@@ -580,58 +690,154 @@ export function MindMirrorApp() {
             <div className="mm-reveal">
               <div className="rounded-lg border border-white/15 bg-white/[0.04] p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  Possible thought pattern
+                  Private mirror
                 </p>
                 <p className="mt-2 text-xl font-semibold leading-8 text-foreground">
-                  {latestEntry.analysis.patternLabel}
+                  {latestMirror?.privateMirror ?? latestEntry.analysis.summary}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  {latestEntry.analysis.summary}
-                </p>
+                {isGeneratingMirror ? (
+                  <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="size-4 animate-spin" aria-hidden />
+                    Reading for loops, context, and the next question...
+                  </div>
+                ) : null}
 
-                <div className="mt-5 space-y-4 border-t border-border pt-4">
+                <div className="mt-5 grid gap-3 border-t border-border pt-4 sm:grid-cols-2">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                      What it may be costing
+                      Repeated thought loops
                     </p>
-                    <p className="mt-2 text-sm leading-6 text-foreground">
-                      {mirrorField(
-                        latestEntry.analysis.loopCost,
-                        "This may be costing attention, momentum, or emotional energy.",
+                    <div className="mt-2 space-y-2">
+                      {(latestMirror?.repeatedThoughtLoops ?? [latestEntry.analysis.patternLabel]).map(
+                        (loop) => (
+                          <div
+                            key={loop}
+                            className="rounded-lg border border-border bg-background/60 px-3 py-2 text-sm leading-6 text-foreground"
+                          >
+                            {loop}
+                          </div>
+                        ),
                       )}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      Emotional pattern
+                    </p>
+                    <p className="mt-2 rounded-lg border border-border bg-background/60 px-3 py-2 text-sm leading-6 text-foreground">
+                      {latestMirror?.emotionalPattern ?? latestEntry.analysis.emotion}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                      Next question
-                    </p>
-                    <p className="mt-2 text-lg font-medium leading-7 text-foreground">
-                      {latestQuestion}
-                    </p>
-                  </div>
-                  <div className="rounded-lg border border-border bg-background/60 p-3">
-                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                      Smallest next step
+                      Trigger / context
                     </p>
                     <p className="mt-2 text-sm leading-6 text-foreground">
-                      {mirrorField(
-                        latestEntry.analysis.smallestAction,
-                        "Save one more honest reflection when the thought returns.",
-                      )}
+                      {latestMirror?.triggerContext ??
+                        (latestEntry.analysis.topics.length > 0
+                          ? latestEntry.analysis.topics.join(", ")
+                          : "Still forming from your saved reflections.")}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      What you might be forgetting
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground">
+                      {latestMirror?.whatYouMightBeForgetting ?? latestEntry.analysis.note}
                     </p>
                   </div>
                 </div>
 
+                <div className="mt-4 rounded-lg border border-border bg-background/60 p-3">
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    One next action
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-foreground">
+                    {latestMirror?.oneNextAction ??
+                      mirrorField(
+                        latestEntry.analysis.smallestAction,
+                        "Save one more honest reflection when the thought returns.",
+                      )}
+                  </p>
+                </div>
+
+                <div className="mt-5 rounded-lg border border-white/15 bg-white/[0.04] p-4">
+                  <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                    Follow-up questions
+                  </p>
+                  <div className="mt-3 space-y-2">
+                    {(latestMirror?.followUpQuestions ?? [latestQuestion]).map((question, index) => (
+                      <button
+                        key={question}
+                        type="button"
+                        className={`w-full rounded-lg border px-3 py-2 text-left text-sm leading-6 transition ${
+                          activeQuestionIndex === index
+                            ? "border-white/25 bg-white/[0.08] text-foreground"
+                            : "border-border bg-background/60 text-muted-foreground hover:border-white/20 hover:text-foreground"
+                        }`}
+                        onClick={() => setSelectedQuestionIndex(index)}
+                      >
+                        {question}
+                      </button>
+                    ))}
+                  </div>
+
+                  <textarea
+                    value={followUpAnswer}
+                    onChange={(event) => setFollowUpAnswer(event.target.value)}
+                    placeholder="Answer the question honestly..."
+                    className="mt-3 min-h-28 w-full resize-none rounded-lg border border-border bg-background/95 px-3 py-3 text-sm leading-6 text-foreground outline-none transition placeholder:text-muted-foreground/60 focus:border-foreground focus:ring-2 focus:ring-white/10"
+                  />
+                  <Button
+                    type="button"
+                    className="mt-3 min-h-11 w-full rounded-full bg-foreground px-5 text-background hover:bg-foreground/90 sm:w-auto"
+                    disabled={isAnsweringFollowUp || followUpAnswer.trim().length < 10}
+                    onClick={answerFollowUp}
+                  >
+                    {isAnsweringFollowUp ? (
+                      <Loader2 className="size-4 animate-spin" aria-hidden />
+                    ) : (
+                      <Sparkles className="size-4" aria-hidden />
+                    )}
+                    {isAnsweringFollowUp ? "Going deeper..." : "Go one layer deeper"}
+                  </Button>
+                </div>
+
+                {latestFollowUp ? (
+                  <div className="mt-4 rounded-lg border border-white/15 bg-white/[0.06] p-4">
+                    <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      Second-layer reflection
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-foreground">
+                      {latestFollowUp.response.reflection}
+                    </p>
+                    <div className="mt-3 rounded-lg border border-border bg-background/60 p-3">
+                      <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                        Deeper question
+                      </p>
+                      <p className="mt-2 text-lg font-medium leading-7 text-foreground">
+                        {latestFollowUp.response.deeperQuestion}
+                      </p>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                      Next: {latestFollowUp.response.oneNextAction}
+                    </p>
+                  </div>
+                ) : null}
+
                 <div className="mt-4 text-xs leading-5 text-muted-foreground">
                   Evidence: {latestEntry.analysis.signals.join(", ") || "still forming"}
+                  {latestMirror ? ` · ${latestMirror.provider}` : ""}
                 </div>
 
                 <Button
                   type="button"
-                  className="mt-5 min-h-12 w-full rounded-full bg-foreground px-5 text-background hover:bg-foreground/90 sm:w-auto"
+                  variant="outline"
+                  className="mt-5 min-h-12 w-full border-border bg-transparent hover:bg-white/10 sm:w-auto"
                   onClick={() => continueFromQuestion(latestQuestion)}
                 >
-                  Answer this next
+                  Use this question as a new entry
                 </Button>
               </div>
             </div>

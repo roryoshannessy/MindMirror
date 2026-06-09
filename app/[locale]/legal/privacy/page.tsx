@@ -63,11 +63,12 @@ export default async function PrivacyPage() {
         <section>
           <h2>3. Your Journal Entries Are Private</h2>
           <p>
-            Your voice recordings and transcriptions are private to your account. We do not read,
-            sell, or share your journal content for advertising. AI processing of your entries
-            occurs to power the pattern detection feature and for no other purpose. If you use
-            browser dictation, speech recognition may be processed by your browser provider before
-            the resulting text is saved to {brand.NAME}.
+            Your voice recordings and transcriptions are private to your account. We do not sell
+            your journal content or share it for advertising. When AI analysis is enabled, entry
+            text and limited recent context may be sent to an AI service provider solely to generate
+            your private mirror, pattern read, and follow-up questions. If you use browser
+            dictation, speech recognition may be processed by your browser provider before the
+            resulting text is saved to {brand.NAME}.
           </p>
         </section>
 
@@ -89,6 +90,11 @@ export default async function PrivacyPage() {
             <li>
               <strong className="text-foreground">PostHog:</strong> product analytics (no personally
               identifiable data is shared).
+            </li>
+            <li>
+              <strong className="text-foreground">OpenAI or another AI provider:</strong> AI analysis
+              of journal text where the mirror feature is enabled. This processing is used to
+              provide the Service, not to sell your data or target ads.
             </li>
           </ul>
         </section>

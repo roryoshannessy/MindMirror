@@ -1,6 +1,7 @@
 import { FieldValue, Timestamp, type DocumentData } from "firebase-admin/firestore";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import type { MindMirrorFollowUp, MindMirrorInsight } from "@/lib/ai/mindmirror";
 import { analyzeReflection } from "@/lib/app-patterns";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
 import {
@@ -36,6 +37,13 @@ type EntryResponse = {
   text: string;
   source: "text" | "voice";
   analysis: ReturnType<typeof analyzeReflection>;
+  mindMirror?: MindMirrorInsight;
+  followUps: Array<{
+    answer: string;
+    createdAt: string;
+    question: string;
+    response: MindMirrorFollowUp;
+  }>;
   createdAt: string;
 };
 
@@ -117,11 +125,30 @@ function isoFromFirestore(value: unknown): string {
 }
 
 function mapEntry(id: string, data: DocumentData): EntryResponse {
+  const followUps = Array.isArray(data.followUps)
+    ? data.followUps.map((item: unknown) => {
+        const followUp = item as {
+          answer?: unknown;
+          createdAt?: unknown;
+          question?: unknown;
+          response?: unknown;
+        };
+        return {
+          answer: String(followUp.answer ?? ""),
+          createdAt: isoFromFirestore(followUp.createdAt),
+          question: String(followUp.question ?? ""),
+          response: followUp.response as MindMirrorFollowUp,
+        };
+      })
+    : [];
+
   return {
     id,
     text: String(data.text ?? ""),
     source: data.source === "voice" ? "voice" : "text",
     analysis: data.analysis ?? analyzeReflection(String(data.text ?? "")),
+    mindMirror: data.mindMirror as MindMirrorInsight | undefined,
+    followUps,
     createdAt: isoFromFirestore(data.createdAt),
   };
 }
@@ -188,6 +215,7 @@ export async function POST(req: Request) {
         text: parsed.data.text,
         source: parsed.data.source,
         analysis,
+        followUps: [],
         createdAt: createdAt.toISOString(),
       } satisfies EntryResponse,
     },

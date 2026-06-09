@@ -73,10 +73,10 @@ export default async function TermsPage() {
             partial billing periods except where required by law.
           </p>
           <p className="mt-3">
-            During early-access demand tests, checkout pages may state that payment is refundable
-            and that you are joining a waitlist rather than buying access to a live app. In that
-            case, we will refund the checkout amount and you will not receive live product access
-            until MindMirror is available.
+            During early beta tests, checkout pages may state that the product is still being
+            shaped, that refund terms differ from a standard subscription, or that only the current
+            reflection loop is available. The checkout page controls the specific beta access and
+            refund terms shown before payment.
           </p>
         </section>
 
@@ -85,7 +85,9 @@ export default async function TermsPage() {
           <p>
             You retain ownership of all content you record and submit to the Service. By using the
             Service, you grant {brand.NAME} a limited licence to store and process your content
-            solely to provide the Service. We do not sell or share your content with third parties.
+            solely to provide the Service. We do not sell your content or share it for advertising.
+            Where AI analysis is enabled, we may process your content through an AI service provider
+            solely to generate your mirror, pattern read, and follow-up questions.
           </p>
         </section>
 

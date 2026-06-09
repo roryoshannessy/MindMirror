@@ -23,8 +23,8 @@ const trustCards = [
   },
   {
     icon: RotateCcw,
-    title: "Early-access clarity",
-    body: "The funnel is honest that the full paid product is still being built and tested.",
+    title: "Beta clarity",
+    body: "The current reflection loop is available in beta while the full paid product is still being shaped.",
   },
 ] as const;
 
@@ -32,15 +32,15 @@ function planFeatures(plan: Plan) {
   if (plan.intervalUnit === "year") {
     return [
       "7-day Stripe trial before billing",
-      "Best-value early-access reservation",
-      "Planned voice journal + pattern map",
+      "Best-value early beta access",
+      "Current mirror + future pattern map",
     ];
   }
 
   return [
-    "Flexible monthly early-access reservation",
-    "Planned voice journal + pattern map",
-    "Stripe-managed billing when the live product opens",
+    "Flexible monthly early beta access",
+    "Current mirror + future pattern map",
+    "Stripe-managed billing and receipts",
   ];
 }
 
@@ -99,7 +99,7 @@ function PaidPlanCard({ plan }: { plan: Plan }) {
         }`}
       >
         <Link href={href}>
-          Join early access
+          Start early beta
           <ArrowRight className="size-4" aria-hidden />
         </Link>
       </Button>
